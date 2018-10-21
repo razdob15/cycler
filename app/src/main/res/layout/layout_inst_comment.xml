@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/comment_profile_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_person_grey"
+        app:civ_border_color="@color/colorBlack"
+        app:civ_border_width="0.5dp" />
+
+
+    <RelativeLayout
+        android:id="@+id/relLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@id/comment_profile_image"
+        android:background="@drawable/grey_border_bottom">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginEnd="60dp"
+            android:orientation="vertical">
+
+            <!-- User Name -->
+            <TextView
+                android:id="@+id/comment_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="raz.dobkies"
+                android:textColor="@color/colorLinkDarkBlue"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Comment Text -->
+            <TextView
+                android:id="@+id/comment_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="This is a comment"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <!-- Details Layout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp">
+
+                <!-- Time posted -->
+                <TextView
+                    android:id="@+id/comment_time_posted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="3 d"
+                    android:textColor="@color/colorGrey"
+                    android:textSize="14sp" />
+
+                <!-- Comments likes Text-->
+                <TextView
+                    android:id="@+id/comment_likes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:textColor="@color/colorGrey"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <!-- Reply -->
+                <!--TODO(BETA): Add a reply feature -->
+                <TextView
+                    android:id="@+id/comment_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="reply"
+                    android:textColor="@color/colorGrey"
+                    android:textSize="14sp"
+                    android:textStyle="italic|bold"
+                    android:visibility="gone" />
+
+                <!-- Delete - Shows only if the the comments was written by the current user.-->
+                <ImageView
+                    android:id="@+id/delete_comment_iv"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="end"
+                    android:layout_marginStart="25dp"
+                    android:contentDescription="delete_comment"
+                    app:srcCompat="@drawable/ic_delete_grey"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!-- BlankHeart -->
+        <ImageView
+            android:id="@+id/comment_heart_blank"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_blank_heart" />
+
+        <!-- RedHeart -->
+        <ImageView
+            android:id="@+id/comment_heart_red"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_heart_red"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

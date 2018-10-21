@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+     <!--ToolBar -->
+    <RelativeLayout
+        android:id="@+id/relLayout0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/snippet_top_databar" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/relLayout0">
+
+        <!-- Recycler View -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/layout_five_places" />
+        </RelativeLayout>
+
+        <!-- No Places Messages -->
+        <LinearLayout
+            android:id="@+id/no_favorites_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/no_favs_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:background="@drawable/grey_frame"
+                android:paddingBottom="15dp"
+                android:paddingEnd="7dp"
+                android:paddingStart="7dp"
+                android:paddingTop="10dp"
+                android:text="You don't have favorite places yes. you can add some from the map or by choosing from your nearby places."
+                android:textAlignment="center"
+                android:textColor="@color/colorDarkGrey"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/add_places_from_map_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:background="@color/cycler_green"
+                android:padding="12dp"
+                android:text="Add places from the map"
+                android:textColor="@color/colorBlack" />
+
+            <!--<android.support.design.widget.FloatingActionButton
+                android:id="@+id/map_iv"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="50dp"
+                android:background="@color/cycler_green"
+                android:src="@drawable/ic_map" />-->
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <!-- No places Message -->
+    <TextView
+        android:id="@+id/no_places_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="no matching places near to you.
+Try to add tags..."
+        android:layout_centerInParent="true"
+        android:textSize="15sp"
+        android:padding="8dp"
+        android:textColor="@color/colorRed"
+        android:textStyle="bold"
+        android:background="@color/colorGrey"
+        android:visibility="gone"/>
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/progress" />
+
+
+</RelativeLayout>

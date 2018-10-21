@@ -1,0 +1,256 @@
+<resources>
+
+    <!--<string name="google_app_id">1234567890123456</string>-->
+
+    <string name="app_name">Cycler</string>
+    <string name="sport">Sport</string>
+    <string name="world_news">World News</string>
+    <string name="fashion">Fashion</string>
+    <string name="tech">high- technology</string>
+    <string name="music">Music</string>
+    <string name="food">Food</string>
+    <string name="mail_address_points">Mail Address:</string>
+    <string name="user_name">User Name:</string>
+    <string name="mail_hint">Enter your mail</string>
+    <string name="define_preferences">define what you like:</string>
+    <string name="hi">Hi</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="welcome">Welcome</string>
+    <string name="title_activity_clear">Sign in</string>
+    <string name="open_camera">Open Camera</string>
+
+    <!-- Support Page -->
+    <string name="support_and_feedback">Support &amp; Feedback</string>
+    <string name="support_title">Support &amp; Feedback</string>
+    <string name="cycler_support_email">cycler.sprt@gmail.com</string>
+    <string name="support_explain">We\'d love to hear your thoughts on our app. Have you encountered any difficulties?\nTell us and we\'ll get back to you as soon as possible :-) </string>
+    <string name="support_email_hint">What do you think of our app?</string>
+
+    <!-- Hints -->
+    <string name="choose_place_tags_hint">What do you like in this place?</string>
+    <string name="choose_current_subjects_hint">What do you feel like?</string>
+    <string name="write_caption_hint">Write a caption</string>
+    <string name="upload_a_photo_hint">Upload a photo to your own feed</string>
+    <string name="upload_place_photo_hint">Upload a photo to share your visit in:</string>
+    <string name="descriptions_examples">Such As: Where do you hang out? Describe your favorite place…</string>
+    <string name="display_name_hint">Display Name</string>
+    <string name="user_name_hint">User Name</string>
+
+    <!-- Upload photo title strings -->
+    <string name="title_upload_casual_photo">Upload a photo to share your experience in a restaurant</string>
+    <string name="title_upload_place_photo">Upload a photo to share your visit in:</string>
+
+    <!-- OPEN or CLOSE -->
+    <string name="open_now">OPEN NOW</string>
+    <string name="close_now">CLOSE NOW</string>
+
+    <!-- Toolbar Titles -->
+    <string name="toolbar_favorites">Favorites</string>
+    <string name="toolbar_nearby_places">Nearby Places</string>
+    <string name="toolbar_followers">FOLLOWERS</string>
+    <string name="toolbar_followings">FOLLOWINGS</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="title_activity_create_place">CreatePlaceActivity</string>
+    <string name="down">Down</string>
+    <string name="up">Up</string>
+    <string name="title_activity_one_place_data">OnePlaceData</string>
+    <string name="no_data">Sorry, we can\'t find love_placesIDs like you want in your area.</string>
+    <string name="title_activity_login2">PlaceProfile</string>
+    <string name="place_name">Business Name</string>
+    <string name="address">Address</string>
+    <string name="place_phone">Place Phone</string>
+    <string name="place_mail_address">Place Mail Address</string>
+    <string name="password_again_hint">Password Again</string>
+    <string name="already_registered">Already registered?</string>
+    <string name="click_here">Clock Here</string>
+    <string name="login_here">Login Here</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="register_here">Register Here</string>
+    <string name="your_feedback">Your Feedback:</string>
+    <string name="name">Name</string>
+    <string name="register_now">Register now</string>
+    <string name="place_tags">Place\'s tags</string>
+
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="profile">Profile</string>
+    <string name="login_3">Login..</string>
+
+    <!--photo types -->
+    <string name="casual_photo">casual_photo</string>
+    <string name="profile_photo">profile_photo</string>
+    <string name="place_photo">place_photo</string>
+
+    <!-- Dialog names-->
+    <string name="confirm_password_dialog">ConfirmPasswordDialog</string>
+
+    <!-- Firebase Database Fields -->
+    <string name="db_persons">persons</string>
+    <string name="db_restaurants">restaurants</string>
+    <string name="db_websites_clicks_counter">website_clicks_counter</string>
+    <string name="db_user_account_settings">user_account_settings</string>
+    <string name="db_subjects">subjects</string>
+    <string name="db_business_users">business_users</string>
+    <string name="db_general_users">general_users</string>
+    <string name="db_photos">photos</string>
+    <string name="db_user_photos">user_photos</string>
+    <string name="db_places_photos">places_photos</string>
+    <string name="db_places_comments">places_comments</string>
+    <string name="db_tag_places">tag_places</string>
+    <string name="db_places_rates">places_rates</string>
+    <string name="db_users_tag_places">user_tag_places</string>
+    <string name="db_field_preferences">preferences</string>
+    <string name="db_field_username">userName</string>
+    <string name="db_field_name">name</string>
+    <string name="db_field_email">email</string>
+    <string name="db_field_phone">phone</string>
+    <string name="db_field_display_name">displayName</string>
+    <string name="db_field_website">website</string>
+    <string name="db_field_description">description</string>
+    <string name="db_field_user_id">user_id</string>
+    <string name="db_field_likes">likes</string>
+    <string name="db_field_caption">caption</string>
+    <string name="db_field_tags">tags</string>
+    <string name="db_field_date_creates">date_creates</string>
+    <string name="db_field_photo_id">photo_id</string>
+    <string name="db_field_image_path">image_path</string>
+    <string name="db_field_comments">comments</string>
+    <string name="db_field_following">following</string>
+    <string name="db_field_followers">followers</string>
+    <string name="db_field_favorite_places_ids">favoritePlacesIDs</string>
+    <string name="db_field_places">places</string>  <!--TODO(1) Change this if change the DB Name... -->
+    <string name="db_field_tag_name">tagName</string>
+    <string name="db_field_places_tag_counters">places_tags_counters</string>
+    <string name="db_field_moment_subjects">moment_subjects</string>
+    <string name="db_field_exemption_places_ids">exemption_places_ids</string>
+    <string name="db_field_places_likes">places_likes</string>
+    <string name="db_field_users_connections">users_connections_graph</string>
+    <string name="db_field_place_id">place_id</string>
+    <string name="db_field_posts">posts</string>
+    <string name="db_field_place_name">place_name</string>
+    <string name="db_tags_exemptions">tags_exemption</string>
+
+
+    <!-- Shared Preferences -->
+    <string name="sp_main_place_tags">main_place_tags</string>
+    <string name="sp_place_tags">place_tags</string>
+
+    <!-- Intent Extras-->
+    <string name="calling_activity">calling_activity</string>
+    <string name="selected_image">selected_image</string>
+    <string name="selected_bitmap">selected_bitmap</string>
+    <string name="return_to_fragment">return_to_fragment</string>
+    <string name="intent_user">intent_user</string>
+    <string name="intent_map_type">map_type</string>
+    <string name="intent_map_five_places">five_places</string>
+    <string name="intent_business_map_place">business_place</string>
+    <string name="intent_love_places_ids">love_places_ids</string>c
+    <string name="intent_place_id">place_id</string>
+    <string name="intent_place_name">place_name</string>
+    <string name="intent_place_address">place_address</string>
+    <string name="intent_load_places">load_places</string>
+    <string name="intent_current_places">load_places</string>
+    <string name="intent_current_subjects">chosen_current_subjects</string>
+    <string name="intent_selected_photo_uri">selected_photo_uri</string>
+    <string name="intent_users">users</string>
+    <string name="intent_title">title</string>
+    <string name="intent_favorite_places">favorite_places</string>
+    <string name="intent_favorite_count">favorites_count</string>
+    <string name="intent_first_time">first_time</string>
+    <string name="intent_byte_arr">bytes_array</string>
+    <string name="intent_counter">counter</string>
+    <string name="intent_size">size</string>
+
+    <!-- Bundle arg names -->
+    <string name="activity_number">activity_number</string>
+    <string name="bundle_photo">bundle_photo</string>
+    <string name="bundle_user_account_settings">bundle_user_account_settings</string>
+    <string name="bundle_photos">photos</string>
+    <string name="bundle_followings">followings</string>
+
+    <!-- Activity Names-->
+    <string name="profile_activity">Profile Activity</string>
+    <string name="search_activity">Search Activity</string>
+    <string name="home_activity">Home Activity</string>
+    <string name="five_places_activity">FivePlacesActivity</string>
+    <string name="data_activity">DataActivity</string>
+    <string name="feed_activity">FeedActivity</string>
+    <string name="main_activity">MainActivity</string>
+    <string name="share_activity">ShareActivity</string>
+    <string name="share_next_activity">ShareNextActivity</string>
+    <string name="choose_subjects_activity">ChooseCurrentSubjectsActivity</string>
+    <string name="choose_favorite_places_activity">ChooseFavoritePlacesActivity</string>
+
+    <!-- fragment names -->
+    <string name="edit_profile_fragment">Edit Profile</string>
+    <string name="view_post_fragment">View Post</string>
+    <string name="sign_out_fragment">Sign Out</string>
+    <string name="profile_fragment">Profile</string>
+    <string name="view_inst_comment_fragment">View Inst Comments</string>
+    <string name="view_inst_profile_fragment">View Inst Profile Fragment</string>
+    <string name="nearby_places_fragment">nearby_places_fragment</string>
+    <string name="feed_fragment">FeedFragment</string>
+    <string name="support_fragment">SupportFragment</string>
+
+    <!-- Tabs Titles-->
+    <string name="feed_tab">FEED</string>
+    <string name="places_tab">PLACES</string>
+
+    <!-- Remote Config-->
+    <string name="rc_favorite_adding">favorite_adding</string>
+    <string name="rc_follow_multiply">follow_multiply</string>
+    <string name="rc_current_user_rate">user_rate</string>
+    <string name="rc_number_of_favorites">number_of_favorites</string>
+
+    <!-- strings -->
+    <string name="gallery">GALLERY</string>
+    <string name="photo">PHOTO</string>
+    <string name="string_next">Next</string>
+    <string name="string_share">Share</string>
+
+    <!-- TimeZones-->
+    <string name="israel">israel</string>
+
+    <!-- Stars contentDescriptions -->
+    <string name="content_description_star_on">Star On</string>
+    <string name="content_description_star_off">Star Off</string>
+
+    <!-- Alerting messages -->
+    <string name="alert_not_food_place">We don\'t think this is a restaurant. If you are sure this is a restaurant- click yes.</string>
+
+    <!-- Dialogs Titles & Texts -->
+    <string name="not_rest_dialog_title">Not A Restaurant</string>
+    <string name="must_location_dialog_title">Location Is Must</string>
+    <string name="location_permission_dialog_title">Location Permission</string>
+    <string name="home_explain_dialog_title">Search Nearby Restaurants</string>
+
+    <string name="not_rest_dialog_text">I don\'t sure this place is a restaurant. \nDoes it a restaurant in your opinion?</string>
+    <string name="must_location_dialog_text">You must to choose the restaurant where the picture was taken, before upload it.</string>
+    <string name="del_comment_text">Are you sure you want to delete this comment?</string>
+    <string name="del_post_text">Are you sure you want to delete this post?</string>
+    <string name="location_permission_dialog_text">You need to give an access to your location to find the best restaurants in your area</string>
+    <string name="home_explain_dialog_text1">In this screen you can find the best restaurants for you in your area.</string>
+    <string name="home_explain_dialog_text2">To Search specific types of restaurants, you can click on the orange "'"target"'" sign in the top of this screen.</string>
+
+    <!-- FINALS -->
+    <string name="firebase_application_id">1:911064108385:android:7b269159ae888b81</string>
+    <string name="firebase_api_key">AIzaSyAROmkRQD9LZQw2KKC1r0RRXCe8SxSgcZ0</string>
+
+
+</resources>

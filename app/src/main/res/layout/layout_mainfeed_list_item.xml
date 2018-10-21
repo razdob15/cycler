@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="8dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorWhite">
+
+        <RelativeLayout
+            android:id="@+id/relLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                app:civ_border_color="@color/colorBlack"
+                app:civ_border_width="0.5dp" />
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/profile_image"
+                android:paddingBottom="5dp"
+                android:paddingEnd="2dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:text="rax.dobkies"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp" />
+
+            <!-- Menu Image View [3 points] -->
+            <ImageView
+                android:id="@+id/post_more_iv"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_more_ver" />
+
+            <!-- Delete [shows only if the user is the post's owner] -->
+            <TextView
+                android:id="@+id/delete_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:background="@color/colorWhite"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:paddingTop="5dp"
+                android:text="delete"
+                android:textColor="@color/colorBlack"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <!-- Post view -->
+        <razdob.cycler.myUtils.SquareImageView
+            android:id="@+id/post_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relLayout1"
+            android:scaleType="centerCrop" />
+
+        <ProgressBar
+            android:id="@+id/post_pb"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerInParent="true" />
+
+        <RelativeLayout
+            android:id="@+id/relLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/post_image"
+            android:background="@color/colorWhite">
+
+            <!-- Blank & Red Hearts -->
+            <RelativeLayout
+                android:id="@+id/heartLayout"
+                android:layout_width="60dp"
+                android:layout_height="match_parent"
+                android:background="@color/colorWhite">
+
+                <!-- Red Heart -->
+                <ImageView
+                    android:id="@+id/image_heart_red"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_heart_red"
+                    android:visibility="gone" />
+
+                <!-- Blank Heart -->
+                <ImageView
+                    android:id="@+id/image_heart_blank"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_heart_white"
+                    android:visibility="visible" />
+
+
+            </RelativeLayout>
+
+            <!-- Comment Bubble -->
+            <ImageView
+                android:id="@+id/comment_bubble"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/heartLayout"
+                android:src="@drawable/ic_speech_bubble" />
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/relLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/relLayout2"
+            android:background="@color/colorWhite"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+
+
+            <!-- Place Name -->
+            <TextView
+                android:id="@+id/place_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorLinkDarkBlue"
+                android:textSize="20sp"
+                android:padding="2dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"/>
+
+            <!-- Stars Ranking Layout -->
+            <LinearLayout
+                android:id="@+id/ranking_ll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/star1"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@drawable/ic_cycler_star_blank" />
+
+                <ImageView
+                    android:id="@+id/star2"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@drawable/ic_cycler_star_blank" />
+
+                <ImageView
+                    android:id="@+id/star3"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@drawable/ic_cycler_star_blank" />
+
+                <ImageView
+                    android:id="@+id/star4"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@drawable/ic_cycler_star_blank" />
+
+                <ImageView
+                    android:id="@+id/star5"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    app:srcCompat="@drawable/ic_cycler_star_blank" />
+
+            </LinearLayout>
+
+            <!-- Like Text -->
+            <TextView
+                android:id="@+id/image_likes_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No likes"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <!-- Caption -->
+            <TextView
+                android:id="@+id/caption_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ranking_ll"
+                android:layout_marginTop="15dp"
+                android:text=""
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <!-- Comments Link -->
+            <TextView
+                android:id="@+id/image_comments_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/caption_tv"
+                android:layout_marginTop="15dp"
+                android:text="View all 3 comments"
+                android:textColor="@color/colorGrey"
+                android:textSize="18sp" />
+
+            <!-- Time Posted -->
+            <TextView
+                android:id="@+id/image_time_posted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image_comments_link"
+                android:layout_marginTop="15dp"
+                android:text="3 DAYS AGO"
+                android:textColor="@color/colorGrey"
+                android:textSize="18sp" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

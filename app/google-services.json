@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "911064108385",
+    "firebase_url": "https://cyclerproject.firebaseio.com",
+    "project_id": "cyclerproject",
+    "storage_bucket": "cyclerproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911064108385:android:7b269159ae888b81",
+        "android_client_info": {
+          "package_name": "razdob.cycler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911064108385-srd3t5b0ttkb9snro1rt3s8nrus4cn1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAROmkRQD9LZQw2KKC1r0RRXCe8SxSgcZ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911064108385:android:f61daad18e66b10d",
+        "android_client_info": {
+          "package_name": "razdob.placepicker2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911064108385-i55ipvnrrrr217g5kqjuajos6fvbalib.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "razdob.placepicker2",
+            "certificate_hash": "22425a00b5bd982d59fa804b912d3bd2afbb013f"
+          }
+        },
+        {
+          "client_id": "911064108385-srd3t5b0ttkb9snro1rt3s8nrus4cn1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAROmkRQD9LZQw2KKC1r0RRXCe8SxSgcZ0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911064108385-srd3t5b0ttkb9snro1rt3s8nrus4cn1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

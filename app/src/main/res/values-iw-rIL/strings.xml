@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cycler</string>
+    <string name="spot">ספורט</string>
+    <string name="world_news">חדשות מהעולם</string>
+    <string name="sport">ספורט</string>
+    <string name="music">מוזיקה</string>
+    <string name="food">אוכל</string>
+    <string name="user_name">שם משתמש:</string>
+    <string name="user_name_hint">הכנס את שם המשתמש שלך</string>
+    <string name="define_preferences">בחר את התחומים שאתה אוהב</string>
+    <string name="hi">היי</string>
+    <string name="password">סיסמא</string>
+    <string name="password_hint">הכנס סיסמא</string>
+    <string name="welcome">שלום</string>
+    <string name="confirm_password">סיסמא שוב</string>
+    <string name="no_data">סליחה, לא הצלחנו למצוא מקומות מתאימים עבורך בסביבתך.</string>
+    <string name="place_name">שם המקום</string>
+    <string name="address">כתובת</string>
+    <string name="place_phone">מספר פלאפן של בית העסק</string>
+    <string name="place_mail_address">מייל של מקום העסק</string>
+    <string name="mail_address_points">כתובת מייל:</string>
+    <string name="password_again_hint">סיסמה שוב</string>
+    <string name="already_registered">רשום כבר?</string>
+    <string name="click_here">לחץ כאן</string>
+    <string name="login_here">היכנס לחשבון הקיים</string>
+    <string name="dont_have_account">אין לך חשבון?</string>
+    <string name="register_here">הירשם כאן</string>
+    <string name="your_feedback">הביקורת שלך:</string>
+    <string name="name">שם</string>
+    <string name="register_now">הרשמה</string>
+    <string name="place_tags">תיוג</string>
+    <string name="sign_out">התנתק</string>
+    <string name="login_3">מתחבר...</string>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/action_main"
+        android:enabled="true"
+        android:icon="@drawable/cycler_logo"
+        android:title="@string/app_name"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_map"
+        android:enabled="true"
+        android:icon="@drawable/ic_map"
+        android:title="Map"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_camera"
+        android:enabled="true"
+        android:icon="@drawable/camera"
+        android:title="Camera"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_like"
+        android:enabled="true"
+        android:icon="@drawable/heart"
+        android:title="Like"
+        app:showAsAction="ifRoom" />
+
+
+    <item
+        android:id="@+id/action_next"
+        android:enabled="true"
+        android:icon="@drawable/ic_navigate_next_white_24dp"
+        android:title="Next"
+        app:showAsAction="ifRoom" />
+
+
+</menu>

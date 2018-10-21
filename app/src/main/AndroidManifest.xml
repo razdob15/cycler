@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="razdob.cycler">
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!--
+     for Audio & Video
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    -->
+
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+    <!-- Needed only if your app targets Android 5.0 (API level 21) or higher. -->
+    <uses-feature android:name="android.hardware.location.gps" />
+
+    <!-- TODO: Create the logo: https://developer.android.com/studio/write/image-asset-studio -->
+    <application
+        android:name="android.support.multidex.MultiDexApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/cycler_logo"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC20UqLnTGByAz-PUkdSs2pC73RBRUvM68" />
+
+
+        <!-- ACTIVITIES: -->
+        <activity
+            android:name=".MainRegisterActivity"
+            android:label="Cycler">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".tests.MaterialSubjectsActivity" />
+        <activity android:name=".MapsActivity" />
+        <activity android:name=".un_used__14_8.SubjectsActivity" />
+        <activity
+            android:name=".feed.DataActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".un_used__14_8.StamActivity"
+            android:label="data (Stam Activity)" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".tests.StorageTestActivity" />
+        <activity android:name=".un_used__14_8.TestGoogleMaps" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".un_used__14_8.UserMoreInfoActivity" />
+        <activity android:name=".un_used__14_8.PersonProfileActivity" />
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/noTheme" />
+        <activity android:name=".tests.MatDesignActivity" />
+        <activity android:name=".fivePlaces.FivePlacesActivity" />
+        <activity
+            android:name=".fivePlaces.ViewOnePlaceActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instHome.InstHomeActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instFavorites.InstFavoritesActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instProfile.InstProfileActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instProfile.AccountSettingsActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instShare.ShareActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instShare.ShareNextActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instSearch.SearchUserActivity"
+            android:theme="@style/noTheme"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".ChoosePlaceTagsActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".un_used__14_8.MomentSubjectsActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".UserProfileDesignActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".ChooseCurrentSubjectsActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".UsersListActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".feed.HomeActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".ChooseFavoritePlacesActivity"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".CustomCameraActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/noTheme" />
+        <activity
+            android:name=".instShare.MyShareActivity"
+            android:theme="@style/AppTheme" />
+
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="5d698496ade3ef1bf1790438388f98760ae41d4b" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="5d698496ade3ef1bf1790438388f98760ae41d4b" />
+
+
+    </application>
+
+</manifest>

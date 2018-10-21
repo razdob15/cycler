@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--TODO(!): Add listView of all the subjects - Tags connected to the place.-->
+    <!--TODO(!): Add "Do you want to tell us more?"-->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="What are the types of your business?"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="@dimen/medium_font_size_header"
+        android:textStyle="bold"
+        android:background="@color/colorBrightBlue"/>
+    <ListView
+        android:id="@+id/tags_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </ListView>
+
+</LinearLayout>
+
+

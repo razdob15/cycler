@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Write sizes (sp)-->
+    <dimen name="regularFontSize">13sp</dimen>
+    <dimen name="mediumFontSize">15sp</dimen>
+    <dimen name="titleFontSize">19sp</dimen>
+    <dimen name="cyclerFontSize">22sp</dimen>
+    <dimen name="mainTitleSize">27sp</dimen>
+
+    <!-- Another sizes (dp)-->
+    <dimen name="subjectSize">7dp</dimen>
+    <dimen name="fab_margin">10dp</dimen>
+    <dimen name="start_end_margin">20dp</dimen>
+    <dimen name="big_mrgin">30dp</dimen>
+    <dimen name="custom_place_margin_start_end">20dp</dimen>
+    <dimen name="custom_place_margin_top">15dp</dimen>
+
+
+</resources>

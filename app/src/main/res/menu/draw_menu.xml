@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/main" android:title="Nearby Places" android:icon="@drawable/ic_dashboard_black_24px"/>
+    <item android:id="@+id/preferences" android:title="My Preferences" android:icon="@drawable/ic_assignment_turned_in_black_24px"/>
+    <item android:id="@+id/event" android:title="Events" android:icon="@drawable/ic_event_black_24px"/>
+    <item android:id="@+id/search" android:icon="@drawable/ic_search_black_24px" android:title="Search" />
+    <item android:id="@+id/favorites" android:title="Favorites" android:icon="@drawable/ic_favorite_border_black_24px"/>
+    <item android:id="@+id/settings" android:title="Settings" android:icon="@drawable/ic_settings_black_24px"/>
+    <item android:id="@+id/logout" android:title="Logout" android:icon="@drawable/ic_exit_to_app_black_24px"/>
+
+</menu>

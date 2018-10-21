@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="razdob.cycler.un_used__14_8.PersonProfileActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_collapseMode="pin"
+        android:gravity="top"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+       <!-- <include layout="@layout/navigation_action"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>-->
+
+        <android.support.design.widget.BottomNavigationView
+            android:id="@+id/bottom_nav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:itemBackground="@color/cycler_green"
+            app:itemIconTint="@drawable/nav_item_color"
+            app:itemTextColor="@drawable/nav_item_color"
+            app:menu="@menu/bottom_nav_person">
+
+
+        </android.support.design.widget.BottomNavigationView>
+
+        <LinearLayout
+            android:id="@+id/details_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/user_email_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/subjectSize"
+                android:layout_marginTop="15dp"
+                android:text="Create your Cycler profile"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/colorLittleCircle"
+                android:textStyle="bold" />
+
+            <!--<TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/subjectSize"
+                android:text="Note: If you want to create a business profile - fill the busniess place details."
+                android:textColor="@color/colorRed3"
+                android:textStyle="bold"
+                android:background="@drawable/back_rectangel"
+                android:padding="5dp"
+                android:textSize="@dimen/regularFontSize"/>-->
+
+            <!--TODO(!!!): Check Material Design !-->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/name_it"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:inputType="text"
+                    android:textSize="@dimen/titleFontSize" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/address_ti"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:hint="@string/address"
+                    android:imeOptions="actionSend"
+                    android:inputType="text"
+                    android:textSize="@dimen/titleFontSize" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <!--<EditText-->
+                <!--android:id="@+id/name_actv"-->
+                <!--android:layout_width="200dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/name"-->
+                <!--android:inputType="text"-->
+                <!--android:textSize="@dimen/titleFontSize" />-->
+
+            <!--<EditText-->
+                <!--android:id="@+id/address_actv"-->
+                <!--android:layout_width="200dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="15dp"-->
+                <!--android:hint="@string/address"-->
+                <!--android:imeOptions="actionSend"-->
+                <!--android:inputType="text"-->
+                <!--android:textSize="@dimen/titleFontSize" />-->
+
+            <Button
+                android:id="@+id/date_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go To date Picker"
+                android:visibility="gone" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorBlack"
+                    android:layout_marginStart="@dimen/subjectSize"
+                    android:layout_marginEnd="@dimen/subjectSize"
+                    android:text="Choose a profile image:" />
+
+                <Button
+                    android:id="@+id/choose_image_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/my_button"
+                    android:textStyle="bold"
+                    android:layout_marginStart="@dimen/start_end_margin"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:textColor="@color/colorWhite"
+                    android:text="Choose Image" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/profile_iv"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/details_ll"
+                android:layout_marginTop="35dp"
+                android:orientation="horizontal">
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminateDrawable="@drawable/progress" />
+
+
+        <LinearLayout
+            android:id="@+id/user_login_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <!--<Button
+                android:id="@+id/person_continue_btn"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/colorLittleCircle"
+                android:text="@string/fui_continue_phone_login"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:textColor="@color/colorWhite"
+                android:clickable="true"/>-->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:src="@mipmap/ic_person_white_24dp"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/side_navigate"
+        app:headerLayout="@layout/header"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        app:itemTextColor="@color/bpDark_gray"
+        app:itemIconTint="@color/bpDark_gray"
+        app:menu="@menu/draw_menu"
+        android:layout_gravity="start">
+    </android.support.design.widget.NavigationView>
+
+</android.support.v4.widget.DrawerLayout>

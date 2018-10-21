@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rel_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include layout="@layout/snippet_top_editprofiletoolbar" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/rel_layout1"
+            android:layout_marginEnd="@dimen/start_end_margin"
+            android:layout_marginStart="@dimen/start_end_margin">
+
+            <TextView
+                android:id="@+id/explain_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:text="@string/support_explain"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/linLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/explain_tv"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/email_hint_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Email: "
+                    android:textColor="@color/colorDarkGrey"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/support_email_tv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/cycler_support_email"
+                    android:textColor="@color/colorLinkDarkBlue"
+                    android:textStyle="bold"
+                    android:textSize="20sp" />
+
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/cycler_logo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/cycler_logo"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/cycler_sticker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cycler - Because You Are Special"
+                android:layout_above="@id/cycler_logo"
+                android:gravity="center"
+                android:layout_marginBottom="15dp"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/cycler_green"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                />
+
+
+
+
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
+

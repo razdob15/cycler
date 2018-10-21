@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:id="@+id/photo_title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="Upload a photo to your own feed"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/place_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorDarkGrey"
+        android:layout_below="@id/photo_title_tv"
+        android:visibility="invisible"/>
+
+
+    <Button
+        android:id="@+id/choose_photo_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="15dp"
+        android:background="@drawable/my_button"
+        android:text="Choose From Gallery"
+        android:textColor="@color/colorWhite"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

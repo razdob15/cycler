@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/noTheme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/noTheme">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- TABS -->
+        <RelativeLayout
+            android:id="@+id/rel_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp">
+
+            <include layout="@layout/layout_bottom_tabs" />
+
+
+        </RelativeLayout>
+
+        <!-- View Pager -->
+        <RelativeLayout
+            android:id="@+id/rel_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="50dp">
+
+            <include layout="@layout/layout_center_viewpager" />
+
+        </RelativeLayout>
+
+        <!-- Bottom Navigation -->
+        <RelativeLayout
+            android:id="@+id/relLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="50dp"
+                android:background="@color/colorGrey" />
+
+            <include layout="@layout/layout_bottom_navigation_view" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

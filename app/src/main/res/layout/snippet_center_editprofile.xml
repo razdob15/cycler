@@ -1,0 +1,248 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:padding="20dp">
+
+            <ProgressBar
+                android:id="@+id/profile_image_pb"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:visibility="gone" />
+
+            <!-- Profile Photo-->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_person_grey"
+                app:civ_border_color="@color/colorBlack"
+                app:civ_border_width="2dp" />
+
+            <!-- Change Profile Photo TV-->
+            <TextView
+                android:id="@+id/change_profile_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/profile_image"
+                android:layout_centerHorizontal="true"
+                android:text="Change Photo"
+                android:textColor="@color/colorLinkBlue"
+                android:textSize="16sp" />
+
+            <!-- user_name section-->
+            <LinearLayout
+                android:id="@+id/user_name_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/change_profile_photo"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/grey_border_bottom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/ic_person_grey_vector" />
+
+                <EditText
+                    android:id="@+id/user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="User Name"
+                    android:inputType="textNoSuggestions" />
+            </LinearLayout>
+
+            <!-- display_name section-->
+            <LinearLayout
+                android:id="@+id/display_name_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/user_name_ll"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/grey_border_bottom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_display_name" />
+
+                <EditText
+                    android:id="@+id/display_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="@string/display_name_hint"
+                    android:inputType="textNoSuggestions" />
+            </LinearLayout>
+
+            <!-- website section-->
+            <LinearLayout
+                android:id="@+id/website_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/display_name_ll"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/grey_border_bottom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/ic_website" />
+
+                <EditText
+                    android:id="@+id/website"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="Website"
+                    android:inputType="textWebEditText" />
+            </LinearLayout>
+
+            <!-- description section-->
+            <LinearLayout
+                android:id="@+id/description_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/website_ll"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/grey_border_bottom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/ic_description" />
+
+
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="Description"
+                    android:inputType="text" />
+
+
+            </LinearLayout>
+
+            <!-- Description samples (Such As...) -->
+            <TextView
+                android:id="@+id/description_samples_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/description_ll"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/descriptions_examples"
+                android:textColor="@color/colorDarkGrey"
+                android:textSize="13sp" />
+
+
+            <!-- Private Info TV-->
+            <TextView
+                android:id="@+id/text_private_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/description_samples_tv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/grey_border_bottom"
+                android:text="PRIVATE INFORMATION"
+                android:textColor="@color/colorBlack"
+                android:textSize="25sp" />
+
+            <!-- email section-->
+            <LinearLayout
+                android:id="@+id/rel_layout5"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/text_private_info"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/grey_border_bottom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_mail_grey" />
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress" />
+            </LinearLayout>
+
+            <!-- Phone section-->
+            <LinearLayout
+                android:id="@+id/rel_layout6"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/rel_layout5"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/grey_border_bottom"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_smart_phone_grey" />
+
+                <EditText
+                    android:id="@+id/phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
+                    android:background="@null"
+                    android:hint="Phone Number"
+                    android:inputType="phone" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+</merge>

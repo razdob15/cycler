@@ -1,0 +1,70 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/cycler_green</item>
+        <item name="colorPrimaryDark">@color/darkGreenButton</item>
+        <item name="colorAccent">@color/cycler_green</item>
+    </style>
+
+
+    <style name="FirebaseUI.AuthMethodPicker.Logo">
+        <item name="android:layout_width">70dp</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <!--TODO(2): Design login theme-->
+    <style name="LoginTheme" parent="FirebaseUI">
+        <item name="colorPrimary">@color/cycler_green</item> <!--Toolbar background-->
+        <item name="colorPrimaryDark">@color/darkGreenButton</item> <!--Above-toolbar background-->
+        <item name="colorAccent">@color/cycler_green</item> <!--Button background color-->
+        <item name="colorButtonNormal">@color/colorBeautyBlue</item>
+        <item name="colorControlNormal">@android:color/white</item>   <!--non-chosen underline-->
+        <item name="colorControlActivated">@color/colorGreen</item>  <!--Progressbar & hint & chosen underline-->
+        <item name="colorControlHighlight">@color/darkGreenButton</item> <!--Button when click-->
+        <item name="android:textColor">@android:color/white</item> <!-- Button text's color-->
+        <item name="android:textSize">20sp</item>  <!--Button's text-size-->
+        <!--<item name="android:bitmap" tools:targetApi="n">@mipmap/cycler_logo</item>-->
+        <item name="android:labelTextSize">20sp</item>
+        <item name="android:progressDrawable">@drawable/progress</item>
+        <item name="android:dialogTitle">Loading...</item>
+        <item name="textColorAlertDialogListItem">@color/colorBlack</item>
+        <item name="android:dialogIcon">@mipmap/cycler_logo</item>
+        <item name="android:keyTextSize">20sp</item>
+        <item name="android:autoSizeMinTextSize" tools:targetApi="o">20sp</item>
+        <item name="android:icon">@mipmap/cycler_logo</item>
+        <item name="android:logo">@mipmap/cycler_logo</item>
+        <item name="android:textColorPrimary">@android:color/white</item>  <!--email text's color-->
+        <item name="android:textColorSecondary">@android:color/darker_gray</item>
+        <item name="android:windowBackground">@drawable/login_background</item>
+        <item name="windowActionBar">true</item>
+
+        <item name="windowNoTitle">false</item>
+        <item name="android:textColorHint">@android:color/white</item>
+    </style>
+
+    <style name="noTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/cycler_green</item>
+        <item name="colorPrimaryDark">@color/darkGreenButton</item>
+        <item name="colorAccent">@color/cycler_green</item>
+    </style>
+
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="HintStyle" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorGrey</item>
+    </style>
+
+</resources>

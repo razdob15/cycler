@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="4dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/main_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:cardElevation="8dp">
+
+
+        <!-- Delete Layout -->
+        <RelativeLayout
+            android:id="@+id/view_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorRed">
+
+
+            <ImageView
+                android:id="@+id/delete_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                app:srcCompat="@drawable/ic_delete_white" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/delete_icon"
+                android:text="Delete"
+                android:textColor="@android:color/white"
+                android:textSize="13sp" />
+
+
+        </RelativeLayout>
+
+        <!-- Showing Layout-->
+        <RelativeLayout
+            android:id="@+id/view_foreground"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:id="@+id/top_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/blank_heart_iv"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:layout_gravity="center_vertical"
+                    app:srcCompat="@drawable/ic_cycler_heart_blank" />
+
+                <ImageView
+                    android:id="@+id/green_heart_iv"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_cycler_heart_green" />
+
+                <!-- Place Name -->
+                <TextView
+                    android:id="@+id/place_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PlaceName"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="35dp"
+                    android:textAlignment="center"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+            <!-- Places Image -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/place_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_business_center_white_24dp"
+                app:civ_border_color="@color/colorBlack"
+                app:civ_border_width="0.5dp"
+                app:civ_circle_background_color="@color/cycler_green" />
+
+            <!-- OPEN or CLOSE -->
+            <TextView
+                android:id="@+id/open_tv"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/place_image"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="@string/open_now"
+                android:textColor="@color/colorDarkGrey"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/close_tv"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/place_image"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="@string/close_now"
+                android:textColor="@color/colorCloseRed"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+
+            <!-- Address -->
+            <LinearLayout
+                android:id="@+id/place_address_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/top_ll"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="@dimen/custom_place_margin_start_end"
+                android:layout_marginTop="@dimen/custom_place_margin_top"
+                android:layout_toEndOf="@id/place_image"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_place_picker"
+                    android:textColor="@color/colorDarkGrey"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/place_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <!-- Phone -->
+            <LinearLayout
+                android:id="@+id/place_phone_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/place_address_ll"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="@dimen/custom_place_margin_start_end"
+                android:layout_marginTop="@dimen/custom_place_margin_top"
+                android:layout_toEndOf="@id/place_image"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_phone"
+                    android:textColor="@color/colorDarkGrey"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/place_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="@color/colorLinkBlue"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <!-- Website -->
+            <LinearLayout
+                android:id="@+id/place_website_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/place_phone_ll"
+                android:layout_marginEnd="32dp"
+                android:layout_marginStart="@dimen/custom_place_margin_start_end"
+                android:layout_marginTop="@dimen/custom_place_margin_top"
+                android:layout_toEndOf="@id/place_image"
+                android:orientation="horizontal"
+                android:paddingBottom="2dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:srcCompat="@drawable/ic_website"
+                    android:textColor="@color/colorDarkGrey"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/place_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:maxLines="1"
+                    android:textColor="@color/colorLinkBlue"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+
+            <!-- Button - Choose Place -->
+            <ImageView
+                android:id="@+id/choose_place_iv"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_arrow_choose_item" />
+
+            <!-- Need tags notification -->
+            <ImageView
+                android:id="@+id/tags_warn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp"
+                android:src="@drawable/ic_error"
+                android:visibility="visible" />
+
+            <!-- Tags explanation (pop-up) [visible = GONE] -->
+            <TextView
+                android:id="@+id/tags_explanation"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@id/tags_warn"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="25dp"
+                android:background="@color/colorGrey"
+                android:padding="5dp"
+                android:text="You mark this place as one of your favorites, it will be great if you tell us why by choosing place's tags."
+                android:textColor="@color/colorBlack"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <!-- main Progress Bar -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_gravity="center"
+            android:background="@drawable/progress" />
+
+    </android.support.v7.widget.CardView>
+
+
+</FrameLayout>

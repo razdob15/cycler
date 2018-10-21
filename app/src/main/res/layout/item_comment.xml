@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/start_end_margin">
+
+        <TextView
+            android:text="auther Name"
+            android:id="@+id/auther_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/titleFontSize"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/colorBlack"/>
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/auther_name"
+            android:text="Content"
+            android:textColor="@color/colorBlack"/>
+        <TextView
+            android:text="Date"
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/big_mrgin"
+            android:textSize="@dimen/regularFontSize"
+            android:layout_alignTop="@id/content"
+            android:layout_alignParentStart="true"
+            android:textColor="@color/colorBlack"/>
+
+        <TextView
+            android:id="@+id/edit_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:text="edit"
+            android:textStyle="bold"
+            android:layout_alignTop="@id/date"
+            android:layout_marginTop="@dimen/big_mrgin"
+            android:textColor="@color/colorAlmostBlack"/>
+
+        <ImageButton
+            android:id="@+id/delete_ib"
+            android:visibility="gone"
+            android:layout_alignEnd="@+id/auther_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_delete"
+            android:background="@color/colorBackgtoundRed"
+            android:layout_alignParentEnd="true"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/big_mrgin"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:layout_alignTop="@id/edit_tv">
+
+            <ImageButton
+                android:id="@+id/one_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/btn_star_big_off"/>
+            <ImageButton
+                android:id="@+id/two_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/btn_star_big_off"/>
+            <ImageButton
+                android:id="@+id/three_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/btn_star_big_off"/>
+            <ImageButton
+                android:id="@+id/four_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/btn_star_big_off"/>
+            <ImageButton
+                android:id="@+id/five_star"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/btn_star_big_off"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/place_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_margin="6dp"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

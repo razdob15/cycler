@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:background="@drawable/login_background"
+    android:padding="20dp"
+    android:id="@+id/header">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/head_profile_image"
+        android:contentDescription="head_prof_image"
+        android:src="@mipmap/cycler_logo"
+        android:layout_width="75dp"
+        android:layout_height="75dp" />
+    <TextView
+        android:id="@+id/head_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cycler LOGO"
+        android:textColor="@color/colorWhite"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"/>
+    <TextView
+        android:id="@+id/head_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sample@cycler.com"
+        android:textColor="@color/colorWhite" />
+
+
+</LinearLayout>
