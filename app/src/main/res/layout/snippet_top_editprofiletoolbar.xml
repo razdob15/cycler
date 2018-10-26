@@ -41,7 +41,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="10dp"
-                    android:src="@drawable/ic_check_cycler_color"
+                    android:src="@drawable/ic_cycler_check_png"
                     tools:ignore="VectorDrawableCompat" />
 
 
