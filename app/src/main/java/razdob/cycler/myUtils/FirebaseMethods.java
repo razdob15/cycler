@@ -226,9 +226,7 @@ public class FirebaseMethods {
             uploadCasualPhoto(filePaths, imgUrl, bm, caption);
 
         } else if (photoType.equals(mContext.getString(R.string.profile_photo))) {
-
             uploadProfilePhoto(filePaths, imgUrl, bm);
-
         }
     }
 
@@ -815,49 +813,30 @@ public class FirebaseMethods {
 
 
     public void likePhotoDB(Photo photo) {
+        // Input Check
         if (photo.getLikes().contains(mUserID)) {
             Log.d(TAG, "likePhotoDB: user already likes this photo !");
-
         } else {
             Log.d(TAG, "likePhotoDB: add like to photo: " + photo.getPhoto_id());
             photo.getLikes().add(mUserID);
-
-            updatePhotoLikesDB(photo);
         }
+
+        // Updates likes
+        updatePhotoLikesDB(photo);
     }
 
     public void unlikePhotoDB(Photo photo) {
+        // Input Check
         if (!photo.getLikes().contains(mUserID)) {
             Log.d(TAG, "unlikePhotoDB: user doesn't like this photo: " + photo.getPhoto_id());
 
         } else {
             Log.d(TAG, "unlikePhotoDB: unlike photo: " + photo.getPhoto_id());
             photo.getLikes().remove(mUserID);
-
-            updatePhotoLikesDB(photo);
-//            mRef.child(mContext.getString(R.string.db_user_photos))
-//                    .child(photo.getUser_id())
-//                    .child(photo.getPhoto_id())
-//                    .child(mContext.getString(R.string.db_field_likes))
-//                    .child(mUserID)
-//                    .setValue(null);
-//
-//            String place_id = photo.getPlace_id();
-//            if (place_id != null) {     // Place Photo
-//                mRef.child(mContext.getString(R.string.db_places_photos))
-//                        .child(place_id)
-//                        .child(photo.getPhoto_id())
-//                        .child(mContext.getString(R.string.db_field_likes))
-//                        .child(mUserID)
-//                        .setValue(null);
-//            } else {                    // Casual Photo
-//                mRef.child(mContext.getString(R.string.db_photos))
-//                        .child(photo.getPhoto_id())
-//                        .child(mContext.getString(R.string.db_field_likes))
-//                        .child(mUserID)
-//                        .setValue(null);
-//            }
         }
+
+        // Updates Likes
+        updatePhotoLikesDB(photo);
     }
 
     private void updatePhotoLikesDB(Photo photo) {
@@ -1106,7 +1085,7 @@ public class FirebaseMethods {
         for (DataSnapshot ds : mainDS.getChildren()) {
 
             // user_account_settings Node
-            if (ds.getKey().equals(mContext.getString(R.string.db_user_account_settings))) {
+            if (Objects.equals(ds.getKey(), mContext.getString(R.string.db_user_account_settings))) {
                 Log.d(TAG, "getUserAccountSettings: mainDS: " + ds);
                 if (ds.hasChild(mUserID))
                     settings = ds.child(mUserID).getValue(UserAccountSettings.class);

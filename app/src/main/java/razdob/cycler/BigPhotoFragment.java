@@ -1,11 +1,11 @@
 package razdob.cycler;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,16 +13,19 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import android.support.v4.app.Fragment;
+
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.util.Objects;
+
 import razdob.cycler.myUtils.SquareImageView;
-import razdob.cycler.myUtils.UniversalImageLoader;
 
 /**
  * Created by Raz on 10/08/2018, for project: PlacePicker2
  */
-public class BigPhotoFragment extends Fragment {
+public class  BigPhotoFragment extends Fragment {
     private static final String TAG = "BigPhotoFragment";
     private Context mContext;
 
@@ -49,7 +52,7 @@ public class BigPhotoFragment extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Log.d(TAG, "onClick: big image view Click !");
             }
         });
 
@@ -95,7 +98,7 @@ public class BigPhotoFragment extends Fragment {
         if (getArguments() != null) {
             getArguments().clear();
         }
-        getActivity().getSupportFragmentManager().beginTransaction().remove(BigPhotoFragment.this).commit();
+        Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction().remove(BigPhotoFragment.this).commit();
     }
 
 

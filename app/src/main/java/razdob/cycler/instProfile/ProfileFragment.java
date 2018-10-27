@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -120,6 +121,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private long mFollowingsCount = 0;
     private long mPostsCount = 0;
     private ArrayList<String> favoritesPlacesIds;
+    private User mUser;
 
     // Followers & followingsIDs
     private ArrayList<String> followersIds;
@@ -387,8 +389,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "onCancelled: DBError:  "+ databaseError.getMessage());
             }
         });
     }
@@ -396,28 +398,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void setProfileWidgets(UserSettings userSettings) {
         Log.d(TAG, "setProfileWidgets: setting widgets with datas retrieving from firebase: " + userSettings.toString());
 
-        final User user = userSettings.getUser();
+        mUser = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
-        if (user == null)
-            Log.d(TAG, "setProfileWidgets: user is null");
+        if (mUser == null)
+            Log.d(TAG, "setProfileWidgets: mUser is null");
         else {
-            if (user.getFavoritePlacesIDs() != null) {
-                Log.d(TAG, "setProfileWidgets: user have favorite places");
-                favoritesPlacesIds = (ArrayList<String>) user.getFavoritePlacesIDs();
+            if (mUser.getFavoritePlacesIDs() != null) {
+                Log.d(TAG, "setProfileWidgets: mUser have favorite places");
+                favoritesPlacesIds = (ArrayList<String>) mUser.getFavoritePlacesIDs();
             } else {
-                Log.d(TAG, "setProfileWidgets: user doesn't have favorite places.");
+                Log.d(TAG, "setProfileWidgets: mUser doesn't have favorite places.");
                 favoritesPlacesIds = new ArrayList<>();
             }
-            if (user.getName() != null) {
-                mUserName.setText(user.getName());
+            if (mUser.getName() != null) {
+                mUserName.setText(mUser.getName());
             }
 
-            if (user.getProfile_photo() != null) {
-                UniversalImageLoader.setImage(mContext, user.getProfile_photo(), mProfileIV, profileImagePB, "");
+            if (mUser.getProfile_photo() != null) {
+                UniversalImageLoader.setImage(mContext, mUser.getProfile_photo(), mProfileIV, profileImagePB, "");
                 mProfileIV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UniversalImageLoader.bigPhoto(mContext, getActivity(), user.getProfile_photo());
+                        UniversalImageLoader.bigPhoto(mContext, getActivity(), mUser.getProfile_photo());
                     }
                 });
             } else
@@ -545,9 +547,41 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         };
 
+        mRef.child(mContext.getString(R.string.db_persons))
+                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
+                .child(mContext.getString(R.string.db_field_profile_photo))
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: dataSnapshot: " + dataSnapshot.getKey());
+                if (mUser == null) return;
+
+                String profilePhotoDS = dataSnapshot.getValue(String.class);
+                if (profilePhotoDS != null &&
+                        !profilePhotoDS.equals(mUser.getProfile_photo())) {
+                    Log.d(TAG, "onDataChange: new profile photo!");
+
+                    mUser.setProfile_photo(dataSnapshot.getValue(String.class));
+
+                    UniversalImageLoader.setImage(mContext, mUser.getProfile_photo(), mProfileIV, profileImagePB, "");
+                    mProfileIV.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            UniversalImageLoader.bigPhoto(mContext, getActivity(), mUser.getProfile_photo());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Retrieve user info from the database.
                 setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
 
@@ -555,8 +589,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.w(TAG, "onCancelled: DBError:  "+ databaseError.getMessage());
             }
         });
     }

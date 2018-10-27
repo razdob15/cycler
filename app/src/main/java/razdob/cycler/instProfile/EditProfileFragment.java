@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -39,7 +41,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -79,7 +83,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         // email and password credentials but there are multiple possible providers,
         // such as GoogleAuthProvider or FacebookAuthProvider.
         AuthCredential credential = EmailAuthProvider
-                .getCredential(mAuth.getCurrentUser().getEmail(), password);
+                .getCredential(Objects.requireNonNull(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail()), password);
 
         ///////////////// Prompt the user to re-provide their sign-in credentials
         mAuth.getCurrentUser().reauthenticate(credential)
@@ -295,31 +299,16 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Log.d(TAG, "onActivityResult: PICK IMAGE; OK. ");
 
-            // Pick an image and put it in the imageView
-            Uri profileImageURI = data.getData();
-
-            mImgUrl = profileImageURI.toString();
+            Uri selectedImage = data.getData();
 
             try {
-                profileBitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), profileImageURI);
+                profileBitmap = MediaStore.Images.Media.getBitmap(mContext.getContentResolver(), selectedImage);
                 mProfileImage.setImageBitmap(profileBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            if (mAuth.getCurrentUser() != null) {
-
-//                final ProgressDialog progressDialog = new ProgressDialog(mContext);
-//                progressDialog.setMessage("Uploading image...");
-//                progressDialog.show();
-
-//                String imageLoc = "images/persons/" + userID;
-//                FirebaseInserts.uploadFile(mContext, imageLoc, profileImageURI, "profile.jpg", progressDialog);
-
-
-            }
-
         }
     }
 
@@ -490,12 +479,26 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         mChangeProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG, "onClick: Change profile Photo Click");
 
-                if (shouldShowRequestPermissionRationale(Permissions.READ_STORAGE_PERMISSION[0])) {
-                    requestPermissions(Permissions.READ_STORAGE_PERMISSION, STORAGE_REQUEST_CODE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (mContext.checkSelfPermission(Permissions.READ_STORAGE_PERMISSION[0]) == PackageManager.PERMISSION_GRANTED) {
+                        Log.d(TAG, "onClick: open Chooser");
+                        openPhotoChooser();
+                    } else {
+                        Log.d(TAG, "onClick: request Permission");
+                        requestPermissions(Permissions.CAMERA_PERMISSION, STORAGE_REQUEST_CODE);
+                    }
+                } else {
+                    openPhotoChooser();
                 }
-
-
+//
+//                if (shouldShowRequestPermissionRationale(Permissions.READ_STORAGE_PERMISSION[0])) {
+//                    requestPermissions(Permissions.READ_STORAGE_PERMISSION, STORAGE_REQUEST_CODE);
+//                } else {
+//                    Log.d(TAG, "onClick: open photo chooser !");
+//                    openPhotoChooser();
+//                }
 //                Log.d(TAG, "onClick: changing profile photo");
 //                Intent intent = new Intent(getActivity(), ShareActivity.class);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
@@ -506,12 +509,13 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
     }
 
     /**
-     * Send a request to pick an image.
+     * Sends a request [OnActivityResult] to open photos app (GooglePhotos, Gallery...)
      */
     private void openPhotoChooser() {
-        Intent intent = new Intent(Intent.ACTION_PICK);
+        Intent intent = new Intent();
         intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select your profile image"), PICK_IMAGE_REQUEST);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Selecet Profile Photo"), PICK_IMAGE_REQUEST);
     }
 
     @Override
@@ -522,7 +526,9 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                 if (gr == PackageManager.PERMISSION_DENIED) {
                     Log.d(TAG, "onRequestPermissionsResult: permission Denied !");
                     Toast.makeText(mContext, "permission denied.. can't choose the photo", Toast.LENGTH_SHORT).show();
+                    requestPermissions(permissions, STORAGE_REQUEST_CODE);
                     return;
+
                 }
             }
             openPhotoChooser();

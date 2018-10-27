@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -60,6 +61,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private FirebaseApp mFireApp;
     private DatabaseReference mRef;
     private FirebaseAuth mAuth;
+    private String mUid;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     /* ---------------------- FIREBASE ----------------------- */
 
@@ -78,7 +80,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         this.userCanDeletePost = new ArrayList<>();
         this.photos = photos;
         for (Photo photo : photos) {
-            if (photo.getUser_id().equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
+            if (photo.getUser_id().equals(mUid)) {
                 userCanDeletePost.add(true);
             } else {
                 userCanDeletePost.add(false);
@@ -115,7 +117,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         UniversalImageLoader.setImage(mContext, photo.getImage_path(), holder.postIV, holder.postPB, "");
         holder.userNameTV.setText(uploadUser.getName());
 
-        String timestampDiff = getTimeStampDifference(photo.getDate_creates());
+        final String timestampDiff = getTimeStampDifference(photo.getDate_creates());
         if (!timestampDiff.equals("0")) {
             holder.timePostedTV.setText(timestampDiff + " DAYS AGO");
         } else {
@@ -197,10 +199,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: like post");
-                for (String like : photo.getLikes()) {
-                    if (like.equals(mAuth.getCurrentUser().getUid()))
-                        photo.getLikes().remove(like);
-                }
+                if (photo.getLikes().contains(mUid))
+                    photo.getLikes().remove(mUid);
+
                 guiUnlikePost(holder);
                 removePhotoLikeDB(photo);
                 setupLikesTV(photo, holder);
@@ -498,7 +499,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             Log.d(TAG, "setupRate: placePhoto");
             mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     if (dataSnapshot.child(mContext.getString(R.string.db_places_rates)).hasChild(photo.getPlace_id())
                             && dataSnapshot.child(mContext.getString(R.string.db_places_rates)).child(photo.getPlace_id()).hasChild(photo.getUser_id())) {
@@ -528,7 +529,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.w(TAG, "onCancelled: DBError: " + databaseError.getMessage());
                     holder.rankingLL.setVisibility(View.GONE);
                 }
@@ -547,75 +548,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     private void removePhotoLikeDB(Photo photo) {
         Log.d(TAG, "removePhotoLikeDB: remove a like from photo:  "+ photo.getPhoto_id());
         mFireMethods.unlikePhotoDB(photo);
-
-//        String like_id = myLike.getLike_id();
-//        Log.d(TAG, "removePhotoLikeDB: remove the like: " + like_id);
-//        if (like_id == null) return;
-//        photo.getLikes().remove(myLike);
-//        mRef.child(mContext.getString(R.string.db_user_photos))
-//                .child(photo.getUser_id())
-//                .child(photo.getPhoto_id())
-//                .child(mContext.getString(R.string.db_field_likes))
-//                .child(like_id)
-//                .setValue(null);
-//        String place_id = photo.getPlace_id();
-//        if (place_id != null) {
-//            Log.d(TAG, "removePhotoLikeDB: from a place photo: " + place_id);
-//            mRef.child(mContext.getString(R.string.db_places_photos))
-//                    .child(place_id)
-//                    .child(photo.getPhoto_id())
-//                    .child(mContext.getString(R.string.db_field_likes))
-//                    .child(like_id)
-//                    .setValue(null);
-//        } else {
-//            mRef.child(mContext.getString(R.string.db_photos))
-//                    .child(photo.getPhoto_id())
-//                    .child(mContext.getString(R.string.db_field_likes))
-//                    .child(like_id)
-//                    .setValue(null);
-//        }
     }
 
     private void addPhotoLikeDB(Photo photo) {
         Log.d(TAG, "addPhotoLike: adding new like to photo: " + photo.getPhoto_id());
 
         mFireMethods.likePhotoDB(photo);
-
-//        String newLikeId = mRef.push().getKey();
-//        final Like like = new Like();
-//        myLike = new Like(mAuth.getCurrentUser().getUid(), newLikeId);
-//        if (photo.getLikes() != null)
-//            photo.getLikes().add(myLike);
-//        else {
-//            ArrayList<Like> likes = new ArrayList<>();
-//            likes.add(like);
-//            photo.setLikes(likes);
-//        }
-//        like.setUser_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//
-//        mRef.child(mContext.getString(R.string.db_user_photos))
-//                .child(photo.getUser_id())
-//                .child(photo.getPhoto_id())
-//                .child(mContext.getString(R.string.db_field_likes))
-//                .child(newLikeId)
-//                .setValue(like);
-//
-//        String place_id = photo.getPlace_id();
-//        if (place_id != null) {
-//            Log.d(TAG, "addPhotoLike: to a place photo: " + place_id);
-//            mRef.child(mContext.getString(R.string.db_places_photos))
-//                    .child(place_id)
-//                    .child(photo.getPhoto_id())
-//                    .child(mContext.getString(R.string.db_field_likes))
-//                    .child(newLikeId)
-//                    .setValue(like);
-//        } else {
-//            mRef.child(mContext.getString(R.string.db_photos))
-//                    .child(photo.getPhoto_id())
-//                    .child(mContext.getString(R.string.db_field_likes))
-//                    .child(newLikeId)
-//                    .setValue(like);
-//        }
     }
 
 
@@ -624,6 +562,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         Log.d(TAG, "setupFirebaseStaff: called.");
         mFireApp = FirebaseApp.getInstance("mFireApp");
         mAuth = FirebaseAuth.getInstance(mFireApp);
+        mUid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         mRef = FirebaseDatabase.getInstance(mFireApp).getReference();
 
         // Init mAuthStateListener
@@ -637,6 +576,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                     Log.d(TAG, "onAuthStateChanged: User log-out");
                     mContext.startActivity(new Intent(mContext, MainRegisterActivity.class));
                 } else {
+                    if (mUid == null) mUid = user.getUid();
                     Log.d(TAG, "onAuthStateChanged: User is logged-in :) uid = " + firebaseAuth.getCurrentUser().getUid());
                 }
             }

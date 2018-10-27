@@ -145,6 +145,7 @@
     <string name="db_field_posts">posts</string>
     <string name="db_field_place_name">place_name</string>
     <string name="db_tags_exemptions">tags_exemption</string>
+    <string name="db_field_profile_photo">profile_photo</string>
 
 
     <!-- Shared Preferences -->
