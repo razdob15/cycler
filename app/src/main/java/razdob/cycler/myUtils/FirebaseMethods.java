@@ -811,7 +811,11 @@ public class FirebaseMethods {
     // TODO(!):  use those functions yet !!! Need to change the LikesAlgorithm !
     // TODO(!) Continue from here! check like&Unlike
 
-
+    /**
+     * validate that the current user exists in the photo's favorites.
+     * call to 'updatePhotoLikesDB(photo)'
+     * @param photo - Photo to like.
+     */
     public void likePhotoDB(Photo photo) {
         // Input Check
         if (photo.getLikes().contains(mUserID)) {
@@ -829,7 +833,6 @@ public class FirebaseMethods {
         // Input Check
         if (!photo.getLikes().contains(mUserID)) {
             Log.d(TAG, "unlikePhotoDB: user doesn't like this photo: " + photo.getPhoto_id());
-
         } else {
             Log.d(TAG, "unlikePhotoDB: unlike photo: " + photo.getPhoto_id());
             photo.getLikes().remove(mUserID);

@@ -44,6 +44,12 @@ public class MyShareActivity extends AppCompatActivity {
     private final int CAMERA_REQUEST_CODE = 6;
     private final int CAMERA_PERMISSION_CODE = 8;
 
+    // Intent Extras Names
+    private final static String INTENT_PLACE_ID = "place_id";
+    private final static String INTENT_PLACE_NAME = "place_name";
+    private final static String INTENT_PLACE_ADDRESS = "place_address";
+
+
     // Widgets
     private LinearLayout cameraLL, galleryLL;
     private ImageView cameraIV, galleryIV;
@@ -95,15 +101,23 @@ public class MyShareActivity extends AppCompatActivity {
      */
     private void getPlaceInfoFromIntent(){
         Intent intent = getIntent();
-        if (intent.hasExtra(getString(R.string.intent_place_id))) {
-            placeId = intent.getStringExtra(getString(R.string.intent_place_id));
+        if (intent.hasExtra(INTENT_PLACE_ID)) {
+            placeId = intent.getStringExtra(INTENT_PLACE_ID);
         }
-        if (intent.hasExtra(mContext.getString(R.string.intent_place_name))) {
-            placeName = intent.getStringExtra(mContext.getString(R.string.intent_place_name));
+        if (intent.hasExtra(INTENT_PLACE_NAME)) {
+            placeName = intent.getStringExtra(INTENT_PLACE_NAME);
         }
-        if (intent.hasExtra(mContext.getString(R.string.intent_place_address))) {
-            placeAddress = intent.getStringExtra(mContext.getString(R.string.intent_place_address));
+        if (intent.hasExtra(INTENT_PLACE_ADDRESS)) {
+            placeAddress = intent.getStringExtra(INTENT_PLACE_ADDRESS);
         }
+    }
+
+    public static void start(Context context, String placeId, String placeName, String placeAddress) {
+        Intent intent = new Intent(context, MyShareActivity.class);
+        if (placeId != null) intent.putExtra(INTENT_PLACE_ID, placeId);
+        if (placeName != null) intent.putExtra(INTENT_PLACE_NAME, placeName);
+        if (placeAddress != null) intent.putExtra(INTENT_PLACE_ADDRESS, placeAddress);
+        context.startActivity(intent);
     }
 
     /**

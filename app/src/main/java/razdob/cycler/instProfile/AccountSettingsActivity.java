@@ -112,8 +112,6 @@ public class AccountSettingsActivity extends AppCompatActivity {
             fragment.setArguments(bundle);
 
             setViewPager(EDIT_PROFILE_FRAGMENT_NUM);
-
-
         }
     }
 

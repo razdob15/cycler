@@ -132,7 +132,7 @@ public class ShareNextActivity extends AppCompatActivity implements View.OnClick
         favoritePlacesIds = new ArrayList<>();
         mFonts = new MyFonts(mContext);
 
-        Log.d(TAG, "onCreate: chchchchc: " +getIntent().hasExtra("chcek"));
+        Log.d(TAG, "onCreate: called: " +getIntent().hasExtra("chcek"));
 
         setupWidgets();
         setupClicksListeners();

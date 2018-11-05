@@ -11,13 +11,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -102,7 +105,7 @@ public class SearchUserActivity extends AppCompatActivity {
         });
 
         setupFirebase();
-        hideSoftKeyboard();  // TODO(0): why?
+//        hideSoftKeyboard();  // TODO(0): why?
         initTextListener();
     }
 
@@ -110,6 +113,8 @@ public class SearchUserActivity extends AppCompatActivity {
         addNewPlaceBtn = findViewById(R.id.add_new_fav_btn2);
         mSearchParam = findViewById(R.id.search_tv);
         mListView = findViewById(R.id.list_view);
+
+        mSearchParam.setImeActionLabel("CHASD",EditorInfo.IME_ACTION_SEARCH);
     }
 
     @Override
@@ -137,10 +142,7 @@ public class SearchUserActivity extends AppCompatActivity {
                             } else {
                                 // Place is OK, add to favorites
                                 Log.d(TAG, "onActivityResult: open This place View: " + place.getId());
-                                Intent intent = new Intent(mContext, ViewOnePlaceActivity.class);
-                                intent.putExtra(mContext.getString(R.string.activity_number), ACTIVITY_NUM);
-                                intent.putExtra(mContext.getString(R.string.intent_place_id), place.getId());
-                                startActivity(intent);
+                                ViewOnePlaceActivity.start(mContext, place.getId(), ACTIVITY_NUM);
                             }
                         }
 
@@ -187,10 +189,7 @@ public class SearchUserActivity extends AppCompatActivity {
      */
     private void openPlaceView(String placeId) {
         Log.d(TAG, "openPlaceView: navigating to ViewOnePlaceActivity with place: " + placeId);
-        Intent intent = new Intent(mContext, ViewOnePlaceActivity.class);
-        intent.putExtra(mContext.getString(R.string.activity_number), ACTIVITY_NUM);
-        intent.putExtra(mContext.getString(R.string.intent_place_id), placeId);
-        startActivity(intent);
+        ViewOnePlaceActivity.start(mContext, placeId, ACTIVITY_NUM);
     }
 
     private void initTextListener() {
@@ -212,7 +211,6 @@ public class SearchUserActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 String text = mSearchParam.getText().toString();//.toLowerCase(Locale.getDefault());
                 searchForMatch(text);
-
             }
         });
 
@@ -271,8 +269,9 @@ public class SearchUserActivity extends AppCompatActivity {
     private void hideSoftKeyboard() {
         if (getCurrentFocus() != null) {
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-
+            if (inputMethodManager != null) {
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
         }
     }
 

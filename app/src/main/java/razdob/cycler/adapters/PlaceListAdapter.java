@@ -438,24 +438,14 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.MyVi
                     mContext.startActivity(intent);
                 } else {
                     Log.d(TAG, "openPlaceClick: navigate to ViewOnePlaceActivity.");
-                    Intent intent = new Intent(new Intent(mContext, ViewOnePlaceActivity.class));
+
 
                     int activityNum = 0;
-                    if (activityName.equals(mContext.getString(R.string.profile_activity))) {
-                        activityNum = 4;
-                    } else if (activityName.equals(mContext.getString(R.string.five_places_activity))) {
-                        activityNum = 3;
-                    } else if (activityName.equals(mContext.getString(R.string.search_activity))) {
-                        activityNum = 1;
-                    } else if (activityName.equals(mContext.getString(R.string.data_activity))
-                            || activityName.equals(mContext.getString(R.string.feed_activity))
-                            || activityName.equals(mContext.getString(R.string.home_activity))) {
-                        activityNum = 0;
-                    }
-                    intent.putExtra(mContext.getString(R.string.activity_number), activityName);
-                    intent.putExtra(mContext.getString(R.string.activity_number), activityNum);
-                    intent.putExtra(mContext.getString(R.string.intent_place_id), placeId);
-                    mContext.startActivity(intent);
+                    if (activityName.equals(mContext.getString(R.string.profile_activity))) { activityNum = 4; }
+                    else if (activityName.equals(mContext.getString(R.string.five_places_activity))) { activityNum = 3; }
+                    else if (activityName.equals(mContext.getString(R.string.search_activity))) { activityNum = 1; }
+
+                    ViewOnePlaceActivity.start(mContext, placeId, activityNum);
                 }
             }
         };

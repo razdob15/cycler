@@ -58,7 +58,7 @@ public class BottomNavigationViewHelper {
                         break;
                     case R.id.ic_share:        // ITEM_ID = 2
                         Log.d(TAG, "onNavigationItemSelected: click on item2");
-                        context.startActivity(new Intent(context, MyShareActivity.class));
+                        MyShareActivity.start(context, null, null, null);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_likes:         // ITEM_ID = 3

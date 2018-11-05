@@ -89,41 +89,35 @@ public class ViewOnePlaceActivity extends AppCompatActivity
     final static private int CALL_PERMISSION_CODE = 6;
 
     // Stars Drawables
-    private static final int STAR_ON_XML = R.drawable.ic_cycler_star_green;
-    private static final int STAR_OFF_XML = R.drawable.ic_cycler_star_blank;
+    private final int STAR_ON_XML = R.drawable.ic_cycler_star_green;
+    private final int STAR_OFF_XML = R.drawable.ic_cycler_star_blank;
 
-
+    // Intent Extras Names
+    private final static String INTENT_PLACE_ID = "place_id";
+    private final static String INTENT_ACTIVITY_NUM= "activity_number";
 
     @Override
     public void onClick(View v) {
         if (v == redHeart) {    // Unlike Place
             Log.d(TAG, "onClick: unlike place: " + placeId);
-            redHeart.setVisibility(View.GONE);
-            whiteHeart.setVisibility(View.VISIBLE);
+            showWhiteHeart();
             mFireMethods.unlikePlaceDB(placeId);
         } else if (v == whiteHeart) {   // Like Plcae
             Log.d(TAG, "onClick: like place: " + placeId);
-            whiteHeart.setVisibility(View.GONE);
-            redHeart.setVisibility(View.VISIBLE);
+            showRedHeart();
             mFireMethods.likePlaceDB(placeId);
         } else if (v == likeTV || v == likeLL) {
             if (redHeart.getVisibility() == View.VISIBLE) { // Unlike Plcae
                 Log.d(TAG, "onClick: unlike place: " + placeId);
-                redHeart.setVisibility(View.GONE);
-                whiteHeart.setVisibility(View.VISIBLE);
+                showWhiteHeart();
                 mFireMethods.unlikePlaceDB(placeId);
             } else {    // Like Place
                 Log.d(TAG, "onClick: like place: " + placeId);
-                whiteHeart.setVisibility(View.GONE);
-                redHeart.setVisibility(View.VISIBLE);
+                showRedHeart();
                 mFireMethods.likePlaceDB(placeId);
             }
         }else if (v == cameraIV) {  // Open Camera
-            Intent intent = new Intent(mContext, MyShareActivity.class);
-            intent.putExtra(getString(R.string.intent_place_name), nameTV.getText().toString());
-            intent.putExtra(getString(R.string.intent_place_id), placeId);
-            intent.putExtra(getString(R.string.intent_place_address), addressTv.getText().toString());
-            startActivity(intent);
+            MyShareActivity.start(mContext, placeId, nameTV.getText().toString(), addressTv.getText().toString());
 
         } else if (isStarView(v)) { // Rating Stars
             boolean passed = false;
@@ -150,8 +144,15 @@ public class ViewOnePlaceActivity extends AppCompatActivity
 
     }
 
-
-
+    // Hearts Visibility
+    private void showWhiteHeart() {
+        redHeart.setVisibility(View.GONE);
+        whiteHeart.setVisibility(View.VISIBLE);
+    }
+    private void showRedHeart() {
+        redHeart.setVisibility(View.VISIBLE);
+        whiteHeart.setVisibility(View.GONE);
+    }
 
     /* ---------------------- FIREBASE ----------------------- */
     private FirebaseApp mFireApp;
@@ -204,9 +205,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
         mBitmaps = new ArrayList<>();
         mFavoritePlacesIds = new ArrayList<>();
 
-        Intent intent = getIntent();
-        placeId = intent.getStringExtra(getString(R.string.intent_place_id));
-        activityNum = intent.getIntExtra(mContext.getString(R.string.activity_number), 0);
+        getDataFromIntent();
 
         matchWidgetsToIDs();
         setupFirebaseStaff();
@@ -251,6 +250,23 @@ public class ViewOnePlaceActivity extends AppCompatActivity
 
         MenuItem menuItem = menu.getItem(activityNum);
         menuItem.setChecked(true);
+    }
+
+
+    private void getDataFromIntent() {
+        Intent intent = getIntent();
+        placeId = intent.getStringExtra(INTENT_PLACE_ID);
+        activityNum = intent.getIntExtra(INTENT_ACTIVITY_NUM, 0);
+    }
+
+    public static void start(Context context, String placeId, int activityNum) {
+        if (placeId == null) {
+            Log.w(TAG, "start: placeID is null! Can't start the activity.");
+        }
+        Intent intent = new Intent(context, ViewOnePlaceActivity.class);
+        intent.putExtra(INTENT_PLACE_ID, placeId);
+        intent.putExtra(INTENT_ACTIVITY_NUM, activityNum);
+        context.startActivity(intent);
     }
 
     /**

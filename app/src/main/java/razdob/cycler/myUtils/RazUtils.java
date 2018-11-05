@@ -234,11 +234,12 @@ public class RazUtils {
         }
     }
 
+    /**
+     * Starts ViewOnePlaceActivity.
+     */
     public static void viewPlace(Context context, String placeId, int activityNum) {
         Log.d(TAG, "viewPlace: Show place's details: " +placeId);
-        Intent intent = new Intent(context, ViewOnePlaceActivity.class);
-        intent.putExtra(context.getString(R.string.intent_place_id), placeId);
-        context.startActivity(intent);
+        ViewOnePlaceActivity.start(context, placeId, activityNum);
     }
 
 

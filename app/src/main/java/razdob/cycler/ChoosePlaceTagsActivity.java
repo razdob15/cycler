@@ -153,10 +153,8 @@ public class ChoosePlaceTagsActivity extends AppCompatActivity {
                     editor.apply();
                     finish();
                 } else {
-                    Intent intent = new Intent(mContext, ViewOnePlaceActivity.class);
-                    intent.putExtra(getString(R.string.intent_place_id), placeId);
+                    ViewOnePlaceActivity.start(mContext, placeId, 0);
                     finish();
-                    startActivity(intent);
                 }
 
             }

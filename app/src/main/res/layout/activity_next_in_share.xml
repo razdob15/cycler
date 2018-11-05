@@ -146,6 +146,7 @@
                                     android:id="@+id/place_name_tv"
                                     android:layout_gravity="center"
                                     android:layout_width="wrap_content"
+                                    android:gravity="center"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="22sp" />
@@ -153,6 +154,8 @@
                                 <TextView
                                     android:id="@+id/place_address_tv"
                                     android:layout_width="wrap_content"
+                                    android:gravity="center"
+                                    android:layout_gravity="center"
                                     android:layout_height="wrap_content"
                                     android:textColor="@color/colorDarkGrey"
                                     android:textSize="16sp" />
