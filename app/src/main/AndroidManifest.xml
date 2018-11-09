@@ -145,6 +145,7 @@
         <activity
             android:name=".instShare.MyShareActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name=".giliPlaces.GiliActivity" />
 
 
         <meta-data

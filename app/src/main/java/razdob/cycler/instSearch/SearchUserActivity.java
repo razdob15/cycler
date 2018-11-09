@@ -135,7 +135,7 @@ public class SearchUserActivity extends AppCompatActivity {
                 } else {
                     FirebaseDatabase.getInstance(mFireApp).getReference().addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (!mFireMethods.isRestaurant(dataSnapshot, place.getId(), place.getPlaceTypes())) {
                                 Log.d(TAG, "onDataChange: place is not a restaurant! Show dialog!");
                                 showNotRestaurantDialog(place.getId());
@@ -147,7 +147,7 @@ public class SearchUserActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
                             Log.w(TAG, "onCancelled: DBError: " + databaseError.getMessage());
 
                         }

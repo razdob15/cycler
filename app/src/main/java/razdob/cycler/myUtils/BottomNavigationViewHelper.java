@@ -16,6 +16,7 @@ import razdob.cycler.feed.DataActivity;
 import razdob.cycler.R;
 import razdob.cycler.feed.HomeActivity;
 import razdob.cycler.fivePlaces.FivePlacesActivity;
+import razdob.cycler.giliPlaces.GiliActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.instSearch.SearchUserActivity;
 import razdob.cycler.instShare.MyShareActivity;
@@ -62,6 +63,7 @@ public class BottomNavigationViewHelper {
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_likes:         // ITEM_ID = 3
+//                        Intent intent = new Intent(context, GiliActivity.class);
                         Intent intent = new Intent(context, FivePlacesActivity.class);
 //                        intent.putStringArrayListExtra(context.getString(R.string.intent_love_places_ids), favoritePlacesIds);
                         context.startActivity(intent);
