@@ -42,6 +42,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.UsersListActivity;
+import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
 import razdob.cycler.models.UserAccountSettings;
@@ -426,7 +427,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "setProfileWidgets: user doesn't have a profile photo yet.");
         }
 
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, Objects.requireNonNull(getActivity()), ACTIVITY_NUM);
 
 
         if (settings == null) {
@@ -505,18 +506,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
 
 
-    }
-
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, getActivity(), bottomNavigationViewEx, favoritesPlacesIds);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
     }
 
 

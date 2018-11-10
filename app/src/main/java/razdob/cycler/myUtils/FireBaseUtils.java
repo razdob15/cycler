@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import razdob.cycler.MainActivity;
+import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.models.User;
 import razdob.cycler.models.UserAccountSettings;
@@ -366,6 +367,23 @@ public class FireBaseUtils {
         return new UserSettings(user, settings);
 
     }
+
+    public static boolean myFireAuthListener(Context context, FirebaseAuth auth, String TAG, FirebaseAuth.AuthStateListener authStateListener) {
+        FirebaseUser user = auth.getCurrentUser();
+        // Check if user is logged in
+
+        if (user == null) {
+            Log.d(TAG, "onAuthStateChanged: User log-out");
+            auth.removeAuthStateListener(authStateListener);
+            context.startActivity(new Intent(context, MainRegisterActivity.class));
+            return false;
+        } else {
+            Log.d(TAG, "onAuthStateChanged: User is logged-in :) uid = " + user.getUid());
+            return true;
+        }
+
+    }
+
 
 }
 

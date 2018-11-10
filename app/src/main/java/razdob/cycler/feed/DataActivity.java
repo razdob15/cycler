@@ -20,8 +20,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -47,7 +45,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -59,6 +56,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import razdob.cycler.ChooseCurrentSubjectsActivity;
 import razdob.cycler.MainRegisterActivity;
@@ -112,7 +110,6 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
     private RecyclerView recyclerView;
     private CoordinatorLayout rootLayout;
     private ProgressBar mProgressBar;
-    private BottomNavigationViewEx bottomNavigationViewEx;
     private ImageView chooseCurrentSubjectsIV;
     private TextView noPlacesTV;
 
@@ -148,7 +145,6 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
         recyclerView = findViewById(R.id.recycler_view);
         rootLayout = findViewById(R.id.root_layout);
         mProgressBar = findViewById(R.id.progress_bar);
-        bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
         chooseCurrentSubjectsIV = findViewById(R.id.choose_subjects_iv);
         noPlacesTV = findViewById(R.id.no_places_tv);
 
@@ -311,17 +307,7 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
         mProgressBar.setVisibility(View.GONE);
     }
 
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, DataActivity.this, bottomNavigationViewEx, mFavoritePlacesIds);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -515,15 +501,14 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
         mRef
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         mFavoritePlacesIds = new ArrayList<>();
                         for (DataSnapshot placeIdDS : dataSnapshot.child(getString(R.string.db_persons))
-                                .child(mAuth.getCurrentUser().getUid())
+                                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
                                 .child(getString(R.string.db_field_favorite_places_ids)).getChildren()) {
                             mFavoritePlacesIds.add(placeIdDS.getValue(String.class));
                         }
-                        setupBottomNavigationView();
-
+                        BottomNavigationViewHelper.setupBottomNavigationView(mContext, DataActivity.this, ACTIVITY_NUM);
 
                         mAlgorithm = new MyAlgorithm(mContext, dataSnapshot, FirebaseAuth.getInstance().getCurrentUser().getUid());
 
@@ -547,7 +532,7 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Log.e(TAG, "onCancelled: firebaseDatabaseError: " + databaseError.getMessage());
                     }
                 });

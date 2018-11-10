@@ -16,8 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,7 +39,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +51,6 @@ import razdob.cycler.dialogs.NotRestaurantDialog;
 import razdob.cycler.models.PlaceDetails;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
-import razdob.cycler.myUtils.RazUtils;
 import razdob.cycler.myUtils.RecyclerPlaceTouchHelper;
 import razdob.cycler.myUtils.RecyclerPlaceTouchHelperListener;
 import razdob.cycler.myUtils.StringManipulation;
@@ -105,14 +101,11 @@ public class FivePlacesActivity extends AppCompatActivity implements RecyclerPla
         matchWidgetsToIds();
         setupFirebaseStaff();
 
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, FivePlacesActivity.this, ACTIVITY_NUM);
         mGeoDataClient = Places.getGeoDataClient(this);
 
 
         mFireMethods = new FirebaseMethods(mContext);
-        Intent intent = getIntent();
-//        if (mFavoritePlacesIds == null)
-//            mFavoritePlacesIds = intent.getStringArrayListExtra(getString(R.string.intent_love_places_ids));
         if (idDetailsHM == null) {
             idDetailsHM = new HashMap<>();
         }
@@ -256,19 +249,6 @@ public class FivePlacesActivity extends AppCompatActivity implements RecyclerPla
             }
         }
 
-    }
-
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx, mFavoritePlacesIds);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
     }
 
     @Override

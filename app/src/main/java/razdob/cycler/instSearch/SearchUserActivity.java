@@ -275,18 +275,6 @@ public class SearchUserActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(this, this, bottomNavigationViewEx, favoritePlacesIds);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
 
     /**
      * Sends a request to OnActivityResult
@@ -361,20 +349,20 @@ public class SearchUserActivity extends AppCompatActivity {
 
             mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     favoritePlacesIds = mFireMethods.getFavoritePlacesIds(dataSnapshot);
 
-                    setupBottomNavigationView();
+                    BottomNavigationViewHelper.setupBottomNavigationView(mContext, SearchUserActivity.this, ACTIVITY_NUM);
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.w(TAG, "onCancelled: DB_Error: " + databaseError.getMessage());
                 }
             });
         } else {
             favoritePlacesIds = mFireMethods.getFavoritePlacesIds();
-            setupBottomNavigationView();
+            BottomNavigationViewHelper.setupBottomNavigationView(mContext, SearchUserActivity.this, ACTIVITY_NUM);
         }
     }
 }

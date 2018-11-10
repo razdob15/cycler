@@ -94,7 +94,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
 
     // Intent Extras Names
     private final static String INTENT_PLACE_ID = "place_id";
-    private final static String INTENT_ACTIVITY_NUM= "activity_number";
+    private final static String INTENT_ACTIVITY_NUM = "activity_number";
 
     @Override
     public void onClick(View v) {
@@ -116,27 +116,27 @@ public class ViewOnePlaceActivity extends AppCompatActivity
                 showRedHeart();
                 mFireMethods.likePlaceDB(placeId);
             }
-        }else if (v == cameraIV) {  // Open Camera
+        } else if (v == cameraIV) {  // Open Camera
             MyShareActivity.start(mContext, placeId, nameTV.getText().toString(), addressTv.getText().toString());
 
         } else if (isStarView(v)) { // Rating Stars
             boolean passed = false;
             rate = 0;
-            for (int i=0; i<stars.length; i++) {
+            for (int i = 0; i < stars.length; i++) {
                 if (passed) stars[i].setImageResource(STAR_OFF_XML);
                 else stars[i].setImageResource(STAR_ON_XML);
                 if (stars[i] == v) {
                     passed = true;
-                    rate = i+1;
+                    rate = i + 1;
                 }
             }
         } else if (v == rateBtn) {
             if (rate < 1 || rate > 5) {
                 Log.d(TAG, "onClick: invalid rate: " + rate);
                 Toast.makeText(mContext, "you need to choose how many stars to rate this place", Toast.LENGTH_SHORT).show();
-            } else  {
+            } else {
                 Log.d(TAG, "onClick: rate the place with rate: " + rate);
-                Toast.makeText(mContext, nameTV.getText().toString() +" rated with "+rate+" stars !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, nameTV.getText().toString() + " rated with " + rate + " stars !", Toast.LENGTH_SHORT).show();
                 mFireMethods.ratePlaceDB(placeId, rate);
             }
 
@@ -149,6 +149,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
         redHeart.setVisibility(View.GONE);
         whiteHeart.setVisibility(View.VISIBLE);
     }
+
     private void showRedHeart() {
         redHeart.setVisibility(View.VISIBLE);
         whiteHeart.setVisibility(View.GONE);
@@ -234,23 +235,10 @@ public class ViewOnePlaceActivity extends AppCompatActivity
         });
 
         getPhotos();
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, ViewOnePlaceActivity.this, activityNum);
     }
 
 
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(this, this, bottomNavigationViewEx, mFavoritePlacesIds);
-        Menu menu = bottomNavigationViewEx.getMenu();
-
-        MenuItem menuItem = menu.getItem(activityNum);
-        menuItem.setChecked(true);
-    }
 
 
     private void getDataFromIntent() {
@@ -286,8 +274,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
         if (placeWebsite != null && placeWebsite.length() > 0) {
             websiteTV.setText(placeWebsite);
             websiteTV.setContentDescription(placeWebsite);
-        }
-        else
+        } else
             websiteTV.setVisibility(View.GONE);
         if (placePhone != null && placePhone.length() > 0)
             phoneTv.setText(placePhone);
@@ -333,6 +320,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
 
     /**
      * Request Permission and returns the current LatLng,
+     *
      * @return device's current LatLng.
      */
     private LatLng getCurrentLatLnt() {
@@ -467,16 +455,20 @@ public class ViewOnePlaceActivity extends AppCompatActivity
                         @Override
                         public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
                             PlacePhotoResponse photo = task.getResult();
-                            Bitmap bitmap = photo.getBitmap();
-                            mBitmaps.add(bitmap);
-                            if (mBitmaps.size() == 1)
-                                logoIv.setImageBitmap(bitmap);
-                            Log.d(TAG, "onComplete: photos: " + mBitmaps);
-                            if (mBitmaps.size() == Math.min(20, photoMetadataBuffer.getCount())) {
-                                Log.d(TAG, "onComplete: Put photos in the grid");
-                                setupAdapter();
+                            Bitmap bitmap = null;
+                            if (photo != null) {
+                                bitmap = photo.getBitmap();
+
+                                mBitmaps.add(bitmap);
+                                if (mBitmaps.size() == 1)
+                                    logoIv.setImageBitmap(bitmap);
+                                Log.d(TAG, "onComplete: photos: " + mBitmaps);
+                                if (mBitmaps.size() == Math.min(20, photoMetadataBuffer.getCount())) {
+                                    Log.d(TAG, "onComplete: Put photos in the grid");
+                                    setupAdapter();
+                                }
+                                addToProgressBar();
                             }
-                            addToProgressBar();
                         }
                     });
                 }
@@ -488,7 +480,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
 
     private void setupAdapter() {
         if (mBitmapsDB != null) mBitmaps.addAll(mBitmapsDB);
-        mBitmapsDB= new ArrayList<>();
+        mBitmapsDB = new ArrayList<>();
         GridPlaceImagesAdapter adapter = new GridPlaceImagesAdapter(ViewOnePlaceActivity.this, R.layout.layout_grid_imageview, mBitmaps);
 
         gridView.setAdapter(adapter);
@@ -604,7 +596,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // initialize the stars colors
                 rate = mFireMethods.getPlaceRateDB(dataSnapshot, placeId, mAuth.getCurrentUser().getUid());
-                for (int i=0; i<stars.length; i++ ){
+                for (int i = 0; i < stars.length; i++) {
                     if (i < rate) stars[i].setImageResource(STAR_ON_XML);
                     else stars[i].setImageResource(STAR_OFF_XML);
                 }

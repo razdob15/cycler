@@ -18,6 +18,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import java.util.Objects;
 
 import razdob.cycler.R;
+import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.Permissions;
@@ -51,12 +52,13 @@ public class ShareActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: started.");
 
         firebaseMethods = new FirebaseMethods(mContext);
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, ShareActivity.this, ACTIVITY_NUM);
 
         if (mIntent == null) mIntent = getIntent();
         if (mIntent.hasExtra(getString(R.string.intent_place_id))) {
             placeId = mIntent.getStringExtra(getString(R.string.intent_place_id));
-        } if (mIntent.hasExtra(mContext.getString(R.string.intent_place_name))) {
+        }
+        if (mIntent.hasExtra(mContext.getString(R.string.intent_place_name))) {
             placeName = mIntent.getStringExtra(mContext.getString(R.string.intent_place_name));
         }
 
@@ -165,18 +167,5 @@ public class ShareActivity extends AppCompatActivity {
             Log.d(TAG, "checkPermissions: \n Permission was granted for: " + permission);
             return true;
         }
-    }
-
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(this, this, bottomNavigationViewEx, firebaseMethods.getFavoritePlacesIds());
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
     }
 }

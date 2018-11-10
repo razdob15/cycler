@@ -38,6 +38,7 @@ import java.util.Objects;
 
 import razdob.cycler.R;
 import razdob.cycler.dialogs.CustomDialog;
+import razdob.cycler.instShare.MyShareActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
@@ -63,7 +64,6 @@ public class HomeActivity extends AppCompatActivity {
 
     // GUI
     private ViewPager mViewPager;
-    private BottomNavigationViewEx bottomNavigationViewEx;
 
     // Vars
     private FirebaseMethods mFireMethods;
@@ -82,13 +82,12 @@ public class HomeActivity extends AppCompatActivity {
 
         mFireMethods = new FirebaseMethods(mContext);
         mViewPager = findViewById(R.id.viewpager_container);
-        bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
 
         followingsIds = new ArrayList<>();
         photos = new ArrayList<>();
 
         setupFirebaseStaff();
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, HomeActivity.this, ACTIVITY_NUM);
     }
 
     private void setupViewPager() {
@@ -202,23 +201,6 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(mContext, HomeActivity.class));
             }
         }
-    }
-
-
-    /*
-     * -------------------------- BOTTOM NAVIGATION ------------------------------------
-     */
-
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx, mFireMethods.getFavoritePlacesIds());
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
     }
 
     /*

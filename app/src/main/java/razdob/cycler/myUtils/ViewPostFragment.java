@@ -48,6 +48,7 @@ import java.util.TimeZone;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.dialogs.DeleteDialog;
+import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.models.Like;
 import razdob.cycler.models.Photo;
@@ -186,7 +187,7 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
 
             userCanDelete(mPhoto.getUser_id());
 
-            setupBottomNavigationView();
+            BottomNavigationViewHelper.setupBottomNavigationView(mContext, Objects.requireNonNull(getActivity()), mActivityNumber);
 
 
 
@@ -570,18 +571,6 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(getActivity(), getActivity(), bottomNavigationViewEx, favoritePlacesIds);
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(mActivityNumber);
-        menuItem.setChecked(true);
-    }
-
     /*
      * ------------------------------- Likes --------------------------------------------
      */
@@ -589,7 +578,7 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
         Log.d(TAG, "getLikesStringDB: getting likes string");
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (mPhoto.getLikes() != null && mPhoto.getLikes().size() > 0) {
                     Log.d(TAG, "onDataChange: loading mPhoto: "+mPhoto.getPhoto_id()+" likes.");
                     String[] splitUsers = new String[mPhoto.getLikes().size()];
@@ -612,7 +601,7 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d(TAG, "onCancelled: DBError: " + databaseError.getMessage());
             }
         });

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import razdob.cycler.R;
+import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
 
@@ -21,28 +22,14 @@ public class InstFavoritesActivity extends AppCompatActivity {
     private static final String TAG = "InstFavoritesActivity";
     public static final int ACTIVITY_NUM = 3;
 
-    private FirebaseMethods mFireMethods;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.instagram_data);
         Log.d(TAG, "onCreate: starting:");
-        mFireMethods = new FirebaseMethods(InstFavoritesActivity.this);
 
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(InstFavoritesActivity.this, InstFavoritesActivity.this, ACTIVITY_NUM);
     }
 
-    /*
-     * BottomNavigationView setup
-     * */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(this, this, bottomNavigationViewEx, mFireMethods.getFavoritePlacesIds());
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
 }

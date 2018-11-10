@@ -34,11 +34,13 @@ import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.UsersListActivity;
+import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.instProfile.AccountSettingsActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
@@ -155,7 +157,7 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
         mFireMethods = new FirebaseMethods(mContext);
         Log.d(TAG, "onCreateView: started");
 
-        setupBottomNavigationView();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, Objects.requireNonNull(getActivity()), ACTIVITY_NUM);
         setupFirebaseStaff();
 
         try {
@@ -490,7 +492,7 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
                 .orderByChild(getString(R.string.db_field_user_id)).equalTo(mViewingUser.getUser_id());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot singleSnap : dataSnapshot.getChildren()) {
                     Log.d(TAG, "onDataChange: found a user: " + singleSnap.getValue());
                     setFollowing();
@@ -498,7 +500,7 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
@@ -592,26 +594,12 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigating back");
-                getActivity().getSupportFragmentManager().popBackStack();
+                Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
                 getActivity().finish();
             }
         });
     }
 
-
-
-
-    /**
-     * BottomNavigationView setup
-     */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, getActivity(), bottomNavigationViewEx, mFireMethods.getFavoritePlacesIds());
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
 
 
 

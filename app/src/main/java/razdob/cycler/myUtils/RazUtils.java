@@ -1,17 +1,30 @@
 package razdob.cycler.myUtils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
+import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
@@ -20,11 +33,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import razdob.cycler.R;
 import razdob.cycler.algorithms.MyAlgorithm;
 import razdob.cycler.fivePlaces.ViewOnePlaceActivity;
+import razdob.cycler.models.PlaceDetails;
 
 /**
  * Created by Raz on 07/05/2018, for project: PlacePicker2
@@ -104,13 +119,6 @@ public class RazUtils {
         return false;
     }
 
-
-
-
-
-
-
-
     public static ArrayList<String> filterPlaces(MyAlgorithm algorithm, ArrayList<String> placesIds, ArrayList<String> userSubjects) {
         // Places Tags DataSnapshot
         DataSnapshot ptDS = algorithm.getmMainDS().child(algorithm.getContext().getString(R.string.db_field_places_tag_counters));
@@ -125,7 +133,7 @@ public class RazUtils {
                     }
                 }
             } else { // Go for the subjects
-                for (String sub: userSubjects) {
+                for (String sub : userSubjects) {
                     if (ptDS.hasChild(sub)) {
                         result.add(sub);
                         break;
@@ -138,18 +146,9 @@ public class RazUtils {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     /**
      * TODO(1): Move this method to MyAlgorithm Class !
+     *
      * @param placesIds - List of places Ids.
      * @param algorithm - My Algorithm object, to calculate the places' scores
      * @return List of places Ids sorting by their scores.
@@ -171,7 +170,7 @@ public class RazUtils {
             scoresHM.get(score).add(placeId);
         }
 
-        Log.d(TAG, "sortPlaceIdsByGraphScore: scoresHM: "+ scoresHM.keySet().toString());
+        Log.d(TAG, "sortPlaceIdsByGraphScore: scoresHM: " + scoresHM.keySet().toString());
         int[] sortScores = sortSet(scoresHM.keySet());
         Log.d(TAG, "sortPlaceIdsByGraphScore: sortScores: " + Arrays.toString(sortScores));
         List<String> res = new ArrayList<>();
@@ -196,6 +195,7 @@ public class RazUtils {
 
     /**
      * Get the bitmap from a photo ULR.
+     *
      * @param imgUrl - url address (to a photo).
      * @return - Bitmap form the URL.
      */
@@ -203,11 +203,9 @@ public class RazUtils {
 
 
         ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.loadImage(imgUrl, new SimpleImageLoadingListener()
-        {
+        imageLoader.loadImage(imgUrl, new SimpleImageLoadingListener() {
             @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage)
-            {
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 // loaded bitmap is here (loadedImage)
 
             }
@@ -218,6 +216,7 @@ public class RazUtils {
 
     /**
      * Open a web url in a browser.
+     *
      * @param context - the Context that the link will open from.
      * @param urlLink - The link.
      */
@@ -227,7 +226,7 @@ public class RazUtils {
             Log.d(TAG, "openUrl: web address is not valid: " + urlLink);
             Toast.makeText(context, "web address is not valid", Toast.LENGTH_SHORT).show();
         } else {
-            Log.d(TAG, "openUrl: opening url: " +urlLink);
+            Log.d(TAG, "openUrl: opening url: " + urlLink);
             Uri uri = Uri.parse(urlLink); // missing 'http://' will cause crashed
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
@@ -238,9 +237,73 @@ public class RazUtils {
      * Starts ViewOnePlaceActivity.
      */
     public static void viewPlace(Context context, String placeId, int activityNum) {
-        Log.d(TAG, "viewPlace: Show place's details: " +placeId);
+        Log.d(TAG, "viewPlace: Show place's details: " + placeId);
         ViewOnePlaceActivity.start(context, placeId, activityNum);
     }
+
+
+    public static PlaceDetails getPlaceDetails(Task<PlaceBufferResponse> task, String placeId) {
+        PlaceDetails placeDetails = new PlaceDetails(placeId);
+        if (task.isSuccessful()) {
+            PlaceBufferResponse places = task.getResult();
+            if (places != null) {
+                Place place = places.get(0);
+
+                Log.d(TAG, "onComplete: place: " + place.getName());
+
+                // Setting up placeDetails object
+                if (place.getName() != null)
+                    placeDetails.setName(place.getName().toString());
+                if (place.getAddress() != null)
+                    placeDetails.setAddress(place.getAddress().toString());
+                if (place.getPhoneNumber() != null)
+                    placeDetails.setPhone(place.getPhoneNumber().toString());
+                if (place.getWebsiteUri() != null)
+                    placeDetails.setWebsite(place.getWebsiteUri().toString());
+            }
+        }
+        return placeDetails;
+    }
+
+    public static Task<PlacePhotoResponse> getPlacePhotoTask(GeoDataClient geoDataClient, Task<PlacePhotoMetadataResponse> task,
+                                                             boolean isRandom) {
+        // Get the list of photos.
+        PlacePhotoMetadataResponse photos = task.getResult();
+        // Get the PlacePhotoMetadataBuffer (metadata for the first 10 photos).
+        PlacePhotoMetadata photoMetadata = null;
+        if (photos != null) {
+            PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+            if (isRandom) {
+                Random random = new Random();
+                int i = random.nextInt(photoMetadataBuffer.getCount());
+                photoMetadata = photoMetadataBuffer.get(i);  // Photo in index i
+            } else {
+                photoMetadata = photoMetadataBuffer.get(0);  // Photo in index 0
+            }
+            return geoDataClient.getPhoto(photoMetadata);
+
+        }
+        return null;
+    }
+
+    public static ArrayList<Task<PlacePhotoResponse>> getPlacePhotosTask(GeoDataClient geoDataClient, Task<PlacePhotoMetadataResponse> task, int count) {
+        // Get the list of photos.
+        PlacePhotoMetadataResponse photos = task.getResult();
+        // Get the PlacePhotoMetadataBuffer (metadata for the first 10 photos).
+        if (photos != null) {
+            PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+            ArrayList<Task<PlacePhotoResponse>> responses = new ArrayList<>();
+            for (int i = 0; i < count; i++) {
+                photoMetadataBuffer.get(i);
+                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);  // Photo in index 0
+                responses.add(geoDataClient.getPhoto(photoMetadata));
+            }
+            return responses;
+
+        }
+        return null;
+    }
+
 
 
 }

@@ -116,7 +116,6 @@ public class InstProfileActivity extends AppCompatActivity implements
         searchImageInStorage();
 
         //
-        setupBottomNavigationView();
         setupToolbar();
         setupActivityWidgets();
 

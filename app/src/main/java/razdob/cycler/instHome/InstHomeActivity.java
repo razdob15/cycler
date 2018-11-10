@@ -24,6 +24,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
+import razdob.cycler.fivePlaces.FivePlacesActivity;
+import razdob.cycler.instFavorites.InstFavoritesActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
@@ -81,7 +83,9 @@ public class InstHomeActivity extends AppCompatActivity
 
         setupFirebaseStaff();
         initImageLoader();
-        setupBottomNavigationView();
+        mFireMethods = new FirebaseMethods(InstHomeActivity.this);
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, InstHomeActivity.this, ACTIVITY_NUM);
+
         setupViewPager();
     }
 
@@ -142,21 +146,6 @@ public class InstHomeActivity extends AppCompatActivity
         tabLayout.getTabAt(1).setIcon(R.drawable.cycler_logo);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
     }
-
-    /*
-    * BottomNavigationView setup
-    * */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(this, this, bottomNavigationViewEx, mFireMethods.getFavoritePlacesIds());
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
-    }
-
-
 
     /*
      * ------------------------- Firebase ------------------------------------------

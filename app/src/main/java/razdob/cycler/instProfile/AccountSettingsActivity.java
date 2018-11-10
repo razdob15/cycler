@@ -9,23 +9,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
-
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 
 import razdob.cycler.R;
 import razdob.cycler.SupportFragment;
-import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.SectionsStatePagerAdapter;
@@ -63,7 +57,9 @@ public class AccountSettingsActivity extends AppCompatActivity {
         mFireMethods = new FirebaseMethods(mContext);
 
         setupSettingsList();
-        setupBottomNavigationView();
+
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, AccountSettingsActivity.this, ACTIVITY_NUM);
+
         setupFragments();
         getIncomingIntent();
 
@@ -149,19 +145,6 @@ public class AccountSettingsActivity extends AppCompatActivity {
                 setViewPager(position);
             }
         });
-    }
-
-    /*
-     * BottomNavigationView setup
-     * */
-    private void setupBottomNavigationView() {
-        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
-        BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(this, this, bottomNavigationViewEx, mFireMethods.getFavoritePlacesIds());
-        Menu menu = bottomNavigationViewEx.getMenu();
-        MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
-        menuItem.setChecked(true);
     }
 }
 
