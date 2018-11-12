@@ -233,4 +233,8 @@ public class User implements Parcelable {
         }
         return arr;
     }
+
+    public boolean hasFavorites() {
+        return favoritePlacesIDs != null && favoritePlacesIDs.size() > 0;
+    }
 }

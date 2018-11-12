@@ -31,6 +31,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -195,12 +196,7 @@ public class MainFeedListAdapter extends ArrayAdapter<Photo> {
                         public void onClick(View v) {
                             Log.d(TAG, "onClick: navigating to profile of: " +
                                     holder.user.getName());
-
-                            Intent intent = new Intent(mContext, InstProfileActivity.class);
-                            intent.putExtra(mContext.getString(R.string.calling_activity),
-                                    mContext.getString(R.string.home_activity));
-                            intent.putExtra(mContext.getString(R.string.intent_user), holder.user);
-                            mContext.startActivity(intent);
+                            InstProfileActivity.start(mContext, mContext.getString(R.string.home_activity), holder.user, 0);
                         }
                     });
                     holder.settings = singleSnap.getValue(UserAccountSettings.class);
@@ -228,29 +224,23 @@ public class MainFeedListAdapter extends ArrayAdapter<Photo> {
         Query userQuery = mRef
                 .child(mContext.getString(R.string.db_persons))
                 .orderByChild(mContext.getString(R.string.db_field_user_id))
-                .equalTo(getItem(position).getUser_id());
+                .equalTo(Objects.requireNonNull(getItem(position)).getUser_id());
         userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot)     {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)     {
                 for (final DataSnapshot singleSnap : dataSnapshot.getChildren()) {
-                    Log.d(TAG, "onDataChange: found user: " + singleSnap.getValue(User.class).getName());
+                    Log.d(TAG, "onDataChange: found user: " + Objects.requireNonNull(singleSnap.getValue(User.class)).getName());
 
                     holder.user = singleSnap.getValue(User.class);
 
-                    imageLoader.displayImage(singleSnap.getValue(User.class).getProfile_photo(),
+                    imageLoader.displayImage(Objects.requireNonNull(singleSnap.getValue(User.class)).getProfile_photo(),
                             holder.mProfileImage);
 
                     holder.mProfileImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.d(TAG, "onClick: navigating to profile of: " +
-                                    holder.user.getName());
-
-                            Intent intent = new Intent(mContext, InstProfileActivity.class);
-                            intent.putExtra(mContext.getString(R.string.calling_activity),
-                                    mContext.getString(R.string.home_activity));
-                            intent.putExtra(mContext.getString(R.string.intent_user), holder.user);
-                            mContext.startActivity(intent);
+                            Log.d(TAG, "onClick: navigating to profile of: " + holder.user.getName());
+                            InstProfileActivity.start(mContext, mContext.getString(R.string.home_activity), holder.user, 0);
                         }
                     });
                 }

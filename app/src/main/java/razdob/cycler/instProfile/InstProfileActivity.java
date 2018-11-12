@@ -2,30 +2,27 @@ package razdob.cycler.instProfile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
+
+import java.util.Objects;
 
 import razdob.cycler.R;
 import razdob.cycler.models.User;
-import razdob.cycler.myUtils.ViewInstCommentsFragment;
-import razdob.cycler.myUtils.ViewPostFragment;
+import razdob.cycler.myUtils.BottomNavigationViewHelper;
+import razdob.cycler.ViewInstCommentsFragment;
+import razdob.cycler.ViewPostFragment;
 import razdob.cycler.models.Photo;
-import razdob.cycler.myUtils.ViewProfileFragment;
+import razdob.cycler.ViewProfileFragment;
 
 /**
  * Created by Raz on 27/05/2018, for project: PlacePicker2
@@ -34,8 +31,18 @@ public class InstProfileActivity extends AppCompatActivity implements
         ProfileFragment.OnGridImageSelectedListener,
         ViewProfileFragment.OnGridImageSelectedListener,
         ViewPostFragment.OnCommentThreadSelectedListener {
-
     private static final String TAG = "InstProfileActivity";
+
+    // Intent Extras
+    private static final String CALLING_ACTIVITY_EXTRA = "calling_activity";
+    private static final String USER_EXTRA = "intent_user";
+    private static final String ACTIVITY_NUM_EXTRA = "activity_num";
+    private static final String NEW_PROFILE_EXTRA = "new_profile";
+
+    // Finals
+    private final Context mContext = InstProfileActivity.this;
+    private final FragmentActivity mActivity = InstProfileActivity.this;
+
 
     @Override
     public void onCommentThreadSelectedListener(Photo photo) {
@@ -74,29 +81,16 @@ public class InstProfileActivity extends AppCompatActivity implements
 
     }
 
-    private static final int ACTIVITY_NUM = 4;
-    private static final int NUM_GRID_COLUMNS = 3;
-    private Context mContext = InstProfileActivity.this;
 
     /* ---------------------- FIREBASE ----------------------- */
     private FirebaseApp mFireApp;
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private FirebaseUser mFireUser;
-    private StorageReference mStorageReference;// = FirebaseStorage.getInstance().getReference();
-    private DatabaseReference mRef;
-    private ValueEventListener mValueListener;
+    private String uid;
     /* ---------------------- FIREBASE ----------------------- */
 
-    // GUI
-    private ProgressBar mProgressBar;
-    private ImageView mProfileImage;
-    private String mImgUrl;
-    private TextView mDisplayNameTV;
-    private TextView mDescriptionTV;
-    private TextView mWebsiteTV;
-    private TextView mProfileNameTV;
-
+    // Intent Vars
+    private int mActivityNum = 4;
+    private User user;
+    private Bitmap profileBitmap;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,77 +98,69 @@ public class InstProfileActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_inst_profile);
         Log.d(TAG, "onCreate: starting:");
 
-        init();
+        mFireApp = FirebaseApp.getInstance("mFireApp");
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance(mFireApp).getCurrentUser()).getUid();
 
-
-/*
-        matchWidgetsToIds();
-
-        // Firebase...
-        setupFirebaseAuth();
-        setupFirebaseDB();
-        searchImageInStorage();
-
-        //
-        setupToolbar();
-        setupActivityWidgets();
-
-
-        // Temporary !!
-        tempGridSetup();*/
+        getDataFromIntent();
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, mActivity, mActivityNum);
+        showCorrectFragment();
     }
 
+    private void showCorrectFragment() {
+        if (user != null) {
+            if (user.getUser_id().equals(Objects.requireNonNull(FirebaseAuth.getInstance(mFireApp).getCurrentUser()).getUid())) {
+                // This is the Current User !
+                Log.d(TAG, "init: inflating user's Profile");
+                ProfileFragment.showProfile(mActivity);
 
-
-    private void init() {
-        Log.d(TAG, "init: iInflating " + getString(R.string.profile));
-
-        mFireApp = FirebaseApp.getInstance("mFireApp");
-
-        Intent intent = getIntent();
-        if (intent.hasExtra(getString(R.string.calling_activity))) {
-            Log.d(TAG, "init: searching for user object attached as intent extra.");
-            if (intent.hasExtra(getString(R.string.intent_user))) {
-                User user = intent.getParcelableExtra(getString(R.string.intent_user));
-
-                if (user.getUser_id() == null || !user.getUser_id().equals(FirebaseAuth.getInstance(mFireApp).getCurrentUser().getUid())) {
-
-
-                    Log.d(TAG, "init: inflating ViewProfile");
-                    ViewProfileFragment fragment = new ViewProfileFragment();
-                    Bundle args = new Bundle();
-                    args.putParcelable(getString(R.string.intent_user),
-                            intent.getParcelableExtra(getString(R.string.intent_user)));
-                    fragment.setArguments(args);
-
-                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
-                    transaction.addToBackStack(getString(R.string.view_inst_profile_fragment));
-                    transaction.commit();
-                } else {
-                    Log.d(TAG, "init: inflating Profile");
-                    ProfileFragment fragment = new ProfileFragment();
-                    FragmentTransaction transaction = InstProfileActivity.this.getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.container, fragment);
-                    transaction.addToBackStack(getString(R.string.profile));
-                    transaction.commit();
-                }
             } else {
-                Log.d(TAG, "init: Not valid extras");
-                Toast.makeText(mContext, "something went wrong", Toast.LENGTH_SHORT).show(); 
+                Log.d(TAG, "init: inflating ViewProfile");
+                ViewProfileFragment.show(mActivity, user);
             }
         } else {
-            Log.d(TAG, "init: inflating Profile");
-            ProfileFragment fragment = new ProfileFragment();
-            FragmentTransaction transaction = InstProfileActivity.this.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.container, fragment);
-            transaction.addToBackStack(getString(R.string.profile));
-            transaction.commit();
+            ProfileFragment.showProfile(mActivity);
         }
     }
 
+    private void getDataFromIntent() {
+        Log.d(TAG, "getDataFromIntent: called.");
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(CALLING_ACTIVITY_EXTRA)) {
+            Log.d(TAG, "init: searching for user object attached as intent extra.");
+            if (intent.hasExtra(USER_EXTRA)) {
+                user = intent.getParcelableExtra(USER_EXTRA);
+            } else {
+                Log.d(TAG, "init: Not valid extras. User is NULL");
+                Toast.makeText(mContext, "something went wrong", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Log.d(TAG, "init: inflating Profile");
+        }
+        int activityNum = intent.getIntExtra(ACTIVITY_NUM_EXTRA, -1);
+        if (activityNum != -1 && !user.getUser_id().equals(uid))
+            mActivityNum = activityNum;
+        profileBitmap = intent.getParcelableExtra(NEW_PROFILE_EXTRA);
+    }
+
     @Override
-    public void onBackPressed() { }
+    public void onBackPressed() {
+        // TODO
+    }
+
+    public static void start(Context context, String callingActivity, User user, int activityNum, Bitmap newProfileBitmap) {
+        Log.d(TAG, "start: callingActivity: " + callingActivity + "; User: " + user);
+
+        Intent intent = new Intent(context, InstProfileActivity.class);
+        if (callingActivity != null) intent.putExtra(CALLING_ACTIVITY_EXTRA, callingActivity);
+        if (user != null) intent.putExtra(USER_EXTRA, user);
+        if (activityNum >= 0) intent.putExtra(ACTIVITY_NUM_EXTRA, activityNum);
+        if (newProfileBitmap != null) intent.putExtra(NEW_PROFILE_EXTRA, newProfileBitmap);
+        context.startActivity(intent);
+    }
+    public static void start(Context context, String callingActivity, User user, int activityNum) { start(context, callingActivity, user, activityNum, null); }
+    public static void start(Context context) { start(context, null, null, -1); }
+
 }
 
 

@@ -1,4 +1,4 @@
-package razdob.cycler.adapters;
+package razdob.cycler.un_used__11_11;
 
 import android.content.Context;
 import android.graphics.Color;

@@ -2,17 +2,18 @@ package razdob.cycler.instProfile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -23,7 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.dynamic.IFragmentWrapper;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,15 +39,16 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import razdob.cycler.BigPhotoFragment;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.UsersListActivity;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
 import razdob.cycler.models.UserAccountSettings;
 import razdob.cycler.models.UserSettings;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
+import razdob.cycler.myUtils.FireBaseUtils;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.GridImageAdapter;
 import razdob.cycler.myUtils.MyFonts;
@@ -61,6 +62,7 @@ import razdob.cycler.myUtils.UniversalImageLoader;
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ProfileFragment";
+    private static final String NEW_PROFILE_EXTRA = "new_profile";
 
     public interface OnGridImageSelectedListener {
         void onGridSelected(Photo photo, int activityNumber);
@@ -76,21 +78,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(mContext, "no followers", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d(TAG, "onClick: navigate to UsersListActivity: " + followersIds);
-                Intent intent = new Intent(mContext, UsersListActivity.class);
-                intent.putExtra(mContext.getString(R.string.intent_title), mContext.getString(R.string.toolbar_followers));
-                intent.putStringArrayListExtra(mContext.getString(R.string.intent_users), followersIds);
-                mContext.startActivity(intent);
+
+                UsersListActivity.start(mContext, mContext.getString(R.string.toolbar_followers), followersIds, ACTIVITY_NUM);
             }
         } else if (v == mFollowing || v == followingsLL) {
-            Log.d(TAG, "onClick: Show the followingsIDs");
+            Log.d(TAG, "onClick: Show the followingsIds");
             if (mFollowingsCount == 0) {
                 Toast.makeText(mContext, "no followings", Toast.LENGTH_SHORT).show();
             } else {
-                Log.d(TAG, "onClick: navigate to UsersListActivity: " + followingsIDs);
-                Intent intent = new Intent(mContext, UsersListActivity.class);
-                intent.putExtra(mContext.getString(R.string.intent_title), mContext.getString(R.string.toolbar_followings));
-                intent.putStringArrayListExtra(mContext.getString(R.string.intent_users), followingsIDs);
-                mContext.startActivity(intent);
+                Log.d(TAG, "onClick: navigate to UsersListActivity: " + followingsIds);
+
+                UsersListActivity.start(mContext, mContext.getString(R.string.toolbar_followings), followingsIds, ACTIVITY_NUM);
             }
 
         }
@@ -124,11 +122,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> favoritesPlacesIds;
     private User mUser;
 
-    // Followers & followingsIDs
+    // Followers & followingsIds
     private ArrayList<String> followersIds;
-    private ArrayList<String> followingsIDs;
+    private ArrayList<String> followingsIds;
 
-
+    private boolean newProfileImage = false; // todo(!): Use this to load the image immidietly after the change.
     private Context mContext;
 
     @Nullable
@@ -137,6 +135,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         mContext = getActivity();
         mFirebaseMethods = new FirebaseMethods(mContext);
+
+        getBitmapFromBundle();
+
         matchWidgetsToIds(view);
         setupFirebaseStaff();
 
@@ -151,9 +152,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         setupGridView();
 
-        setupFollowers();
-        setupFollowing();
-        setupPostsCount();
 
         TextView editProfileTV = view.findViewById(R.id.text_edit_profile);
         editProfileTV.setOnClickListener(new View.OnClickListener() {
@@ -163,12 +161,47 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
                 intent.putExtra(getString(R.string.calling_activity), getString(R.string.profile_activity));
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             }
         });
 
         return view;
     }
+
+    private void getBitmapFromBundle() {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            newProfileImage = true;
+            Bitmap bitmap = bundle.getParcelable(NEW_PROFILE_EXTRA);
+            mProfileIV.setImageBitmap(bitmap);
+        }
+    }
+
+    /**
+     * Creates new ProfileFragment and pass ite arguments.
+     *
+     * @param fragmentActivity - Opening Fragment Activity.
+     * @param profileBitmap    - new profile bitmap argument.
+     */
+    public static void showProfile(FragmentActivity fragmentActivity, Bitmap profileBitmap) {
+        Log.d(TAG, "showProfile: called.");
+
+        ProfileFragment fragment = new ProfileFragment();
+        if (profileBitmap != null) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(NEW_PROFILE_EXTRA, profileBitmap);
+            fragment.setArguments(bundle);
+        }
+        FragmentTransaction transaction = fragmentActivity.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack("Profile");
+        transaction.commit();
+    }
+
+    public static void showProfile(FragmentActivity fragmentActivity) {
+        showProfile(fragmentActivity, null);
+    }
+
 
     private void matchWidgetsToIds(View view) {
         Log.d(TAG, "matchWidgetsToIds: called.");
@@ -249,8 +282,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                FireBaseUtils.dbErrorMessage(TAG, databaseError);
             }
         });
     }
@@ -264,136 +297,48 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      * Update followers in FirebaseMethods.
      * Add listener to mFollowers TextView (this).
      */
-    private void setupFollowers() {
+    private void setupFollowers(DataSnapshot mainDS, String uid) {
+        Log.d(TAG, "setupFollowers: called.");
+
         mFollowersCount = 0;
         followersIds = new ArrayList<>();
 
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot followerDS : dataSnapshot
-                        .child(mContext.getString(R.string.db_field_followers))
-                        .child(mAuth.getCurrentUser().getUid()).getChildren()) {
-                    followersIds.add(followerDS.getKey());
-                }
-                mFollowersCount = followersIds.size();
-                mFollowers.setText(String.valueOf(mFollowersCount));
-                mFirebaseMethods.updateFollowers(mFollowersCount);
-                mFollowers.setOnClickListener(ProfileFragment.this);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "onCancelled: FollowersDBError: " + databaseError.getMessage());
-            }
-        });
-
-//
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//        Query query = reference.child(getString(R.string.db_field_followers))
-//                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//        query.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                    mFollowersCount = Math.toIntExact(dataSnapshot.getChildrenCount());
-//                } else {
-//                    for (DataSnapshot singleSnap : dataSnapshot.getChildren()) {
-//                        Log.d(TAG, "onDataChange: found a follower: " + singleSnap.getValue());
-//                        mFollowersCount++;
-//                    }
-//                }
-//                mFollowers.setText(String.valueOf(mFollowersCount));
-//                mFirebaseMethods.updateFollowers(mFollowersCount);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
+        for (DataSnapshot followerDS : mainDS.child(mContext.getString(R.string.db_field_followers)).child(uid).getChildren()) {
+            followersIds.add(followerDS.getKey());
+        }
+        mFollowersCount = followersIds.size();
+        mFollowers.setText(String.valueOf(mFollowersCount));
+        mFirebaseMethods.updateFollowers(mFollowersCount);
+        mFollowers.setOnClickListener(ProfileFragment.this);
 
     }
 
     /**
-     * Setup the mFollowingsCount & followingsIDs from the DB.
+     * Setup the mFollowingsCount & followingsIds from the DB.
      * Set mFollowing text.
      * Update followings in FirebaseMethods.
      * Add listener to mFollowing TextView (this).
      */
-    private void setupFollowing() {
+    private void setupFollowing(DataSnapshot mainDS, String uid) {
         mFollowingsCount = 0;
-        followingsIDs = new ArrayList<>();
+        followingsIds = new ArrayList<>();
 
-        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot followingDS : dataSnapshot
-                        .child(mContext.getString(R.string.db_field_following))
-                        .child(mAuth.getCurrentUser().getUid()).getChildren()) {
-                    followingsIDs.add(followingDS.getKey());
-                }
-                mFollowingsCount = followingsIDs.size();
-                mFollowing.setText(String.valueOf(mFollowingsCount));
-                mFirebaseMethods.updateFollowings(mFollowingsCount);
-                mFollowing.setOnClickListener(ProfileFragment.this);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "onCancelled: FollowingDBError: " + databaseError.getMessage());
-            }
-        });
-//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-//        Query query = reference.child(getString(R.string.db_field_following))
-//                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                    mFollowingsCount = Math.toIntExact(dataSnapshot.getChildrenCount());
-//                } else {
-//                    for (DataSnapshot singleSnap : dataSnapshot.getChildren()) {
-//                        Log.d(TAG, "onDataChange: found a followingsIDs: " + singleSnap.getValue());
-//                        mFollowingsCount++;
-//                    }
-//                }
-//                mFollowing.setText(String.valueOf(mFollowingsCount));
-//                mFirebaseMethods.updateFollowings(mFollowingsCount);
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
+        for (DataSnapshot followingDS : mainDS
+                .child(mContext.getString(R.string.db_field_following))
+                .child(uid).getChildren()) {
+            followingsIds.add(followingDS.getKey());
+        }
+        mFollowingsCount = followingsIds.size();
+        mFollowing.setText(String.valueOf(mFollowingsCount));
+        mFirebaseMethods.updateFollowings(mFollowingsCount);
+        mFollowing.setOnClickListener(ProfileFragment.this);
     }
 
-    private void setupPostsCount() {
-        mPostsCount = 0;
-        Query query = mRef.child(getString(R.string.db_user_photos))
-                .child(mAuth.getCurrentUser().getUid());
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    mPostsCount = Math.toIntExact(dataSnapshot.getChildrenCount());
-                } else {
-                    for (DataSnapshot singleSnap : dataSnapshot.getChildren()) {
-                        Log.d(TAG, "onDataChange: found a post: " + singleSnap.getValue());
-                        mPostsCount++;
-                    }
-                }
-                mPosts.setText(String.valueOf(mPostsCount));
-                mFirebaseMethods.updatePosts(mPostsCount);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w(TAG, "onCancelled: DBError:  "+ databaseError.getMessage());
-            }
-        });
+    private void setupPostsCount(DataSnapshot mainDS, String uid) {
+        Log.d(TAG, "setupPostsCount: called.");
+        mPostsCount = mainDS.child(mContext.getString(R.string.db_user_photos))
+                .child(uid).getChildrenCount();
+        mPosts.setText(String.valueOf(mPostsCount));
     }
 
     private void setProfileWidgets(UserSettings userSettings) {
@@ -420,7 +365,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 mProfileIV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UniversalImageLoader.bigPhoto(mContext, getActivity(), mUser.getProfile_photo());
+                        BigPhotoFragment.createBigPhoto(getActivity(), mUser.getProfile_photo());
                     }
                 });
             } else
@@ -449,12 +394,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     /**
      * Gets a TextView and a String.
      * If the string is not null (or empty):
-     *      Puts the string as the TV text.
-     *      Changes the textColor to Black or Blue (according the TV object) if possible [depends by the SDK Version].
-     *      Changes the textTypeSurface to Normal.
+     * Puts the string as the TV text.
+     * Changes the textColor to Black or Blue (according the TV object) if possible [depends by the SDK Version].
+     * Changes the textTypeSurface to Normal.
      * Else:
-     *      Changes the TV to unSetup [calls to  changeToUnSetup(TV)].
-     * @param item - The TV.
+     * Changes the TV to unSetup [calls to  changeToUnSetup(TV)].
+     *
+     * @param item   - The TV.
      * @param detail - The String.
      */
     private void setupOneDetailText(TextView item, String detail) {
@@ -479,6 +425,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
      * Changes the textColor to Grey if possible [depends by the SDK Version].
      * Changes the textTypeSurface to Italic.
      * Puts the matching 'hint'.
+     *
      * @param item - The TV.
      */
     private void changeToUnSetup(TextView item) {
@@ -535,51 +482,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 }
             }
         };
-
-        mRef.child(mContext.getString(R.string.db_persons))
-                .child(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())
-                .child(mContext.getString(R.string.db_field_profile_photo))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: dataSnapshot: " + dataSnapshot.getKey());
-                if (mUser == null) return;
+                String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                setupFollowers(dataSnapshot, uid);
+                setupFollowing(dataSnapshot, uid);
+                setupPostsCount(dataSnapshot, uid);
 
-                String profilePhotoDS = dataSnapshot.getValue(String.class);
-                if (profilePhotoDS != null &&
-                        !profilePhotoDS.equals(mUser.getProfile_photo())) {
-                    Log.d(TAG, "onDataChange: new profile photo!");
-
-                    mUser.setProfile_photo(dataSnapshot.getValue(String.class));
-
-                    UniversalImageLoader.setImage(mContext, mUser.getProfile_photo(), mProfileIV, profileImagePB, "");
-                    mProfileIV.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            UniversalImageLoader.bigPhoto(mContext, getActivity(), mUser.getProfile_photo());
-                        }
-                    });
-                }
+                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot, uid));
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                // Retrieve user info from the database.
-                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
-
-                // Retrieve images for the user in question
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.w(TAG, "onCancelled: DBError:  "+ databaseError.getMessage());
+                FireBaseUtils.dbErrorMessage(TAG, databaseError);
             }
         });
     }

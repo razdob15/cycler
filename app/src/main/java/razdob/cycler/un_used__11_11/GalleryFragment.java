@@ -1,4 +1,4 @@
-package razdob.cycler.instShare;
+package razdob.cycler.un_used__11_11;
 
 
 import android.content.Intent;
@@ -27,6 +27,8 @@ import java.util.ArrayList;
 
 import razdob.cycler.R;
 import razdob.cycler.instProfile.AccountSettingsActivity;
+import razdob.cycler.instShare.ShareActivity;
+import razdob.cycler.instShare.ShareNextActivity;
 import razdob.cycler.myUtils.FilePaths;
 import razdob.cycler.myUtils.FileSearch;
 import razdob.cycler.myUtils.GridImageAdapter;

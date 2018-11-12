@@ -21,9 +21,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Objects;
-
-import razdob.cycler.LoginActivity;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 

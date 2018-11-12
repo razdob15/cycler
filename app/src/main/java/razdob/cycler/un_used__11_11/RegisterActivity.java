@@ -1,4 +1,4 @@
-package razdob.cycler;
+package razdob.cycler.un_used__11_11;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,20 +21,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import razdob.cycler.models.User;
-import razdob.cycler.models.UserAccountSettings;
-import razdob.cycler.myUtils.FirebaseInserts;
+import razdob.cycler.R;
 import razdob.cycler.myUtils.MyFonts;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -98,7 +92,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                            User myUser = new User(user.getDisplayName(), user.getUid());
 //                            myUser.setEmail(user.getEmail());
-//                            FirebaseInserts.savePersonInfo(user.getUid(), myUser, new UserAccountSettings(
+//                            FirebaseInserts.savePersonInfoDB(user.getUid(), myUser, new UserAccountSettings(
 //                                    "",
 //                                    user.getDisplayName(),
 //                                    user.getDisplayName(),

@@ -1,4 +1,4 @@
-package razdob.cycler.myUtils;
+package razdob.cycler;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -33,6 +33,7 @@ import razdob.cycler.adapters.InstCommentListAdapter;
 import razdob.cycler.instHome.InstHomeActivity;
 import razdob.cycler.models.InstComment;
 import razdob.cycler.models.Photo;
+import razdob.cycler.myUtils.FirebaseMethods;
 
 /**
  * Created by Raz on 14/06/2018, for project: PlacePicker2

@@ -34,6 +34,7 @@ import razdob.cycler.models.User;
  */
 public class FeedFragment extends Fragment{
     private static final String TAG = "FeedFragment";
+    private static String PHOTOS_BUNDLE = "photos";
     private Context mContext;
 
     /* ---------------------- FIREBASE ----------------------- */
@@ -100,6 +101,14 @@ public class FeedFragment extends Fragment{
         } else {
             Log.d(TAG, "getPhotosFromBundle: bundle is null !");
         }
+    }
+
+    public static FeedFragment create(ArrayList<Photo> photos){
+        FeedFragment fragment = new FeedFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(PHOTOS_BUNDLE, photos);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     /**

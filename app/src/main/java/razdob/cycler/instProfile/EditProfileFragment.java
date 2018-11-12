@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,9 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -56,7 +53,6 @@ import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.models.User;
 import razdob.cycler.models.UserAccountSettings;
 import razdob.cycler.models.UserSettings;
-import razdob.cycler.myUtils.FirebaseInserts;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.MyFonts;
 import razdob.cycler.myUtils.Permissions;
@@ -120,7 +116,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                                                                 if (task.isSuccessful()) {
                                                                     Log.d(TAG, "onComplete: User email address updated");
                                                                     Toast.makeText(getActivity(), "email updated", Toast.LENGTH_SHORT).show();
-                                                                    mFireMethods.updateEmail(mEmail.getText().toString());
+                                                                    mFireMethods.updateEmailDB(mEmail.getText().toString());
                                                                 }
                                                             }
                                                         });
@@ -236,8 +232,9 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                         Log.d(TAG, "onClick: need to choose more favorites.");
 
                         final CustomDialog dialog = new CustomDialog(mContext, "Now you must choose " +
-                                (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritesIds.size()) + " more restaurants you like. " +
-                                "So we can offer you the best restaurants in yor area.", 2, "OK", "LATER");
+                                (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritesIds.size()) +
+                                " more restaurants you like. " + "So we can offer you the best restaurants in yor area.",
+                                2, "OK", "LATER");
 
                         dialog.setClick1(new View.OnClickListener() {
                             @Override
@@ -253,7 +250,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                             public void onClick(View v) {
                                 Log.d(TAG, "onClick: go to profile");
                                 dialog.dismiss();
-                                mContext.startActivity(new Intent(mContext, InstProfileActivity.class));
+                                InstProfileActivity.start(mContext);
                             }
                         });
 
@@ -261,7 +258,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
 
                     } else {
                         Log.d(TAG, "onClick: goto profile");
-                        mContext.startActivity(new Intent(mContext, InstProfileActivity.class));
+                        InstProfileActivity.start(mContext);
                     }
                 }
             }
@@ -339,10 +336,10 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                 tempAccountSettings.setDescription(description);
             }
         }
-        mFireMethods.updateUserAccountSettings(displayName, website, description);
+        mFireMethods.updateUserAccountSettingsDB(displayName, website, description);
         if (tempAccountSettings == null)
-            tempAccountSettings = new UserAccountSettings(description, displayName, userName,
-                    website, 0, 0, 0, userID);
+            tempAccountSettings = new UserAccountSettings(description, displayName, userName, website, 0, 0, 0, userID);
+
         // Update User (object)
         if (!email.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getEmail())) {
             if (tempUser.getEmail() == null || !email.equals(tempUser.getEmail())) {
@@ -352,11 +349,11 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                 }
                 dialog.setTargetFragment(EditProfileFragment.this, 1);
                 tempUser.setEmail(email);
-                mFireMethods.updateEmail(email);
+                mFireMethods.updateEmailDB(email);
             }
         } else {
             tempUser.setEmail(email);
-            mFireMethods.updateEmail(email);
+            mFireMethods.updateEmailDB(email);
         }
         if (tempUser.getPhone() == null || !phoneNum.equals(tempUser.getPhone())) {
             tempUser.setPhone(phoneNum);
@@ -390,11 +387,10 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         // Update UID !
         if (tempUser.getUser_id() == null)
             tempUser.setUser_id(mAuth.getCurrentUser().getUid());
-        if (tempAccountSettings != null && tempAccountSettings.getUser_id() == null)
+        if (tempAccountSettings.getUser_id() == null)
             tempAccountSettings.setUser_id(mAuth.getCurrentUser().getUid());
 
-        FirebaseInserts.savePersonInfo(mAuth.getCurrentUser().getUid(),
-                tempUser, tempAccountSettings);
+        mFireMethods.updateUserDB(mAuth.getCurrentUser().getUid(), tempUser, tempAccountSettings);
 
     }
 
@@ -492,18 +488,6 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                 } else {
                     openPhotoChooser();
                 }
-//
-//                if (shouldShowRequestPermissionRationale(Permissions.READ_STORAGE_PERMISSION[0])) {
-//                    requestPermissions(Permissions.READ_STORAGE_PERMISSION, STORAGE_REQUEST_CODE);
-//                } else {
-//                    Log.d(TAG, "onClick: open photo chooser !");
-//                    openPhotoChooser();
-//                }
-//                Log.d(TAG, "onClick: changing profile photo");
-//                Intent intent = new Intent(getActivity(), ShareActivity.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
-//                getActivity().startActivity(intent);
-//                getActivity().finish();
             }
         });
     }
@@ -549,7 +533,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
         FirebaseStorage storage = FirebaseStorage.getInstance(mFireApp, "gs://cyclerproject.appspot.com");
         mStorageReference = storage.getReference();
 
-        userID = mAuth.getCurrentUser().getUid();
+        userID = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
 
         // Init mAuthStateListener
@@ -572,7 +556,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Retrieve user info from the database.
-                setupProfileWidgets(mFireMethods.getUserSettings(dataSnapshot));
+                setupProfileWidgets(mFireMethods.getUserSettings(dataSnapshot, userID));
 
                 // Retrieve images for the user in question
             }

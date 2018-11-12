@@ -127,12 +127,7 @@ public class ChooseCurrentSubjectsActivity extends AppCompatActivity {
                     Log.d(TAG, "onClick: not chosenSubjects.");
                     Toast.makeText(mContext, "You can to choose what are you looking for, for giving good places.", Toast.LENGTH_SHORT).show();
                 }
-
-                // Intent intent = new Intent(mContext, DataActivity.class);
-                Intent intent = new Intent(mContext, HomeActivity.class);
-                intent.putExtra(getString(R.string.nearby_places_fragment), true);
-                intent.putStringArrayListExtra(getString(R.string.intent_current_subjects), chosenSubjects);
-                startActivity(intent);
+                HomeActivity.start(mContext, chosenSubjects, getString(R.string.choose_subjects_activity));
             }
         });
     }
@@ -164,10 +159,6 @@ public class ChooseCurrentSubjectsActivity extends AppCompatActivity {
         placeNameTV.setTypeface(mFonts.getBoldItalicFont());
 
         tagsIT.setHint(mContext.getString(R.string.choose_current_subjects_hint));
-
-//        findViewById(R.id.like_ll).setVisibility(View.GONE);
-//        findViewById(R.id.image_heart_blank).setVisibility(View.GONE);
-//        findViewById(R.id.image_heart_red).setVisibility(View.GONE);
     }
 
     /**
@@ -208,45 +199,19 @@ public class ChooseCurrentSubjectsActivity extends AppCompatActivity {
             }
         };
 
-//        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                DataSnapshot placeTagsDS = dataSnapshot.child(getString(R.string.db_field_places)).child(placeId).child(getString(R.string.db_field_tags));
-//                for (DataSnapshot counterDS: placeTagsDS.getChildren()) {
-//                    for (DataSnapshot tagDS: counterDS.getChildren()) {
-//                        Log.d(TAG, "onDataChange: tag: " + tagDS.getValue(String.class));
-//                    }
-//                }
-//                DataSnapshot tagsDS = dataSnapshot.child(getString(R.string.db_field_tags)){
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot mainDS : dataSnapshot.getChildren()) {
-                    if (mainDS.getKey().equals(getString(R.string.db_field_tags))) {
-                        for (DataSnapshot ds : dataSnapshot.child(getString(R.string.db_field_tags)).getChildren()) {
-                            String tag = ds.child("en").getValue(String.class);
-                            mTags.add(tag);
-                            mTagsKeeper.add(tag);
-                        }
-                        tagsIT.addTextChangedListener(mTextWatcher);
-                        setupAdapter();
-                    }
-                    mProgressBar.setVisibility(View.GONE);
-                }
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mTags = mFirebaseMethods.getAllTags(dataSnapshot);
+                mTagsKeeper = mFirebaseMethods.getAllTags(dataSnapshot);
+
+                tagsIT.addTextChangedListener(mTextWatcher);
+                setupAdapter();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.w(TAG, "onCancelled: DatabaseError: " + databaseError.getMessage());
             }
         });

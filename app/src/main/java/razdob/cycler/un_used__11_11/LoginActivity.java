@@ -1,8 +1,7 @@
-package razdob.cycler;
+package razdob.cycler.un_used__11_11;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +18,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
+import razdob.cycler.MainActivity;
+import razdob.cycler.R;
 import razdob.cycler.myUtils.FireBaseUtils;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
@@ -54,7 +53,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         if (mAuth.getCurrentUser() != null) {
             //If the mFireUser already registered in this phone AND his account is exist in the FirebaseAuth
-            Log.i("user_typeee", "" + FireBaseUtils.mUserType);
 
             finish();
             startActivity(new Intent(this, MainActivity.class));

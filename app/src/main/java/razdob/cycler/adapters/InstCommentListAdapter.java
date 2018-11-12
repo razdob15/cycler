@@ -32,10 +32,10 @@ import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import razdob.cycler.R;
+import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.models.InstComment;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
-import razdob.cycler.dialogs.DeleteDialog;
 import razdob.cycler.myUtils.FirebaseMethods;
 
 /**
@@ -122,24 +122,28 @@ public class InstCommentListAdapter extends ArrayAdapter<InstComment> {
                 @Override
                 public void onClick(View v) {
                     // TODO(!) Delete comment !
-                    final DeleteDialog dialog = new DeleteDialog(mContext, mContext.getString(R.string.del_comment_text));
-                    dialog.setNoClick(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            dialog.dismiss();
-                        }
-                    });
-                    dialog.setYesClick(new View.OnClickListener() {
+                    final CustomDialog deleteDialog = CustomDialog.createDeleteDialog(mContext, mContext.getString(R.string.del_comment_dialog_title),
+                            mContext.getString(R.string.del_comment_text));
+
+                    deleteDialog.setClick1(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Log.d(TAG, "onClick: delete comment: " + comment.getComment_id());
                             mFireMethods.removePhotoCommentDB(mPhoto, comment.getComment_id());
                             comments.remove(comment);
                             notifyDataSetChanged();
-                            dialog.dismiss();
+                            deleteDialog.dismiss();
                         }
                     });
-                    dialog.show();
+
+                    deleteDialog.setClick2(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            deleteDialog.dismiss();
+                        }
+                    });
+
+                    deleteDialog.show();
                 }
             });
         }

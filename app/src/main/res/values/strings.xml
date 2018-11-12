@@ -240,6 +240,8 @@
     <string name="must_location_dialog_title">Location Is Must</string>
     <string name="location_permission_dialog_title">Location Permission</string>
     <string name="home_explain_dialog_title">Search Nearby Restaurants</string>
+    <string name="del_comment_dialog_title">Delete Comment</string>
+    <string name="del_post_dialog_title">Delete Post</string>
 
     <string name="not_rest_dialog_text">I don\'t sure this place is a restaurant. \nDoes it a restaurant in your opinion?</string>
     <string name="must_location_dialog_text">You must to choose the restaurant where the picture was taken, before upload it.</string>

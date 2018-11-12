@@ -1,11 +1,9 @@
-package razdob.cycler.dialogs;
+package razdob.cycler.un_used__11_11;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -23,10 +21,10 @@ public class DeleteDialog extends Dialog {
     private Context mContext;
     private Button yesBtn, noBtn;
     private View.OnClickListener yesClick, noClick;
-    private String dialogText;
-    private TextView dialogTV;
+    private String text, title;
+    private TextView textTV, titleTV;
 
-    public DeleteDialog(@NonNull Context context, String dialogText) {
+    public DeleteDialog(@NonNull Context context,String dialogTitle, String dialogText) {
         super(context);
         this.mContext = context;
         this.yesClick = new View.OnClickListener() {
@@ -43,7 +41,8 @@ public class DeleteDialog extends Dialog {
                 dismiss();
             }
         };
-        this.dialogText = dialogText;
+        this.text = dialogText;
+        this.title = dialogTitle;
     }
 
     @Override
@@ -54,11 +53,13 @@ public class DeleteDialog extends Dialog {
         setCancelable(true);
         yesBtn = findViewById(R.id.yes_btn);
         noBtn = findViewById(R.id.no_btn);
-        dialogTV = findViewById(R.id.dialog_text);
+        textTV = findViewById(R.id.dialog_text);
+        titleTV = findViewById(R.id.dialog_title);
 
         yesBtn.setOnClickListener(yesClick);
         noBtn.setOnClickListener(noClick);
-        dialogTV.setText(dialogText);
+        textTV.setText(text);
+        titleTV.setText(title);
     }
 
     /* --------------------------- Setters ------------------------------------- */
@@ -70,8 +71,12 @@ public class DeleteDialog extends Dialog {
         this.noClick = noClick;
     }
 
-    public void setDialogText(String text) {
-        dialogTV.setText(text);
+    public void setText(String text) {
+        textTV.setText(text);
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override

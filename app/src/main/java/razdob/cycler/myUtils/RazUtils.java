@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +29,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,17 +49,9 @@ import razdob.cycler.models.PlaceDetails;
 public class RazUtils {
     private static final String TAG = "RazUtils";
 
-    public static HashMap<String, ArrayList<Integer>> getSubjectsAndTypes(DataSnapshot dataSnapshot) {
-        HashMap<String, ArrayList<Integer>> subjectsAndTypes = new HashMap<>();
-        for (DataSnapshot subDS : dataSnapshot.child("subjects").getChildren()) {
-            ArrayList<Integer> types = new ArrayList<>();
-            for (DataSnapshot typeDS : subDS.child("types").getChildren()) {
-                types.add(typeDS.getValue(int.class));
-            }
-            subjectsAndTypes.put(subDS.getKey(), types);
-        }
-        return subjectsAndTypes;
-    }
+    /* -----------------------------------------------------------------------
+    --------------------------- Distance Functions ---------------------------
+    ------------------------------------------------------------------------- */
 
     /**
      * Returns the distance in km as double
@@ -66,8 +60,7 @@ public class RazUtils {
      * @param latLng2 Second location
      * @return Distance between the two locations in km.
      */
-    public static double getDistance(LatLng latLng1, LatLng latLng2) {
-        // TODO(!): Check this...
+    public static double getDistance(LatLng latLng1, LatLng latLng2){
         double lat1 = latLng1.latitude, lat2 = latLng2.latitude;
         double lng1 = latLng1.longitude, lng2 = latLng2.longitude;
         double earthRadius = 3958.75;
@@ -97,6 +90,10 @@ public class RazUtils {
             return "very close";
     }
 
+    /* -----------------------------------------------------------------------
+    --------------------------- Place Functions ------------------------------
+    ------------------------------------------------------------------------- */
+
     /**
      * Checks if the placeTypes contains a type which is connected to food.
      *
@@ -119,7 +116,9 @@ public class RazUtils {
         return false;
     }
 
+
     public static ArrayList<String> filterPlaces(MyAlgorithm algorithm, ArrayList<String> placesIds, ArrayList<String> userSubjects) {
+        // TODO(!): Check this function !
         // Places Tags DataSnapshot
         DataSnapshot ptDS = algorithm.getmMainDS().child(algorithm.getContext().getString(R.string.db_field_places_tag_counters));
         ArrayList<String> result = new ArrayList<>();
@@ -144,7 +143,6 @@ public class RazUtils {
         }
         return result;
     }
-
 
     /**
      * TODO(1): Move this method to MyAlgorithm Class !
@@ -193,26 +191,6 @@ public class RazUtils {
         return arr;
     }
 
-    /**
-     * Get the bitmap from a photo ULR.
-     *
-     * @param imgUrl - url address (to a photo).
-     * @return - Bitmap form the URL.
-     */
-    public static Bitmap getBitmapFromURL(String imgUrl) {
-
-
-        ImageLoader imageLoader = ImageLoader.getInstance();
-        imageLoader.loadImage(imgUrl, new SimpleImageLoadingListener() {
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                // loaded bitmap is here (loadedImage)
-
-            }
-        });
-        return null;
-
-    }
 
     /**
      * Open a web url in a browser.
@@ -227,20 +205,11 @@ public class RazUtils {
             Toast.makeText(context, "web address is not valid", Toast.LENGTH_SHORT).show();
         } else {
             Log.d(TAG, "openUrl: opening url: " + urlLink);
-            Uri uri = Uri.parse(urlLink); // missing 'http://' will cause crashed
+            Uri uri = Uri.parse(urlLink);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
         }
     }
-
-    /**
-     * Starts ViewOnePlaceActivity.
-     */
-    public static void viewPlace(Context context, String placeId, int activityNum) {
-        Log.d(TAG, "viewPlace: Show place's details: " + placeId);
-        ViewOnePlaceActivity.start(context, placeId, activityNum);
-    }
-
 
     public static PlaceDetails getPlaceDetails(Task<PlaceBufferResponse> task, String placeId) {
         PlaceDetails placeDetails = new PlaceDetails(placeId);
@@ -265,12 +234,12 @@ public class RazUtils {
         return placeDetails;
     }
 
-    public static Task<PlacePhotoResponse> getPlacePhotoTask(GeoDataClient geoDataClient, Task<PlacePhotoMetadataResponse> task,
-                                                             boolean isRandom) {
+    public static Task<PlacePhotoResponse> getPlaceOnePhotoTask(GeoDataClient geoDataClient, Task<PlacePhotoMetadataResponse> task,
+                                                                boolean isRandom) {
         // Get the list of photos.
         PlacePhotoMetadataResponse photos = task.getResult();
         // Get the PlacePhotoMetadataBuffer (metadata for the first 10 photos).
-        PlacePhotoMetadata photoMetadata = null;
+        PlacePhotoMetadata photoMetadata;
         if (photos != null) {
             PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
             if (isRandom) {
@@ -285,27 +254,6 @@ public class RazUtils {
         }
         return null;
     }
-
-    public static ArrayList<Task<PlacePhotoResponse>> getPlacePhotosTask(GeoDataClient geoDataClient, Task<PlacePhotoMetadataResponse> task, int count) {
-        // Get the list of photos.
-        PlacePhotoMetadataResponse photos = task.getResult();
-        // Get the PlacePhotoMetadataBuffer (metadata for the first 10 photos).
-        if (photos != null) {
-            PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
-            ArrayList<Task<PlacePhotoResponse>> responses = new ArrayList<>();
-            for (int i = 0; i < count; i++) {
-                photoMetadataBuffer.get(i);
-                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);  // Photo in index 0
-                responses.add(geoDataClient.getPhoto(photoMetadata));
-            }
-            return responses;
-
-        }
-        return null;
-    }
-
-
-
 }
 
 

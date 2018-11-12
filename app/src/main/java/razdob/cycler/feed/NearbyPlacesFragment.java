@@ -70,6 +70,7 @@ import razdob.cycler.myUtils.RazUtils;
     public class NearbyPlacesFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks {
     private static final String TAG = "NearbyPlacesFragment";
+    private static String CURRENT_SUBJECT_BUNDLE = "chosen_current_subjects";
     private Context mContext;
 
     // Constants
@@ -168,9 +169,6 @@ import razdob.cycler.myUtils.RazUtils;
                     LatLng placeLatLng = new LatLng(placeLocation.getDouble("lat"),
                             placeLocation.getDouble("lng"));
                     LatLng myLatLng = new LatLng(mLoc.getLatitude(), mLoc.getLongitude());
-
-
-                    Log.d(TAG, "onPostExecute: distance(" + i + "): " + RazUtils.getDistance(placeLatLng, myLatLng));
                 }
 
                 if (mPlacesIds.size() == 0) {
@@ -278,11 +276,21 @@ import razdob.cycler.myUtils.RazUtils;
     }
 
     private void getCurrentSubjectsFromBundle() {
-        if (getArguments() != null) {
+        Bundle args = getArguments();
+        if (args != null) {
             currentSubjects = getArguments().getStringArrayList(mContext.getString(R.string.intent_current_subjects));
             Log.d(TAG, "getCurrentSubjectsFromBundle: current_subjects:  " + currentSubjects);
             needWaitToSubjects = (currentSubjects != null && currentSubjects.size() > 0);
         }
+    }
+
+    public static NearbyPlacesFragment show(ArrayList<String> currentSubjects) {
+        NearbyPlacesFragment fragment = new NearbyPlacesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(CURRENT_SUBJECT_BUNDLE, currentSubjects);
+        fragment.setArguments(bundle);
+        return fragment;
+
     }
 
 

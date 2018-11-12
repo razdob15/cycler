@@ -24,11 +24,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import razdob.cycler.instProfile.InstProfileActivity;
-import razdob.cycler.instSearch.SearchUserActivity;
 import razdob.cycler.models.User;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.MyFonts;
-import razdob.cycler.myUtils.UsersListAdapter;
+import razdob.cycler.adapters.UsersListAdapter;
 
 /**
  * Created by Raz on 09/08/2018, for project: PlacePicker2
@@ -36,6 +35,11 @@ import razdob.cycler.myUtils.UsersListAdapter;
 public class UsersListActivity extends AppCompatActivity {
     private static final String TAG = "UsersListActivity";
     private final Context mContext = UsersListActivity.this;
+
+    // Intent Extras
+    private static final String TITLE_EXTRA = "title";
+    private static final String ACTIVITY_NUM_EXTRA = "activity_num";
+    private static final String USERS_EXTRAS = "users_list";
 
     /* ---------------------- FIREBASE ----------------------- */
     private FirebaseApp mFireApp;
@@ -51,15 +55,19 @@ public class UsersListActivity extends AppCompatActivity {
     private ListView userLV;
 
     // vars
+    private ArrayList<String> usersIds;
     private ArrayList<User> users;
     private UsersListAdapter mAdapter;
-    private Intent mIntent;
     private MyFonts mFonts;
+    private int activityNum = 1;
+    private String title;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_list);
+
+        mFireMethods = new FirebaseMethods(mContext);
 
         titleTV = findViewById(R.id.title);
         userLV = findViewById(R.id.users_lv);
@@ -67,16 +75,35 @@ public class UsersListActivity extends AppCompatActivity {
         mFonts = new MyFonts(mContext);
         titleTV.setTypeface(mFonts.getBoldFont());
 
-        // Set title Text from intent.
-        mIntent = getIntent();
-        titleTV.setText(mIntent.getStringExtra(mContext.getString(R.string.intent_title)));
-
-        users = new ArrayList<>();
-
-        mFireMethods = new FirebaseMethods(mContext);
+        // Get Intent !
+        getDataFromIntent();
+        // Setup Firebase
         setupFirebaseStaff();
-        setupUsers();
 
+        if (title != null) titleTV.setText(title);
+        if (usersIds != null) setupUsers(usersIds);
+
+
+    }
+
+
+    /**
+     * Init the variables: title, usersIds, activityNum;
+     */
+    private void getDataFromIntent() {
+        Intent intent = getIntent();
+        title = intent.getStringExtra(TITLE_EXTRA);
+        usersIds = intent.getStringArrayListExtra(USERS_EXTRAS);
+        int intentActivityNum = intent.getIntExtra(ACTIVITY_NUM_EXTRA, -1);
+        if (intentActivityNum >= 0) activityNum = intentActivityNum;
+    }
+
+    public static void start(@NonNull Context context, String title, ArrayList<String> usersIds, int activityNum) {
+        Intent intent = new Intent(context, UsersListActivity.class);
+        intent.putExtra(TITLE_EXTRA, title);
+        intent.putExtra(USERS_EXTRAS, usersIds);
+        intent.putExtra(ACTIVITY_NUM_EXTRA, activityNum);
+        context.startActivity(intent);
     }
 
     /**
@@ -84,12 +111,12 @@ public class UsersListActivity extends AppCompatActivity {
      * Gets the matching UserObjects from the DB.
      * Calling to 'setupUsersListView()' method.
      */
-    private void setupUsers() {
-        final ArrayList<String> usersIds = mIntent.getStringArrayListExtra(mContext.getString(R.string.intent_users));
+    private void setupUsers(final ArrayList<String> usersIds) {
+        users = new ArrayList<>();
         if (usersIds != null && usersIds.size() > 0) {
             mRef.child(mContext.getString(R.string.db_persons)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (String uid : usersIds) {
                         users.add(dataSnapshot.child(uid).getValue(User.class));
                     }
@@ -97,7 +124,7 @@ public class UsersListActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.d(TAG, "onCancelled: DBError: " + databaseError.getMessage());
                 }
             });
@@ -118,12 +145,7 @@ public class UsersListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "onItemClick: Selected user: " + users.get(position).toString());
 
-                // Navigate to selected-user's profile activity
-                Intent intent = new Intent(mContext, InstProfileActivity.class);
-                intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
-                intent.putExtra(getString(R.string.intent_user), users.get(position));
-                startActivity(intent);
-
+                InstProfileActivity.start(mContext, mContext.getString(R.string.search_activity), users.get(position), activityNum);
             }
         });
     }
@@ -176,7 +198,6 @@ public class UsersListActivity extends AppCompatActivity {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
         checkCurrentUser(mAuth.getCurrentUser());
-
     }
 
     @Override
@@ -190,5 +211,8 @@ public class UsersListActivity extends AppCompatActivity {
     public void onBackPressed() {
         finish();
     }
+
+
+
 }
 

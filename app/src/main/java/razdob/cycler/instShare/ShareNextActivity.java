@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import razdob.cycler.BigPhotoFragment;
 import razdob.cycler.ChoosePlaceTagsActivity;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
@@ -513,9 +514,9 @@ public class ShareNextActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onClick(View v) {
                 if (bitmap != null)
-                    UniversalImageLoader.bigPhoto(mContext, ShareNextActivity.this, bitmap);
+                    BigPhotoFragment.createBigPhoto(ShareNextActivity.this, bitmap);
                 else if (imgUrl != null)
-                    UniversalImageLoader.bigPhoto(mContext, ShareNextActivity.this, imgUrl);
+                    BigPhotoFragment.createBigPhoto(ShareNextActivity.this, imgUrl);
             }
         });
 

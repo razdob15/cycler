@@ -18,7 +18,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.api.LogDescriptor;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,7 +69,6 @@ public class FirebaseMethods {
     // Vars
     private Context mContext;
     private double mPhotoUploadProgress = 0;
-    private ArrayList<String> favoritePlacesIds;
     private MyAlgorithm mAlgorithm;
     private User myUser;
     // Get place Name
@@ -88,7 +86,7 @@ public class FirebaseMethods {
      * Storage (Main)
      * UserID (if mAuth!= null)
      * mAlgorithm (Use the mRef DataSnapshot)
-     * favoritePlacesIds - According the mRef-DS
+     * mFavoritePlacesIds - According the mRef-DS
      * <p>
      * creates ProgressDialog
      *
@@ -114,13 +112,6 @@ public class FirebaseMethods {
                 myUser = dataSnapshot
                         .child(mContext.getString(R.string.db_persons))
                         .child(mUserID).getValue(User.class);
-
-                favoritePlacesIds = new ArrayList<>();
-                for (DataSnapshot ds : dataSnapshot.child(mContext.getString(R.string.db_persons)).child(mUserID)
-                        .child(mContext.getString(R.string.db_field_favorite_places_ids)).getChildren()) {
-                    favoritePlacesIds.add(ds.getValue(String.class));
-                    Log.d(TAG, "onDataChange: ds = " + ds.getKey());
-                }
             }
 
             @Override
@@ -145,12 +136,6 @@ public class FirebaseMethods {
         Log.d(TAG, "getTimeStamp: Israel: " + sdf.format(new Date()));
         return sdf.format(new Date());
     }
-
-
-
-
-
-
 
 
    /*
@@ -381,12 +366,11 @@ public class FirebaseMethods {
                 Uri firebaseUrl = taskSnapshot.getUploadSessionUri();
 
                 //add the new photo to 'photo' node and 'user_photos' node
-                photo.setImage_path(firebaseUrl.toString());
+                photo.setImage_path(Objects.requireNonNull(firebaseUrl).toString());
                 putCasualPhotoDb(photo);
 
                 // navigate to the main feed so the user can see their photos
-                Intent intent = new Intent(mContext, HomeActivity.class);
-                mContext.startActivity(intent);
+                HomeActivity.start(mContext);
                 if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
 
             }
@@ -518,10 +502,8 @@ public class FirebaseMethods {
 
                                 putPlacePhotoDB(photo.getPlace_id(), photo);
 
-                                // navigate to the main feed so the user can see their photos
-                                Intent intent = new Intent(mContext, HomeActivity.class);
-                                intent.putExtra(mContext.getString(R.string.return_to_fragment), mContext.getString(R.string.feed_fragment));
-                                mContext.startActivity(intent);
+                                HomeActivity.start(mContext, null, null, mContext.getString(R.string.feed_activity));
+
                                 if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
                             }
                         }
@@ -621,7 +603,7 @@ public class FirebaseMethods {
 
     /**
      * Delete the photo from Firebase. Uses the methods:
-     * deletePhotoDB(photo)
+     * deletePhotoDB(photo).
      * deletePhotoStorage(photo, ...)
      *
      * @param photo - The photo for delete
@@ -669,8 +651,7 @@ public class FirebaseMethods {
                             }
                             mContext.startActivity(intent);
                         } else {
-                            Intent intent = new Intent(mContext, HomeActivity.class);
-                            mContext.startActivity(intent);
+                            HomeActivity.start(mContext);
                         }
 
                         if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
@@ -696,10 +677,7 @@ public class FirebaseMethods {
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onComplete: Photo deleted: " + photo.getPhoto_id());
-
-
-                        Intent intent = new Intent(mContext, InstProfileActivity.class);
-                        mContext.startActivity(intent);
+                        InstProfileActivity.start(mContext);
                         if (mProgressDialog.isShowing()) mProgressDialog.dismiss();
                     }
                 }
@@ -814,6 +792,7 @@ public class FirebaseMethods {
     /**
      * validate that the current user exists in the photo's favorites.
      * call to 'updatePhotoLikesDB(photo)'
+     *
      * @param photo - Photo to like.
      */
     public void likePhotoDB(Photo photo) {
@@ -1079,32 +1058,34 @@ public class FirebaseMethods {
      * @param mainDS
      * @return
      */
-    public UserSettings getUserSettings(DataSnapshot mainDS) {
+    public UserSettings getUserSettings(DataSnapshot mainDS, String uid) {
         Log.d(TAG, "getUserAccountSettings: retrieving user account settings from firebase");
 
+        User user = getUserById(mainDS, uid);
         UserAccountSettings settings = new UserAccountSettings();
-        User user = new User("anonymous", FirebaseAuth.getInstance(mFireApp).getCurrentUser().getUid());
-
-        for (DataSnapshot ds : mainDS.getChildren()) {
-
-            // user_account_settings Node
-            if (Objects.equals(ds.getKey(), mContext.getString(R.string.db_user_account_settings))) {
-                Log.d(TAG, "getUserAccountSettings: mainDS: " + ds);
-                if (ds.hasChild(mUserID))
-                    settings = ds.child(mUserID).getValue(UserAccountSettings.class);
-            } else if (ds.getKey().equals(mContext.getString(R.string.db_persons))) {
-                Log.d(TAG, "getUserAccountSettings: mainDS: " + ds);
-                user = ds.child(mUserID).getValue(User.class);
-                if (user != null)
-                    Log.d(TAG, "getUserAccountSettings: Retrieve user information" + user.toString());
-            }
-
-        }
+        if (mainDS.child(mContext.getString(R.string.db_user_account_settings)).hasChild(uid))
+            settings = mainDS.child(mContext.getString(R.string.db_user_account_settings)).child(uid).getValue(UserAccountSettings.class);
 
         return new UserSettings(user, settings);
     }
 
+    /**
+     * Gets a user_id and returns its followings (the users that he follows after).
+     *
+     * @param uid    - The user to get his followings.
+     * @param mainDS - main DataSnapshot.
+     * @return List of the user's followings.
+     */
+    public ArrayList<String> getUserFollowings(String uid, DataSnapshot mainDS) {
+        Log.d(TAG, "getUserFollowings: uid: " + uid);
+        ArrayList<String> followingsIds = new ArrayList<>();
 
+        for (DataSnapshot followingDS : mainDS.child(mContext.getString(R.string.db_field_following))
+                .child(uid).getChildren()) {
+            followingsIds.add(followingDS.getKey());
+        }
+        return followingsIds;
+    }
 
 
     /*
@@ -1115,6 +1096,23 @@ public class FirebaseMethods {
 
     // -------------------------- Account Settings -------------------------------- //
 
+    public void updateUserDB(String uid, User user, UserAccountSettings accountSettings) {
+        if (user.getEmail() == null) {
+            String email = "";
+            if (myUser.getEmail() != null) {
+                email = myUser.getEmail();
+            } else if (Objects.requireNonNull(mAuth.getCurrentUser()).getEmail() != null)
+                email = mAuth.getCurrentUser().getEmail();
+            else {
+                Log.w(TAG, "updateUserDB: NO EMAIL !! Check it out !!");
+            }
+            user.setEmail(email);
+        }
+        mRef.child(mContext.getString(R.string.db_persons)).child(uid).setValue(user);
+        mRef.child(mContext.getString(R.string.db_user_account_settings)).child(uid).setValue(accountSettings);
+        myUser = user;
+    }
+
     /**
      * Updates 'user_account_settings' for current user in the DB:
      * 'user_account_settings' -> user_id -> itemName -> itemValue
@@ -1123,13 +1121,13 @@ public class FirebaseMethods {
      * @param website
      * @param description
      */
-    public void updateUserAccountSettings(String displayName, String website, String description) {
+    public void updateUserAccountSettingsDB(String displayName, String website, String description) {
 
-        Log.d(TAG, "updateUserAccountSettings: updating user_account_settings");
+        Log.d(TAG, "updateUserAccountSettingsDB: updating user_account_settings");
 
-        if (displayName == null) Log.d(TAG, "updateUserAccountSettings: Delete displayName");
-        if (website == null) Log.d(TAG, "updateUserAccountSettings: Delete website");
-        if (description == null) Log.d(TAG, "updateUserAccountSettings: Delete description");
+        if (displayName == null) Log.d(TAG, "updateUserAccountSettingsDB: Delete displayName");
+        if (website == null) Log.d(TAG, "updateUserAccountSettingsDB: Delete website");
+        if (description == null) Log.d(TAG, "updateUserAccountSettingsDB: Delete description");
 
         mRef.child(mContext.getString(R.string.db_user_account_settings))
                 .child(mUserID)
@@ -1220,8 +1218,8 @@ public class FirebaseMethods {
      *
      * @param email - new User's email.
      */
-    public void updateEmail(String email) {
-        Log.d(TAG, "updateEmail: updating email to: " + email);
+    public void updateEmailDB(String email) {
+        Log.d(TAG, "updateEmailDB: updating email to: " + email);
         // TODO(2): Validate email...
 
         mRef.child(mContext.getString(R.string.db_persons))
@@ -1261,22 +1259,42 @@ public class FirebaseMethods {
     -------------------------------------------------------------------------------
     */
 
-    // FavoritePlaces initializes in the constructor.
+    /**
+     *
+     * @return myUser's favorites places.
+     */
     public ArrayList<String> getFavoritePlacesIds() {
-        return favoritePlacesIds;
+        if (myUser == null) return null ;
+        return (ArrayList<String>) myUser.getFavoritePlacesIDs();
     }
 
-    // FavoritePlaces initializes in the constructor.
-    public ArrayList<String> getFavoritePlacesIds(DataSnapshot mainDS) {
-        favoritePlacesIds = new ArrayList<>();
+    /**
+     *
+     * @param mainDS - Main DataSnapshot.
+     * @param uid - User's id to get his favorites places.
+     * @return - user's (with uid) favorite placesIds.
+     */
+    public ArrayList<String> getFavoritePlacesIds(DataSnapshot mainDS, String uid) {
+        ArrayList<String> favoritePlacesIds = new ArrayList<>();
         for (DataSnapshot ds : mainDS.child(mContext.getString(R.string.db_persons))
-                .child(mAuth.getCurrentUser().getUid())
+                .child(uid)
                 .child(mContext.getString(R.string.db_field_favorite_places_ids))
                 .getChildren()) {
             favoritePlacesIds.add(ds.getValue(String.class));
         }
         return favoritePlacesIds;
     }
+
+    /**
+     *
+     * @param mainDS - Main DataSnapshot.
+     * @return - current user's favorite places from the DB.
+     */
+    public ArrayList<String> getFavoritePlacesIds(DataSnapshot mainDS) {
+        return getFavoritePlacesIds(mainDS, Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
+    }
+
+
 
     /**
      * Marks the place as restaurant:
@@ -1316,7 +1334,6 @@ public class FirebaseMethods {
         } else
             return false;
     }
-
 
     // ---------------------------- Place's Tags ------------------------------- //
     public void clearAndSaveTag(Tag tag, String place_id, ArrayList<String> users_ids) {
@@ -1394,13 +1411,22 @@ public class FirebaseMethods {
         Toast.makeText(mContext, "your tag saved !", Toast.LENGTH_SHORT).show();
     }
 
+    public ArrayList<String> getAllTags(DataSnapshot mainDS) {
+        ArrayList<String> tags = new ArrayList<>();
+        for (DataSnapshot ds : mainDS.child(mContext.getString(R.string.db_field_tags)).getChildren()) {
+            String tag = ds.child("en").getValue(String.class);
+            tags.add(tag);
+        }
+        return tags;
+    }
+
 
     // -------------------------- Like & Unlike Places ----------------------------------- //
 
     /**
-     * 1) Add the placeId to the favoritePlacesIds.
+     * 1) Add the placeId to the mFavoritePlacesIds.
      * 2) Add place-like to the DB:
-     * a) 'persons' -> user_id -> 'favoritePlacesIDs' -> updated favoritePlacesIds.
+     * a) 'persons' -> user_id -> 'favoritePlacesIDs' -> updated mFavoritePlacesIds.
      * b) 'places_likes' -> place_id -> user_id -> true
      * 3) Like place in to the mAlgorithm.
      *
@@ -1408,7 +1434,7 @@ public class FirebaseMethods {
      */
     public void likePlaceDB(String placeId) {
         Log.d(TAG, "likePlaceDB: user: " + mUserID + " likes place: " + placeId);
-
+        ArrayList<String> favoritePlacesIds = getFavoritePlacesIds();
         if (favoritePlacesIds.contains(placeId)) return;    // User already like this place
 
         // 'persons' -> UID -> 'favorites_places_ids'   [LIST]add: PLACE_ID
@@ -1427,12 +1453,13 @@ public class FirebaseMethods {
                 .setValue(true);
 
         mAlgorithm.likePlaceGraph(placeId);
+        myUser.setFavoritePlacesIDs(favoritePlacesIds);
     }
 
     /**
-     * 1) Removes the placeId to the favoritePlacesIds.
+     * 1) Removes the placeId to the mFavoritePlacesIds.
      * 2) Remove Add place-like to the DB:
-     * a) 'persons' -> user_id -> 'favoritePlacesIDs' -> updated favoritePlacesIds.
+     * a) 'persons' -> user_id -> 'favoritePlacesIDs' -> updated mFavoritePlacesIds.
      * b) 'places_likes' -> place_id -> user_id -> null        [Delete]
      * 3) Unlike place in the mAlgorithm.
      *
@@ -1440,6 +1467,7 @@ public class FirebaseMethods {
      */
     public void unlikePlaceDB(String placeId) {
         Log.d(TAG, "unlikePlaceDB: user: " + mUserID + " unlikes place: " + placeId);
+        ArrayList<String> favoritePlacesIds = getFavoritePlacesIds();
 
         if (!favoritePlacesIds.contains(placeId)) return;  // User does not like this place
 
@@ -1459,6 +1487,7 @@ public class FirebaseMethods {
                 .setValue(null);
 
         mAlgorithm.unlikePlaceGraph(placeId);
+        myUser.setFavoritePlacesIDs(favoritePlacesIds);
     }
 
 
@@ -1540,8 +1569,8 @@ public class FirebaseMethods {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                FireBaseUtils.dbErrorMessage(TAG, databaseError);
             }
         });
 
@@ -1559,6 +1588,7 @@ public class FirebaseMethods {
     public User getCurrentUser() {
         return myUser;
     }
+
 
     /*
     -------------------------------------------------------------------------------

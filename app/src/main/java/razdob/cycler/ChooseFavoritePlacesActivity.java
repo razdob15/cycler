@@ -23,15 +23,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.dialogs.NotRestaurantDialog;
 import razdob.cycler.feed.HomeActivity;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.instProfile.AccountSettingsActivity;
-import razdob.cycler.models.User;
-import razdob.cycler.models.UserAccountSettings;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.RemoteConfigConsts;
 import razdob.cycler.myUtils.StringManipulation;
@@ -215,8 +211,7 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
                                 favoritePlacesIds.add(place.getId());
                                 mFireMethods.likePlaceDB(place.getId());
                                 if (favoritePlacesIds.size() < RemoteConfigConsts.MIN_FAVORITES_COUNT) {
-                                    Toast.makeText(mContext, place.getName().toString() + " added to your favorites.\nYou need to choose "
-                                            + (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritePlacesIds.size()) + " more places", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(mContext, place.getName().toString() + " added to your favorites.\nYou need to choose " + (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritePlacesIds.size()) + " more places", Toast.LENGTH_LONG).show();
                                     reopenMap();
                                 } else {
                                     finishChoosing(dataSnapshot);
@@ -272,9 +267,7 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
      */
     private void goToHome() {
         Log.d(TAG, "goToHome: Navigating to the HomeActivity.");
-        Intent intent = new Intent(mContext, HomeActivity.class);
-        intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.choose_favorite_places_activity));
-        startActivity(intent);
+        HomeActivity.start(mContext, null, mContext.getString(R.string.choose_favorite_places_activity));
         finish();
     }
 

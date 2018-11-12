@@ -6,21 +6,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.util.LogWriter;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -37,10 +33,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
@@ -51,9 +47,8 @@ import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.models.User;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
-import razdob.cycler.myUtils.RazUtils;
 import razdob.cycler.myUtils.StringManipulation;
-import razdob.cycler.myUtils.UsersListAdapter;
+import razdob.cycler.adapters.UsersListAdapter;
 
 /**
  * Created by Raz on 18/06/2018, for project: PlacePicker2
@@ -62,7 +57,9 @@ public class SearchUserActivity extends AppCompatActivity {
     private static final String TAG = "SearchUserActivity";
     private static final int PLACE_PICKER_REQUEST = 5;
     private static final int ACTIVITY_NUM = 1;
+
     private final Context mContext = SearchUserActivity.this;
+    private final FragmentActivity fragmentActivity = SearchUserActivity.this;
 
 
     /* ---------------------- FIREBASE ----------------------- */
@@ -86,7 +83,6 @@ public class SearchUserActivity extends AppCompatActivity {
     // Vars
     private List<User> mUserList;
     private UsersListAdapter mAdapter;
-    private ArrayList<String> favoritePlacesIds;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,6 +103,8 @@ public class SearchUserActivity extends AppCompatActivity {
         setupFirebase();
 //        hideSoftKeyboard();  // TODO(0): why?
         initTextListener();
+
+        BottomNavigationViewHelper.setupBottomNavigationView(mContext, fragmentActivity, ACTIVITY_NUM);
     }
 
     private void matchWidgetsToIds() {
@@ -226,9 +224,9 @@ public class SearchUserActivity extends AppCompatActivity {
                     .orderByChild(getString(R.string.db_field_name)).equalTo(keyword);
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot singleSnap : dataSnapshot.getChildren()) {
-                        Log.d(TAG, "onDataChange: found a user: " + singleSnap.getValue(User.class).toString());
+                        Log.d(TAG, "onDataChange: found a user: " + Objects.requireNonNull(singleSnap.getValue(User.class)).toString());
 
                         mUserList.add(singleSnap.getValue(User.class));
                         // update the users list view
@@ -237,7 +235,7 @@ public class SearchUserActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
                 }
             });
@@ -247,8 +245,7 @@ public class SearchUserActivity extends AppCompatActivity {
 
     private void updateUsersList() {
         Log.d(TAG, "updateUsersList: updating users list");
-        mAdapter = new UsersListAdapter(SearchUserActivity.this, R.layout.layout_user_list_item,
-                mUserList);
+        mAdapter = new UsersListAdapter(SearchUserActivity.this, R.layout.layout_user_list_item, mUserList);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -256,10 +253,7 @@ public class SearchUserActivity extends AppCompatActivity {
                 Log.d(TAG, "onItemClick: Selected user: " + mUserList.get(position).toString());
 
                 // Navigate to selected-user's profile activity
-                Intent intent = new Intent(SearchUserActivity.this, InstProfileActivity.class);
-                intent.putExtra(getString(R.string.calling_activity), getString(R.string.search_activity));
-                intent.putExtra(getString(R.string.intent_user), mUserList.get(position));
-                startActivity(intent);
+                InstProfileActivity.start(mContext, mContext.getString(R.string.search_activity), mUserList.get(position), ACTIVITY_NUM);
 
             }
         });
@@ -301,28 +295,6 @@ public class SearchUserActivity extends AppCompatActivity {
         }
     }
 
-    private void chooseFavoritePlace(String placeId) {
-        Log.d(TAG, "chooseFavoritePlace: add place: " + placeId + " to favorites.");
-        if (favoritePlacesIds.contains(placeId)) {
-            Toast.makeText(SearchUserActivity.this, "You've already choose this place", Toast.LENGTH_LONG).show();
-            reopenMap();
-        } else {
-            favoritePlacesIds.add(placeId);
-
-            mFireMethods.likePlaceDB(placeId);
-
-
-            if (favoritePlacesIds.size() >= 3) {
-                Intent intent = new Intent(SearchUserActivity.this, FivePlacesActivity.class);
-                intent.putStringArrayListExtra(getString(R.string.intent_love_places_ids), favoritePlacesIds);
-                startActivity(intent);
-            } else {
-                Toast.makeText(SearchUserActivity.this, "" + favoritePlacesIds.size() + " places was chosen", Toast.LENGTH_SHORT).show();
-                reopenMap();
-            }
-        }
-    }
-
     private void setupFirebase() {
         Log.d(TAG, "setupFirebase: called.");
 
@@ -345,24 +317,10 @@ public class SearchUserActivity extends AppCompatActivity {
                 }
             }
         };
-        if (mFireMethods.getFavoritePlacesIds() == null) {
+    }
 
-            mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    favoritePlacesIds = mFireMethods.getFavoritePlacesIds(dataSnapshot);
-
-                    BottomNavigationViewHelper.setupBottomNavigationView(mContext, SearchUserActivity.this, ACTIVITY_NUM);
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Log.w(TAG, "onCancelled: DB_Error: " + databaseError.getMessage());
-                }
-            });
-        } else {
-            favoritePlacesIds = mFireMethods.getFavoritePlacesIds();
-            BottomNavigationViewHelper.setupBottomNavigationView(mContext, SearchUserActivity.this, ACTIVITY_NUM);
-        }
+    public static void start(Context context) {
+        Intent intent = new Intent(context, SearchUserActivity.class);
+        context.startActivity(intent);
     }
 }

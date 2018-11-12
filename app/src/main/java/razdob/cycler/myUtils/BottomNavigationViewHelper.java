@@ -11,17 +11,12 @@ import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-import java.util.ArrayList;
-
-import razdob.cycler.feed.DataActivity;
 import razdob.cycler.R;
 import razdob.cycler.feed.HomeActivity;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.giliPlaces.GiliActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.instSearch.SearchUserActivity;
 import razdob.cycler.instShare.MyShareActivity;
-import razdob.cycler.instShare.ShareActivity;
 
 /**
  * Created by Raz on 27/05/2018, for project: PlacePicker2
@@ -48,13 +43,11 @@ public class BottomNavigationViewHelper {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.ic_house:         // ITEM_ID = 0
-                        Intent intent1 = new Intent(context, HomeActivity.class);
-                        context.startActivity(intent1);
+                        HomeActivity.start(context);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_search:        // ITEM_ID = 1
-                        Intent intent2 = new Intent(context, SearchUserActivity.class);
-                        context.startActivity(intent2);
+                        SearchUserActivity.start(context);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_share:        // ITEM_ID = 2
@@ -69,7 +62,7 @@ public class BottomNavigationViewHelper {
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_profile:     // ITEM_ID = 4
-                        context.startActivity(new Intent(context, InstProfileActivity.class));
+                        InstProfileActivity.start(context);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                 }

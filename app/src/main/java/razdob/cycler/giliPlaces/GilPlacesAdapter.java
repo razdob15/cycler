@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.PlacePhotoMetadata;
-import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
 import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
@@ -25,7 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import razdob.cycler.R;
 import razdob.cycler.models.PlaceDetails;
@@ -107,7 +104,7 @@ public class GilPlacesAdapter extends RecyclerView.Adapter<GilPlacesAdapter.MyVi
             @Override
             public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> placePhotoMetadataResponseTask) {
 
-                Task<PlacePhotoResponse> photoTask = RazUtils.getPlacePhotoTask(mGeoDataClient, placePhotoMetadataResponseTask, true);
+                Task<PlacePhotoResponse> photoTask = RazUtils.getPlaceOnePhotoTask(mGeoDataClient, placePhotoMetadataResponseTask, true);
                 if (photoTask != null) {
                     photoTask.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
                         @Override

@@ -10,8 +10,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -19,20 +17,17 @@ import android.widget.RelativeLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
-import razdob.cycler.instFavorites.InstFavoritesActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.adapters.MainFeedListAdapter;
 import razdob.cycler.myUtils.SectionPagerAdapter;
 import razdob.cycler.myUtils.UniversalImageLoader;
-import razdob.cycler.myUtils.ViewInstCommentsFragment;
+import razdob.cycler.ViewInstCommentsFragment;
 
 /**
  * Created by Raz on 27/05/2018, for project: PlacePicker2

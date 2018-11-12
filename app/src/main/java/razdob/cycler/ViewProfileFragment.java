@@ -1,4 +1,4 @@
-package razdob.cycler.myUtils;
+package razdob.cycler;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -37,15 +37,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import razdob.cycler.MainRegisterActivity;
-import razdob.cycler.R;
-import razdob.cycler.UsersListActivity;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
 import razdob.cycler.instProfile.AccountSettingsActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
 import razdob.cycler.models.UserAccountSettings;
 import razdob.cycler.models.UserSettings;
+import razdob.cycler.myUtils.BottomNavigationViewHelper;
+import razdob.cycler.myUtils.FirebaseMethods;
+import razdob.cycler.myUtils.GridImageAdapter;
+import razdob.cycler.myUtils.UniversalImageLoader;
 
 import static android.view.View.GONE;
 
@@ -55,6 +55,7 @@ import static android.view.View.GONE;
  */
 public class ViewProfileFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "ViewProfileFragment";
+    private static final String USER_EXTRA = "intent_user";
 
     public interface OnGridImageSelectedListener {
         void onGridSelected(Photo photo, int activityNumber);
@@ -68,10 +69,8 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
                 Toast.makeText(mContext, "no followers", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d(TAG, "onClick: navigate to UsersListActivity: " + followersIds);
-                Intent intent = new Intent(mContext, UsersListActivity.class);
-                intent.putExtra(mContext.getString(R.string.intent_title), mContext.getString(R.string.toolbar_followers));
-                intent.putStringArrayListExtra(mContext.getString(R.string.intent_users), followersIds);
-                mContext.startActivity(intent);
+
+                UsersListActivity.start(mContext, mContext.getString(R.string.toolbar_followers), followersIds, ACTIVITY_NUM);
             }
         } else if (v == mFollowing || v == followingsLL) {
             Log.d(TAG, "onClick: Show the followingsIDs");
@@ -79,12 +78,8 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
                 Toast.makeText(mContext, "no followings", Toast.LENGTH_SHORT).show();
             } else {
                 Log.d(TAG, "onClick: navigate to UsersListActivity: " + followingsIDs);
-                Intent intent = new Intent(mContext, UsersListActivity.class);
-                intent.putExtra(mContext.getString(R.string.intent_title), mContext.getString(R.string.toolbar_followings));
-                intent.putStringArrayListExtra(mContext.getString(R.string.intent_users), followingsIDs);
-                mContext.startActivity(intent);
+                UsersListActivity.start(mContext, mContext.getString(R.string.toolbar_followings), followingsIDs, ACTIVITY_NUM);
             }
-
         }
     }
 
@@ -530,15 +525,14 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
     }
 
     private User getUserFromBundle() {
-        Log.d(TAG, "getUserFromBundle: arguments: " + getArguments());
+        Bundle bundle = getArguments();
+        Log.d(TAG, "getUserFromBundle: arguments: " + bundle);
 
-        Bundle bundle = this.getArguments();
         if (bundle != null) {
             return bundle.getParcelable(getString(R.string.intent_user));
         } else {
             return null;
         }
-
     }
 
     @Override
@@ -563,7 +557,7 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
         mProfileIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UniversalImageLoader.bigPhoto(mContext, getActivity(), user.getProfile_photo());
+                BigPhotoFragment.createBigPhoto(getActivity(), user.getProfile_photo());
             }
         });
         mUserName.setText(user.getName());
@@ -647,5 +641,17 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
             mAuth.removeAuthStateListener(mAuthStateListener);
     }
 
+    public static void show(FragmentActivity activity, User user) {
+        Log.d(TAG, "show: user: " + user.toString());
+        ViewProfileFragment fragment = new ViewProfileFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(USER_EXTRA, user);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack("View Inst Profile Fragment");
+        transaction.commit();
+    }
 
 }

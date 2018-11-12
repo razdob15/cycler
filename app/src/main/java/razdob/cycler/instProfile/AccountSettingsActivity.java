@@ -34,6 +34,10 @@ public class AccountSettingsActivity extends AppCompatActivity {
     public static final int EDIT_PROFILE_FRAGMENT_NUM = 0;
     public static final int SUPPORT_FRAGMENT_NUM = 1;
     public static final int SIGN_OUT_FRAGMENT_NUM = 2;
+    private static final String SELECTED_BITMAP_EXTRA = "selected_bitmap";
+    private static final String RETURN_TO_FRAGMENT_EXTRA = "return_to_fragment";
+    private static final String CALLING_ACTIVITY_EXTRA = "calling_activity";
+    private static final String FIRST_TIME = "first_time";
 
     private Context mContext;
 
@@ -109,6 +113,15 @@ public class AccountSettingsActivity extends AppCompatActivity {
 
             setViewPager(EDIT_PROFILE_FRAGMENT_NUM);
         }
+    }
+
+    public static void start(Context context, Bitmap selectedBitmap, String returnToFragment, String callingActivity, boolean firstTime) {
+        Intent intent = new Intent(context, AccountSettingsActivity.class);
+        intent.putExtra(SELECTED_BITMAP_EXTRA, selectedBitmap);
+        intent.putExtra(RETURN_TO_FRAGMENT_EXTRA, returnToFragment);
+        intent.putExtra(CALLING_ACTIVITY_EXTRA, callingActivity);
+        intent.putExtra(FIRST_TIME, firstTime);
+        context.startActivity(intent);
     }
 
     private void setupFragments() {

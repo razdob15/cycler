@@ -61,6 +61,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import razdob.cycler.BigPhotoFragment;
 import razdob.cycler.ChoosePlaceTagsActivity;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
@@ -491,7 +492,7 @@ public class ViewOnePlaceActivity extends AppCompatActivity
 
                 // TODO(!) Make a difference between users-photos and Google-photos
 
-                UniversalImageLoader.bigPhoto(mContext, ViewOnePlaceActivity.this, bitmap);
+                BigPhotoFragment.createBigPhoto(ViewOnePlaceActivity.this, bitmap);
 
             }
         });

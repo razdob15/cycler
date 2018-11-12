@@ -1,27 +1,17 @@
 package razdob.cycler.feed;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,16 +21,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 import razdob.cycler.R;
 import razdob.cycler.dialogs.CustomDialog;
-import razdob.cycler.instShare.MyShareActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
+import razdob.cycler.myUtils.FireBaseUtils;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.Permissions;
 import razdob.cycler.myUtils.SectionPagerAdapter;
@@ -55,6 +44,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private static final int ACTIVITY_NUM = 0;
 
+    // Intent Extras
+    private static final String CALLING_ACTIVITY_EXTRA = "calling_activity";
+    private static final String RETURN_FRAGMENT_EXTRA = "return_fragment";
+    private static final String CURRENT_SUBJECT_EXTRA = "chosen_current_subjects";
+
     /* ---------------------- FIREBASE ----------------------- */
     private FirebaseApp mFireApp;
     private FirebaseAuth mAuth;
@@ -67,10 +61,47 @@ public class HomeActivity extends AppCompatActivity {
 
     // Vars
     private FirebaseMethods mFireMethods;
-    private ArrayList<String> followingsIds;
     private ArrayList<String> currentSubjects;
     private ArrayList<Photo> photos;
     private final int LOCATION_PERMISSION_CODE = 11;
+    private String returnToFragment = "";
+    private String callingActivity = "";
+
+
+    public static void start(Context context, ArrayList<String> chosenSubjects, String callingActivity, String returnToFragment) {
+        Intent intent = new Intent(context, HomeActivity.class);
+        if (chosenSubjects != null)
+            intent.putStringArrayListExtra(CURRENT_SUBJECT_EXTRA, chosenSubjects);
+        if (callingActivity != null) intent.putExtra(CALLING_ACTIVITY_EXTRA, callingActivity);
+        if (returnToFragment != null) intent.putExtra(RETURN_FRAGMENT_EXTRA, returnToFragment);
+        context.startActivity(intent);
+    }
+
+    public static void start(Context context, ArrayList<String> chosenSubjects, String callingActivity) {
+        start(context, chosenSubjects, callingActivity, null);
+    }
+
+    public static void start(Context context) {
+        start(context, null, null);
+
+
+    }
+
+    public static void start(Context context, ArrayList<String> chosenSubjects) {
+        start(context, chosenSubjects, null);
+    }
+
+    private void getDataFromIntent() {
+        Log.d(TAG, "getDataFromIntent: called.");
+
+        Intent intent = getIntent();
+        currentSubjects = intent.getStringArrayListExtra(CURRENT_SUBJECT_EXTRA);
+        callingActivity = intent.getStringExtra(CALLING_ACTIVITY_EXTRA);
+
+        if (intent.hasExtra(mContext.getString(R.string.return_to_fragment))) {
+            returnToFragment = intent.getStringExtra(mContext.getString(R.string.return_to_fragment));
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,9 +114,14 @@ public class HomeActivity extends AppCompatActivity {
         mFireMethods = new FirebaseMethods(mContext);
         mViewPager = findViewById(R.id.viewpager_container);
 
-        followingsIds = new ArrayList<>();
         photos = new ArrayList<>();
 
+        getDataFromIntent();
+        if (callingActivity != null && callingActivity.equals(mContext.getString(R.string.choose_favorite_places_activity))) {
+            // First time(?) in this activity, need an explain...
+            Log.d(TAG, "setupViewPager: open explain dialog for HomeActivity");
+            openExplainDialog();
+        }
         setupFirebaseStaff();
         BottomNavigationViewHelper.setupBottomNavigationView(mContext, HomeActivity.this, ACTIVITY_NUM);
     }
@@ -93,33 +129,11 @@ public class HomeActivity extends AppCompatActivity {
     private void setupViewPager() {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
 
-
-        Bundle feedBundle = new Bundle();
-        Bundle placesBundle = new Bundle();
-
-        Intent intent = getIntent();
-
-        if (intent.hasExtra(mContext.getString(R.string.calling_activity)) &&
-                intent.getStringExtra(mContext.getString(R.string.calling_activity)).equals(mContext.getString(R.string.choose_favorite_places_activity))) {
-            // First time(?) in this activity, need an explain...
-            Log.d(TAG, "setupViewPager: open explain dialog for HomeActivity");
-
-            openExplainDialog();
-        }
-
-        currentSubjects = intent.getStringArrayListExtra(mContext.getString(R.string.intent_current_subjects));
-        placesBundle.putStringArrayList(mContext.getString(R.string.intent_current_subjects), currentSubjects);
-        feedBundle.putParcelableArrayList(mContext.getString(R.string.bundle_photos), photos);
-
-        FeedFragment feedFragment = new FeedFragment();
-        NearbyPlacesFragment placesFragment = new NearbyPlacesFragment();
-
-        feedFragment.setArguments(feedBundle);
-        placesFragment.setArguments(placesBundle);
+        FeedFragment feedFragment = FeedFragment.create(photos);
+        NearbyPlacesFragment placesFragment = NearbyPlacesFragment.show(currentSubjects);
 
         adapter.addFragment(placesFragment); // Index 0
         adapter.addFragment(feedFragment);   // Index 1
-
 
         mViewPager.setAdapter(adapter);
 
@@ -129,11 +143,9 @@ public class HomeActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(0)).setText("PLACES");
         Objects.requireNonNull(tabLayout.getTabAt(1)).setText("FEED");
 
-        if (intent.hasExtra(mContext.getString(R.string.return_to_fragment))) {
-            if (intent.getStringExtra(mContext.getString(R.string.return_to_fragment)).equals(mContext.getString(R.string.feed_fragment))) {
-                Log.d(TAG, "setupViewPager: Open As FeedFragment");
-                mViewPager.setCurrentItem(1);
-            }
+        if (returnToFragment.equals(mContext.getString(R.string.feed_activity))) {
+            Log.d(TAG, "setupViewPager: Open As FeedFragment");
+            mViewPager.setCurrentItem(1);
         }
     }
 
@@ -232,17 +244,12 @@ public class HomeActivity extends AppCompatActivity {
 
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                followingsIds.add(mAuth.getCurrentUser().getUid());
-                for (DataSnapshot followingDS : dataSnapshot
-                        .child(mContext.getString(R.string.db_field_following))
-                        .child(mAuth.getCurrentUser().getUid()).getChildren()) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                ArrayList<String> followingsIds = mFireMethods.getUserFollowings(uid, dataSnapshot);
+                followingsIds.add(uid);
 
-                    followingsIds.add(followingDS.getKey());
-                }
-
-                for (DataSnapshot userPhotosDS : dataSnapshot
-                        .child(mContext.getString(R.string.db_user_photos)).getChildren()) {
+                for (DataSnapshot userPhotosDS : dataSnapshot.child(mContext.getString(R.string.db_user_photos)).getChildren()) {
                     if (followingsIds.contains(userPhotosDS.getKey())) {
                         for (DataSnapshot photoDS : userPhotosDS.getChildren()) {
                             photos.add(mFireMethods.getPhotoFromDB(photoDS));
@@ -254,8 +261,8 @@ public class HomeActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.w(TAG, "onCancelled: DatabaseError: " + databaseError.getMessage());
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                FireBaseUtils.dbErrorMessage(TAG, databaseError);
             }
         });
     }

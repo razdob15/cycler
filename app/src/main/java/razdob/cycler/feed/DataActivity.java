@@ -429,10 +429,6 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
                     LatLng placeLatLng = new LatLng(placeLocation.getDouble("lat"),
                             placeLocation.getDouble("lng"));
                     LatLng myLatLng = new LatLng(mLoc.getLatitude(), mLoc.getLongitude());
-
-
-
-                    Log.d(TAG, "onPostExecute: distance("+i+"): "+RazUtils.getDistance(placeLatLng, myLatLng));
                 }
 
                 if (mPlacesIds.size() == 0) {

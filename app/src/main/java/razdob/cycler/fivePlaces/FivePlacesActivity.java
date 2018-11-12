@@ -450,4 +450,9 @@ public class FivePlacesActivity extends AppCompatActivity implements RecyclerPla
         }
 
     }
+
+    public static void start(Context context) {
+        Intent intent = new Intent(context, FivePlacesActivity.class);
+        context.startActivity(intent);
+    }
 }

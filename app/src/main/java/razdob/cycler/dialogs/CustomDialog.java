@@ -22,12 +22,12 @@ public class CustomDialog extends Dialog {
     private static final String TAG = "CustomDialog";
 
     private LinearLayout mainLL;
-    private Context mContext;
     private Button btn1, btn2;
     private View.OnClickListener click1, click2;
     private String dialogTitle, dialogText, text1, text2;
     private TextView titleTV, dialogTV;
     private int buttonsCount;
+    private boolean changeBackground = true;
 
     /**
      *
@@ -41,7 +41,6 @@ public class CustomDialog extends Dialog {
     public CustomDialog(@NonNull Context context, String dialogTitle, String dialogText, int buttonsCount,
                         String btn1Text, String btn2Text) {
         super(context);
-        this.mContext = context;
         this.click1 = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,7 +74,6 @@ public class CustomDialog extends Dialog {
     public CustomDialog(@NonNull Context context, String dialogText, int buttonsCount,
                         String btn1Text, String btn2Text) {
         super(context);
-        this.mContext = context;
         this.click1 = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,7 +104,7 @@ public class CustomDialog extends Dialog {
         setCancelable(true);
 
         mainLL = findViewById(R.id.dialog_main);
-        mainLL.setBackgroundResource(R.drawable.my_button);
+        if (changeBackground) mainLL.setBackgroundResource(R.drawable.my_button);
 
         titleTV = findViewById(R.id.dialog_title);
         if (dialogTitle == null || dialogTitle.length() == 0)
@@ -207,16 +205,33 @@ public class CustomDialog extends Dialog {
      */
     public void setDialogTitle(String dialogTitle) {
         this.dialogTitle = dialogTitle;
-        if (titleTV != null) {
+        if (titleTV != null && dialogTitle != null) {
             titleTV.setText(dialogTitle);
             titleTV.setVisibility(View.VISIBLE);
         }
 
     }
 
+    public void setChangeBackground(boolean changeBackground) {
+        this.changeBackground = changeBackground;
+    }
+
     @Override
     public void onBackPressed() {
         dismiss();
+    }
+
+    /**
+     * Creates delete dialog (btn1- 'YES', btn2 - 'NO').
+     * @param context - App Context.
+     * @param title - Dialog's title.
+     * @param text - Dialog's text.
+     * @return - new CustomDialog with 'YES' \ 'NO' Buttons.
+     */
+    public static CustomDialog createDeleteDialog(Context context, String title, String text) {
+        CustomDialog deleteDialog = new CustomDialog(context, title, text, 2, "YES", "NO");
+        deleteDialog.setChangeBackground(false);
+        return  deleteDialog;
     }
 
 }

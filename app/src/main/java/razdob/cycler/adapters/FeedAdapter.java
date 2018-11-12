@@ -1,6 +1,5 @@
 package razdob.cycler.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,26 +31,25 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import razdob.cycler.BigPhotoFragment;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.UsersListActivity;
-import razdob.cycler.dialogs.DeleteDialog;
-import razdob.cycler.feed.HomeActivity;
+import razdob.cycler.dialogs.CustomDialog;
+import razdob.cycler.fivePlaces.ViewOnePlaceActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.MyFonts;
-import razdob.cycler.myUtils.RazUtils;
 import razdob.cycler.myUtils.SquareImageView;
 import razdob.cycler.myUtils.UniversalImageLoader;
-import razdob.cycler.myUtils.ViewInstCommentsFragment;
+import razdob.cycler.ViewInstCommentsFragment;
 
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
@@ -172,17 +170,14 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: navigate to user-profile: " + uploadUser.getUser_id());
-                Intent intent = new Intent(mContext, InstProfileActivity.class);
-                intent.putExtra(mContext.getString(R.string.calling_activity), mContext.getString(R.string.feed_activity));
-                intent.putExtra(mContext.getString(R.string.intent_user), uploadUser);
-                mContext.startActivity(intent);
+                InstProfileActivity.start(mContext, mContext.getString(R.string.feed_activity), uploadUser, 0);
             }
         });
         holder.profileIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Big profile photo.");
-                UniversalImageLoader.bigPhoto(mContext, fragmentActivity, uploadUser.getProfile_photo());
+                BigPhotoFragment.createBigPhoto(fragmentActivity, uploadUser.getProfile_photo());
             }
         });
         holder.blankHeart.setOnClickListener(new View.OnClickListener() {
@@ -212,13 +207,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             public void onClick(View v) {
                 if (photo.getLikes() != null && photo.getLikes().size() > 0) {
                     Log.d(TAG, "onClick: navigate to UsersListActivity with the likers");
-                    Intent intent = new Intent(mContext, UsersListActivity.class);
-                    intent.putExtra(mContext.getString(R.string.intent_title), "LIKES");
 
                     ArrayList<String> likedUsersIds = new ArrayList<>(photo.getLikes());
 
-                    intent.putExtra(mContext.getString(R.string.intent_users), likedUsersIds);
-                    mContext.startActivity(intent);
+                    UsersListActivity.start(mContext, "LIKES",likedUsersIds, 0);
                 } else {
                     Log.d(TAG, "onClick: NO LIKES");
                 }
@@ -236,9 +228,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         holder.deleteTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: open 'delete photo' dialog for photo: " + photo.getPhoto_id());
-                final DeleteDialog deleteDialog = new DeleteDialog(mContext, mContext.getString(R.string.del_post_text));
-                deleteDialog.setYesClick(new View.OnClickListener() {
+                Log.d(TAG, "onClick: open 'delete post' dialog for photo: " + photo.getPhoto_id());
+
+                final CustomDialog deleteDialog = CustomDialog.createDeleteDialog(mContext, mContext.getString(R.string.del_post_dialog_title),
+                        mContext.getString(R.string.del_post_text));
+
+                deleteDialog.setClick1(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: delete post: " + photo.getPhoto_id());
@@ -248,12 +243,10 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
                         photos.remove(photo);
                         deleteDialog.dismiss();
 
-
-//                        notifyDataSetChanged();  TODO: check without this line
-
+                        // notifyDataSetChanged();  TODO: check without this line
                     }
                 });
-                deleteDialog.setNoClick(new View.OnClickListener() {
+                deleteDialog.setClick2(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         deleteDialog.dismiss();
@@ -304,7 +297,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
             holder.placeNameTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    RazUtils.viewPlace(mContext, photo.getPlace_id(), 0);
+                    ViewOnePlaceActivity.start(mContext, photo.getPlace_id(), 0);
                 }
             });
         } else {

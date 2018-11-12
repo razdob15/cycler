@@ -1,4 +1,4 @@
-package razdob.cycler.myUtils;
+package razdob.cycler.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -29,6 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import razdob.cycler.R;
 import razdob.cycler.models.User;
 import razdob.cycler.models.UserAccountSettings;
+import razdob.cycler.myUtils.UniversalImageLoader;
 
 /**
  * Created by Raz on 18/06/2018, for project: PlacePicker2

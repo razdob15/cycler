@@ -10,14 +10,6 @@ import android.util.Log;
 public class StringManipulation {
     private static final String TAG = "StringManipulation";
 
-    public static String expandUserName(String userName) {
-        return userName.replace(".", " ");
-    }
-
-    public static String condenseUserName(String userName) {
-        return userName.replace(" ", ".");
-    }
-
     public static String getTags(String string) {
         if (string.contains("#")) {
             StringBuilder sb = new StringBuilder();

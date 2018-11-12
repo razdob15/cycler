@@ -10,18 +10,16 @@ import android.util.Log;
 public class MyFonts {
     private static final String TAG = "MyFonts";
 
-    private Context mContext;
     private Typeface mBoldFont, mBoldItalicFont, mLightFont, mLightItalicFont;
 
 
     public MyFonts(Context context) {
         Log.d(TAG, "MyFonts: Called.");
-        this.mContext = context;
 
-        mBoldFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/Panton-ExtraBold.otf");
-        mBoldItalicFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/Panton-ExtraBoldItalic.otf");
-        mLightFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/Panton-ExtraLight.otf");
-        mLightItalicFont = Typeface.createFromAsset(mContext.getAssets(), "fonts/Panton-ExtraLightItalic.otf");
+        mBoldFont = Typeface.createFromAsset(context.getAssets(), "fonts/Panton-ExtraBold.otf");
+        mBoldItalicFont = Typeface.createFromAsset(context.getAssets(), "fonts/Panton-ExtraBoldItalic.otf");
+        mLightFont = Typeface.createFromAsset(context.getAssets(), "fonts/Panton-ExtraLight.otf");
+        mLightItalicFont = Typeface.createFromAsset(context.getAssets(), "fonts/Panton-ExtraLightItalic.otf");
     }
 
     public Typeface getBoldFont() {

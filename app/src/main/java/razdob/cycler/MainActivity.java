@@ -33,6 +33,7 @@ import java.util.Objects;
 
 import razdob.cycler.feed.HomeActivity;
 import razdob.cycler.instProfile.AccountSettingsActivity;
+import razdob.cycler.models.User;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.Permissions;
 import razdob.cycler.myUtils.RemoteConfigConsts;
@@ -133,46 +134,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: check if the user exists");
-                DataSnapshot personsDS = dataSnapshot.child(mContext.getString(R.string.db_persons));
-                DataSnapshot usersAccountSettingsDS = dataSnapshot.child(mContext.getString(R.string.db_user_account_settings));
-                String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
 
+                // Name Check
                 if (!mFireMethods.userHasName(dataSnapshot)) {
                     Log.d(TAG, "onDataChange: user doesn't have a name !");
                     goToUserSettings();
                     return;
                 }
-//                if (!personsDS.hasChild(uid) || !usersAccountSettingsDS.hasChild(uid)) {
-//                    // User not in DB
-//                    Log.d(TAG, "onDataChange: user not in DB");
-//                    goToUserSettings();
-//                    return;
-//                }
-//                if ((personsDS.hasChild(uid) && usersAccountSettingsDS.hasChild(uid))) {
-//                    if (!usersAccountSettingsDS.child(uid).hasChild(mContext.getString(R.string.db_field_display_name)) || !personsDS.child(uid).hasChild(mContext.getString(R.string.db_field_name))) {
-//                        Log.d(TAG, "onDataChange: user has no NAME");
-//                        goToUserSettings();
-//                        return;
-//                    }
-//                }
 
-                Log.d(TAG, "onDataChange: Check if user has favorite places.");
-                if (personsDS.child(uid).hasChild(mContext.getString(R.string.db_field_favorite_places_ids))) {
-                    Log.d(TAG, "onDataChange: user has favorites");
-                    if (personsDS.child(uid).child(mContext.getString(R.string.db_field_favorite_places_ids)).getChildrenCount() < RemoteConfigConsts.MIN_FAVORITES_COUNT) {
-                        Log.d(TAG, "onDataChange: user doesn't have enough favorites. has: " +
-                                personsDS.child(uid).child(mContext.getString(R.string.db_field_favorite_places_ids)).getChildrenCount());
+                final String uid = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+                User user = mFireMethods.getUserById(dataSnapshot, uid);
 
-                        // Create FavoritesList
-                        mFavPlacesIds = new ArrayList<>();
-                        for (DataSnapshot placeDS : personsDS.child(uid)
-                                .child(mContext.getString(R.string.db_field_favorite_places_ids))
-                                .getChildren()) {
-                            mFavPlacesIds.add(placeDS.getValue(String.class));
-                        }
-                        // Need to choose more favorites places
+                // Favorites Check
+                if (user.hasFavorites()) {
+                    if (user.getFavoritePlacesIDs().size() < RemoteConfigConsts.MIN_FAVORITES_COUNT) {
+                        Log.d(TAG, "onDataChange: user doesn't have enough favorites. has: " + user.getFavoritePlacesIDs().size());
                         chooseFavoritePlaces();
-                        return;
+                        mFavPlacesIds = (ArrayList<String>) user.getFavoritePlacesIDs();
                     }
                 } else {
                     Log.d(TAG, "onDataChange: user has no favorites");
@@ -182,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                // User has Name & Favorites
+                // Default
                 goToHomeActivity();
             }
 
@@ -233,8 +211,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void goToHomeActivity() {
         Log.d(TAG, "goToHomeActivity: Navigating to the profile.");
-        Intent intent = new Intent(mContext, HomeActivity.class);
-        startActivity(intent);
+        HomeActivity.start(mContext);
         finish();
     }
 

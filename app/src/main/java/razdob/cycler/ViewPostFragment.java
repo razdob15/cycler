@@ -1,6 +1,5 @@
-package razdob.cycler.myUtils;
+package razdob.cycler;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,23 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBufferResponse;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,7 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
@@ -45,15 +33,15 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import razdob.cycler.MainRegisterActivity;
-import razdob.cycler.R;
-import razdob.cycler.dialogs.DeleteDialog;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
+import razdob.cycler.dialogs.CustomDialog;
+import razdob.cycler.fivePlaces.ViewOnePlaceActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
-import razdob.cycler.models.Like;
 import razdob.cycler.models.Photo;
 import razdob.cycler.models.User;
-import razdob.cycler.models.UserAccountSettings;
+import razdob.cycler.myUtils.BottomNavigationViewHelper;
+import razdob.cycler.myUtils.FirebaseMethods;
+import razdob.cycler.myUtils.SquareImageView;
+import razdob.cycler.myUtils.UniversalImageLoader;
 
 /**
  * Created by Raz on 14/06/2018, for project: PlacePicker2
@@ -149,8 +137,8 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
                 placeNameTV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        RazUtils.viewPlace(mContext, mPhoto.getPlace_id(), mActivityNumber);
-                    }
+                        ViewOnePlaceActivity.start(mContext, mPhoto.getPlace_id(), mActivityNumber);
+                        }
                 });
             } else {
                 placeNameTV.setVisibility(View.GONE);
@@ -542,8 +530,9 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
                 Log.d(TAG, "onClick: open 'delete photo' dialog for photo: " + mPhoto.getPhoto_id());
-                final DeleteDialog deleteDialog = new DeleteDialog(mContext, mContext.getString(R.string.del_post_text));
-                deleteDialog.setYesClick(new View.OnClickListener() {
+                final CustomDialog deleteDialog = CustomDialog.createDeleteDialog(mContext, mContext.getString(R.string.del_post_dialog_title),
+                        mContext.getString(R.string.del_post_text));
+                deleteDialog.setClick1(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.d(TAG, "onClick: delete post: " + mPhoto.getPhoto_id());
@@ -559,7 +548,7 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
                         deleteDialog.dismiss();
                     }
                 });
-                deleteDialog.setNoClick(new View.OnClickListener() {
+                deleteDialog.setClick2(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         deleteDialog.dismiss();

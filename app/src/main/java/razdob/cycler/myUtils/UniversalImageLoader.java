@@ -53,12 +53,10 @@ public class UniversalImageLoader {
                 .imageScaleType(ImageScaleType.EXACTLY)
                 .displayer(new FadeInBitmapDisplayer(300)).build();
 
-        ImageLoaderConfiguration configuration = new ImageLoaderConfiguration.Builder(mContext)
+        return new ImageLoaderConfiguration.Builder(mContext)
                 .defaultDisplayImageOptions(defaultOptions)
                 .memoryCache(new WeakMemoryCache())
                 .diskCacheSize(100 * 1024 * 1024).build();
-
-        return configuration;
     }
 
 
@@ -83,6 +81,7 @@ public class UniversalImageLoader {
         imageLoader.displayImage(append + imgUrl, imageView, new ImageLoadingListener() {
             @Override
             public void onLoadingStarted(String imageUri, View view) {
+                Log.d(TAG, "onLoadingStarted: image_url: " + imageUri);
                 if (mProgressBar != null) mProgressBar.setVisibility(View.VISIBLE);
             }
 
@@ -108,59 +107,4 @@ public class UniversalImageLoader {
         });
     }
 
-    /**
-     * Open the photo (from bitmap) as big with BigPhotoFragment.
-     *
-     * @param context - current context
-     * @param activity - current Activity
-     * @param bitmap - Bitmap to make big.
-     */
-    public static void bigPhoto(Context context, FragmentActivity activity, Bitmap bitmap) {
-        Log.d(TAG, "bigPhoto: called with bitmap");
-        BigPhotoFragment bigPhotoFrag = new BigPhotoFragment();
-        Bundle bundle = new Bundle();
-
-        if (bitmap != null) {
-            Log.d(TAG, "bigPhoto: bitmap: " + bitmap.toString());
-            bundle.putParcelable(context.getString(R.string.selected_bitmap), bitmap);
-
-            bigPhotoFrag.setArguments(bundle);
-
-            FragmentManager manager = activity.getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.container, bigPhotoFrag, "bigFragment");
-            transaction.addToBackStack(null);
-            transaction.commit();
-        } else {
-            Log.w(TAG, "bigPhoto: Bitmap is NULL !");
-        }
-
-    }
-
-    /**
-     * Open the photo (from url) as big with BigPhotoFragment.
-     *
-     * @param context - current context
-     * @param activity - current Activity
-     * @param photoUrl - url of the photo to make big.
-     */
-    public static void bigPhoto(Context context, FragmentActivity activity, String photoUrl) {
-        Log.d(TAG, "bigPhoto: called with url");
-        BigPhotoFragment bigPhotoFrag = new BigPhotoFragment();
-        Bundle bundle = new Bundle();
-
-        if (photoUrl != null) {
-            Log.d(TAG, "bigPhoto: url: " + photoUrl);
-            bundle.putString(context.getString(R.string.bundle_photo), photoUrl);
-
-            bigPhotoFrag.setArguments(bundle);
-
-            FragmentManager manager = activity.getSupportFragmentManager();
-            FragmentTransaction transaction = manager.beginTransaction();
-            transaction.add(R.id.container, bigPhotoFrag, "bigFragment");
-            transaction.addToBackStack(null);
-            transaction.commit();
-        }
-
-    }
 }

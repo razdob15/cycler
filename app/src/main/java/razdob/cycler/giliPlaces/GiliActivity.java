@@ -113,10 +113,9 @@ public class GiliActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if (FireBaseUtils.myFireAuthListener(mContext, firebaseAuth, TAG, mAuthListener)) {
+                if (FireBaseUtils.defaultFireAuthListener(mContext, firebaseAuth, TAG, mAuthListener)) {
                     uid = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
                 }
-
             }
         };
 
