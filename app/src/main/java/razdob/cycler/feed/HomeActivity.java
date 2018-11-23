@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,6 +42,7 @@ import razdob.cycler.myUtils.SectionPagerAdapter;
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
     private final Context mContext = HomeActivity.this;
+    private final FragmentActivity mActivity = HomeActivity.this;
 
     private static final int ACTIVITY_NUM = 0;
 
@@ -130,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
         SectionPagerAdapter adapter = new SectionPagerAdapter(getSupportFragmentManager());
 
         FeedFragment feedFragment = FeedFragment.create(photos);
-        NearbyPlacesFragment placesFragment = NearbyPlacesFragment.show(currentSubjects);
+        NearbyPlacesFragment placesFragment = NearbyPlacesFragment.createFragment(mActivity, currentSubjects);
 
         adapter.addFragment(placesFragment); // Index 0
         adapter.addFragment(feedFragment);   // Index 1
@@ -153,8 +155,10 @@ public class HomeActivity extends AppCompatActivity {
     private void openExplainDialog() {
         Log.d(TAG, "openExplainDialog: open a dialog to explain to the user how to use this activity");
 
-        final CustomDialog dialog = new CustomDialog(mContext, mContext.getString(R.string.home_explain_dialog_title),
-                mContext.getString(R.string.home_explain_dialog_text1), 1, "OK, Next", null);
+
+        final CustomDialog dialog = CustomDialog.createOneButtonDialog(mContext, mContext.getString(R.string.home_explain_dialog_title),
+                mContext.getString(R.string.home_explain_dialog_text1), "OK, Next");
+
         dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,8 +196,10 @@ public class HomeActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == LOCATION_PERMISSION_CODE) {
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                final CustomDialog dialog = new CustomDialog(mContext, mContext.getString(R.string.location_permission_dialog_title), mContext.getString(R.string.location_permission_dialog_text),
-                        2, "OK", "Cancel");
+
+                final CustomDialog dialog = CustomDialog.createTwoButtonsDialog(mContext, mContext.getString(R.string.location_permission_dialog_title),
+                        mContext.getString(R.string.location_permission_dialog_text),
+                        "OK", "Cancel");
                 dialog.setClick1(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

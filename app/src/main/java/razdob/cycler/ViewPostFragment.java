@@ -53,7 +53,7 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         Log.d(TAG, "onClick: click");
         if (v != deleteTV && deleteTV.getVisibility() != View.GONE) {
-            Log.d(TAG, "onClick: don't show deleteTV");
+            Log.d(TAG, "onClick: don't createFragment deleteTV");
             deleteTV.setVisibility(View.GONE);
             mMoreIV.setVisibility(View.VISIBLE);
         }
@@ -126,7 +126,8 @@ public class ViewPostFragment extends Fragment implements View.OnClickListener {
         mFireMethods = new FirebaseMethods(mContext);
 
         try {
-            UniversalImageLoader.setImage(getContext(), Objects.requireNonNull(getPhotoFromBundle()).getImage_path(), mPostImage, postPB, "");
+            UniversalImageLoader.setImagePicasso(Objects.requireNonNull(getPhotoFromBundle()).getImage_path(), mPostImage, postPB);
+//            UniversalImageLoader.setImage(getContext(), Objects.requireNonNull(getPhotoFromBundle()).getImage_path(), mPostImage, postPB, "");
             mActivityNumber = getActivityNumFromBundle();
             mPhoto = getPhotoFromBundle();
 

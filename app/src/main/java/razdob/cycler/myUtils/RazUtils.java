@@ -1,17 +1,10 @@
 package razdob.cycler.myUtils;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.location.places.GeoDataClient;
@@ -22,14 +15,9 @@ import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
 import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,7 +28,6 @@ import java.util.Set;
 
 import razdob.cycler.R;
 import razdob.cycler.algorithms.MyAlgorithm;
-import razdob.cycler.fivePlaces.ViewOnePlaceActivity;
 import razdob.cycler.models.PlaceDetails;
 
 /**
@@ -242,6 +229,8 @@ public class RazUtils {
         PlacePhotoMetadata photoMetadata;
         if (photos != null) {
             PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
+            if (photoMetadataBuffer == null || photoMetadataBuffer.getCount() == 0)
+                return null;
             if (isRandom) {
                 Random random = new Random();
                 int i = random.nextInt(photoMetadataBuffer.getCount());
@@ -254,6 +243,6 @@ public class RazUtils {
         }
         return null;
     }
+
+
 }
-
-

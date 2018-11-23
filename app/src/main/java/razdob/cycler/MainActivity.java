@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Permissions.ACCESS_FINE_LOCATION[0])) {
             new AlertDialog.Builder(this)
                     .setTitle("Location Permission is required")
-                    .setMessage("The location-permission is required to show you the best restaurants in your area")
+                    .setMessage("The location-permission is required to createFragment you the best restaurants in your area")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

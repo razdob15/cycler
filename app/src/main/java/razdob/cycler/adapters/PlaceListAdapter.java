@@ -347,7 +347,7 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.MyVi
                 @Override
                 public void onClick(View v) {
                     if (tagsExplanation.getVisibility() == View.GONE) {
-                        Log.d(TAG, "onClick: show tagsExplanation");
+                        Log.d(TAG, "onClick: createFragment tagsExplanation");
                         tagsExplanation.setVisibility(View.VISIBLE);
                     } else {
                         Log.d(TAG, "onClick: dismiss tagsExplanation");

@@ -9,8 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -108,7 +106,7 @@ public class ChoosePlaceTagsActivity extends AppCompatActivity {
                 mTags = tempTags;
                 setupTagsAdapter();
                 if (mTags.size() == 0) {
-                    Log.d(TAG, "afterTextChanged: show AddNewTagBtn");
+                    Log.d(TAG, "afterTextChanged: createFragment AddNewTagBtn");
                     addNewTagBtn.setVisibility(View.VISIBLE);
                 }
             } else {
@@ -165,7 +163,7 @@ public class ChoosePlaceTagsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String tag = tagsIT.getText().toString();
                 mFirebaseMethods.saveNewPlaceTagFromUser(tag, placeId);
-                mTags.add(StringManipulation.placeTagFormat(tag));
+                mTags.add(StringManipulation.tagFormat(tag));
                 mTagsKeeper.add(tag);
                 chosenTags.add(tag);
                 setupTagsAdapter();
@@ -262,11 +260,12 @@ public class ChoosePlaceTagsActivity extends AppCompatActivity {
      * setting up the RecyclerView's adapter and make it 3-columns grid.
      */
     private void setupTagsAdapter() {
-        mAdapter = new TagsAdapter(mContext, mTags, placeId, chosenTags);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 3);
-        tagsRecyclerView.setLayoutManager(layoutManager);
-        tagsRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        tagsRecyclerView.setAdapter(mAdapter);
+        TagsAdapter.createGridTagsAdapter(mContext, tagsRecyclerView, mTags, placeId, chosenTags);
+//        mAdapter = new TagsAdapter(mContext, mTags, placeId, chosenTags);
+//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(mContext, 3);
+//        tagsRecyclerView.setLayoutManager(layoutManager);
+//        tagsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        tagsRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

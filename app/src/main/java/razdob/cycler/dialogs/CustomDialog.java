@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.dynamic.IFragmentWrapper;
-
 import razdob.cycler.R;
 
 /**
@@ -21,13 +19,16 @@ import razdob.cycler.R;
 public class CustomDialog extends Dialog {
     private static final String TAG = "CustomDialog";
 
+    private static final int MY_BUTTON_BACKGROUND = R.drawable.my_button;
+    private static final int COLOR_WHITE = R.color.colorWhite;
+
     private LinearLayout mainLL;
     private Button btn1, btn2;
     private View.OnClickListener click1, click2;
     private String dialogTitle, dialogText, text1, text2;
     private TextView titleTV, dialogTV;
     private int buttonsCount;
-    private boolean changeBackground = true;
+    private int backgroundRes;
 
     /**
      *
@@ -60,41 +61,8 @@ public class CustomDialog extends Dialog {
         this.text1 = btn1Text;
         this.text2 = btn2Text;
         this.buttonsCount = buttonsCount;
+        this.backgroundRes = MY_BUTTON_BACKGROUND;
     }
-
-
-    /**
-     *
-     * @param context - Current Context.
-     * @param dialogText - dialog's text.
-     * @param buttonsCount - Number of buttons. Max is 2. (more than 2 - puts 2 buttons).
-     * @param btn1Text - Buttons1's text.
-     * @param btn2Text - Buttons2's text.
-     */
-    public CustomDialog(@NonNull Context context, String dialogText, int buttonsCount,
-                        String btn1Text, String btn2Text) {
-        super(context);
-        this.click1 = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: default YES click");
-                dismiss();
-            }
-        };
-        this.click2 = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "onClick: default NO click");
-                dismiss();
-            }
-        };
-        this.dialogText = dialogText;
-        this.text1 = btn1Text;
-        this.text2 = btn2Text;
-        this.buttonsCount = buttonsCount;
-        // TODO(!) Continue from here - add the dialog a title ! fix the calling to this method !
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +71,10 @@ public class CustomDialog extends Dialog {
         setContentView(R.layout.delete_dialog);
         setCancelable(true);
 
+
+
         mainLL = findViewById(R.id.dialog_main);
-        if (changeBackground) mainLL.setBackgroundResource(R.drawable.my_button);
+        mainLL.setBackgroundResource(backgroundRes);
 
         titleTV = findViewById(R.id.dialog_title);
         if (dialogTitle == null || dialogTitle.length() == 0)
@@ -133,15 +103,6 @@ public class CustomDialog extends Dialog {
         dialogTV = findViewById(R.id.dialog_text);
         dialogTV.setText(dialogText);
 
-    }
-
-    /* --------------------------- Getters ------------------------------------- */
-    public Button getBtn1() {
-        return btn1;
-    }
-
-    public Button getBtn2() {
-        return btn2;
     }
 
     /* --------------------------- Setters ------------------------------------- */
@@ -212,13 +173,14 @@ public class CustomDialog extends Dialog {
 
     }
 
-    public void setChangeBackground(boolean changeBackground) {
-        this.changeBackground = changeBackground;
-    }
 
     @Override
     public void onBackPressed() {
         dismiss();
+    }
+
+    public void setBackgroundRes(int backgroundRes) {
+        this.backgroundRes = backgroundRes;
     }
 
     /**
@@ -230,8 +192,40 @@ public class CustomDialog extends Dialog {
      */
     public static CustomDialog createDeleteDialog(Context context, String title, String text) {
         CustomDialog deleteDialog = new CustomDialog(context, title, text, 2, "YES", "NO");
-        deleteDialog.setChangeBackground(false);
+        deleteDialog.setBackgroundRes(COLOR_WHITE);
         return  deleteDialog;
     }
+
+    public static CustomDialog createNotRestaurantDialog(Context context) {
+        CustomDialog notRestDialog = new CustomDialog(context, context.getString(R.string.not_rest_dialog_title), context.getString(R.string.not_rest_dialog_text),
+                2, "YES", "NO");
+        notRestDialog.setBackgroundRes(MY_BUTTON_BACKGROUND);
+        return  notRestDialog;
+    }
+
+    public static CustomDialog createMustLocationDialog(Context context) {
+        CustomDialog notRestDialog = new CustomDialog(context, context.getString(R.string.must_location_dialog_title), context.getString(R.string.must_location_dialog_text),
+                2, "Choose Now", "OK");
+        notRestDialog.setBackgroundRes(MY_BUTTON_BACKGROUND);
+        return notRestDialog;
+    }
+
+    public static CustomDialog createTwoButtonsDialog(Context context, String title,
+                                                String text, String btn1text, String btn2text) {
+        CustomDialog notRestDialog = new CustomDialog(context, title, text,
+                2, btn1text, btn2text);
+        notRestDialog.setBackgroundRes(MY_BUTTON_BACKGROUND);
+        return notRestDialog;
+    }
+
+    public static CustomDialog createOneButtonDialog(Context context, String title,
+                                                      String text, String btnText) {
+        CustomDialog notRestDialog = new CustomDialog(context, title, text,
+                1, btnText, null);
+        notRestDialog.setBackgroundRes(MY_BUTTON_BACKGROUND);
+        return notRestDialog;
+    }
+
+
 
 }

@@ -92,7 +92,7 @@ public class ChooseCurrentSubjectsActivity extends AppCompatActivity {
                 mTags = tempTags;
                 setupAdapter();
                 if (mTags.size() == 0) {
-                    Log.d(TAG, "afterTextChanged: show AddNewTagBtn");
+                    Log.d(TAG, "afterTextChanged: createFragment AddNewTagBtn");
                 }
             } else {
                 mTags = mTagsKeeper;

@@ -1,4 +1,4 @@
-    package razdob.cycler.instProfile;
+package razdob.cycler.instProfile;
 
 import android.content.Context;
 import android.content.Intent;
@@ -231,10 +231,11 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
                     if (favoritesIds.size() < RemoteConfigConsts.MIN_FAVORITES_COUNT) {
                         Log.d(TAG, "onClick: need to choose more favorites.");
 
-                        final CustomDialog dialog = new CustomDialog(mContext, "Now you must choose " +
-                                (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritesIds.size()) +
-                                " more restaurants you like. " + "So we can offer you the best restaurants in yor area.",
-                                2, "OK", "LATER");
+
+                        final CustomDialog dialog = CustomDialog.createTwoButtonsDialog(mContext, null, "Now you must choose " +
+                                        (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritesIds.size()) +
+                                        " more restaurants you like. " + "So we can offer you the best restaurants in yor area.",
+                                "OK", "LATER");
 
                         dialog.setClick1(new View.OnClickListener() {
                             @Override
@@ -272,11 +273,10 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
     private void CheckIfFirstTime() {
         Log.d(TAG, "CheckIfFirstTime: called.");
         Bundle args = getArguments();
-        if (args != null && args.getBoolean(mContext.getString(R.string.intent_first_time), false)){
+        if (args != null && args.getBoolean(mContext.getString(R.string.intent_first_time), false)) {
             Log.d(TAG, "onCreateView: first time");
-
-            final CustomDialog dialog = new CustomDialog(mContext, "Create Your Profile", "Please, fill your profile details.",
-                    1, "OK", null);
+            final CustomDialog dialog = CustomDialog.createOneButtonDialog(mContext, "Create Your Profile",
+                    "Please, fill your profile details.", "OK");
             dialog.setClick1(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -289,6 +289,7 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
 
     /**
      * Catches Result for PICK_IMAGE_REQUEST
+     *
      * @param requestCode - good if  equal to PICK_IMAGE_REQUEST
      */
     @Override
@@ -450,7 +451,8 @@ public class EditProfileFragment extends Fragment implements ConfirmPasswordDial
             if (user.getPhone() != null && user.getPhone().length() > 0)
                 mPhoneNum.setText(user.getPhone());
             if (user.getProfile_photo() != null && user.getProfile_photo().length() > 0) {
-                UniversalImageLoader.setImage(mContext, user.getProfile_photo(), mProfileImage, mProfileImagePB, "");
+//                UniversalImageLoader.setImage(mContext, user.getProfile_photo(), mProfileImage, mProfileImagePB, "");
+                UniversalImageLoader.setImagePicasso(user.getProfile_photo(), mProfileImage, mProfileImagePB);
             }
         }
         if (settings != null) {

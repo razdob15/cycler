@@ -197,6 +197,7 @@
     <string name="share_next_activity">ShareNextActivity</string>
     <string name="choose_subjects_activity">ChooseCurrentSubjectsActivity</string>
     <string name="choose_favorite_places_activity">ChooseFavoritePlacesActivity</string>
+    <string name="gili_favorites_activity">GiliFavoritesActivity</string>
 
     <!-- fragment names -->
     <string name="edit_profile_fragment">Edit Profile</string>

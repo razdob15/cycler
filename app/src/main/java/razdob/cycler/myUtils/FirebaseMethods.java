@@ -163,7 +163,7 @@ public class FirebaseMethods {
     private Photo createPhoto(String caption, String url) {
         Log.d(TAG, "createPhoto: caption: " + caption + "; url: " + url);
         String user_id = mUserID != null ? mUserID : mAuth.getCurrentUser().getUid();
-        String tags = StringManipulation.getTags(caption);
+        String tags = StringManipulation.getTagsFromDescription(caption);
         String newPhotoKey = mRef.child(mContext.getString(R.string.db_photos)).push().getKey();
         Photo photo = new Photo();
         photo.setCaption(caption);
@@ -235,9 +235,9 @@ public class FirebaseMethods {
 
         // Convert image url to bitmap
         if (bm == null) {
-            bm = ImageManager.getBitmap(imgUrl);
+            bm = ImageUtils.getBitmap(imgUrl);
         }
-        byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
+        byte[] bytes = ImageUtils.getBytesFromBitmap(bm, 100);
 
         UploadTask uploadTask;
         if (bytes != null) {
@@ -342,9 +342,9 @@ public class FirebaseMethods {
 
         // Convert image url to bitmap
         if (bm == null) {
-            bm = ImageManager.getBitmap(imgUrl);
+            bm = ImageUtils.getBitmap(imgUrl);
         }
-        byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
+        byte[] bytes = ImageUtils.getBytesFromBitmap(bm, 100);
 
         UploadTask uploadTask = storageReference.putBytes(bytes);
 
@@ -437,14 +437,14 @@ public class FirebaseMethods {
 
 
         if (bm == null) {
-            bm = ImageManager.getBitmap(imgUrl);
+            bm = ImageUtils.getBitmap(imgUrl);
         }
-        final byte[] bytes = ImageManager.getBytesFromBitmap(bm, 100);
+        final byte[] bytes = ImageUtils.getBytesFromBitmap(bm, 100);
 
 
         final Photo photo = createPhoto(caption, imgUrl);
         if (placeTags != null)
-            photo.setTags(photo.getTags() + StringManipulation.getTags(placeTags));
+            photo.setTags(photo.getTags() + StringManipulation.getTagsFromDescription(placeTags));
 
 
         mGeoDataClient = Places.getGeoDataClient(mContext);
@@ -456,7 +456,7 @@ public class FirebaseMethods {
                     PlaceBufferResponse places = task.getResult();
                     Place place = places.get(0);
 
-                    photo.setTags(StringManipulation.getTags(photo.getCaption()));
+                    photo.setTags(StringManipulation.getTagsFromDescription(photo.getCaption()));
                     photo.setPlace_id(placeId);
                     photo.setPlace_name(place.getName().toString());
 
@@ -736,7 +736,7 @@ public class FirebaseMethods {
         photo.setDate_creates(photoDS.child(mContext.getString(R.string.db_field_date_creates)).getValue(String.class));
         photo.setImage_path(photoDS.child(mContext.getString(R.string.db_field_image_path)).getValue(String.class));
         photo.setPhoto_id(photoDS.child(mContext.getString(R.string.db_field_photo_id)).getValue(String.class));
-        photo.setTags(StringManipulation.getTags(photo.getCaption()));
+        photo.setTags(StringManipulation.getTagsFromDescription(photo.getCaption()));
         photo.setUser_id(photoDS.child(mContext.getString(R.string.db_field_user_id)).getValue(String.class));
         photo.setPlace_id(photoDS.child(mContext.getString(R.string.db_field_place_id)).getValue(String.class));
         photo.setPlace_name(photoDS.child(mContext.getString(R.string.db_field_place_name)).getValue(String.class));
@@ -1260,18 +1260,66 @@ public class FirebaseMethods {
     */
 
     /**
-     *
      * @return myUser's favorites places.
      */
     public ArrayList<String> getFavoritePlacesIds() {
-        if (myUser == null) return null ;
+        if (myUser == null) return null;
         return (ArrayList<String>) myUser.getFavoritePlacesIDs();
     }
 
     /**
-     *
+     * @param placeId - place's id.
+     * @return true if the current user likes this place, otherwise false.
+     */
+    public boolean isFavorite(DataSnapshot mainDS, String placeId) {
+        DataSnapshot placesLikesDS = mainDS.child(mContext.getString(R.string.db_field_places_likes));
+        if (placesLikesDS.hasChild(placeId) && placesLikesDS.child(placeId).hasChild(mUserID)) {
+            Boolean value = placesLikesDS.child(placeId).child(mUserID).getValue(boolean.class);
+            return (value != null && value);
+        }
+        return false;
+    }
+
+    /**
+     * @param mainDS  - Main DataSnapshot.
+     * @param placeId - place to get its tags.
+     * @return list contains the all place's tags. always sorted - from the most important tag.
+     */
+    public ArrayList<String> getPlaceTagsList(DataSnapshot mainDS, String placeId) {
+        ArrayList<String> tagsList = new ArrayList<>();
+        for (DataSnapshot tagDS : mainDS.child(mContext.getString(R.string.db_field_places_tag_counters))
+                .child(placeId).getChildren()) {
+            tagsList.add(tagDS.getKey());
+        }
+        return tagsList;
+    }
+
+    /**
+     * @param mainDS  - Main DataSnapshot.
+     * @param placeId - place to get its tags.
+     * @return HashMap with: Keys - Tags names; Values - tags counter.
+     */
+    public HashMap<String, Integer> getPlaceTagsHashMap(DataSnapshot mainDS, String placeId) {
+        HashMap<String, Integer> tagsHM = new HashMap<>();
+        for (DataSnapshot tagDS : mainDS.child(mContext.getString(R.string.db_field_places_tag_counters))
+                .child(placeId).getChildren()) {
+            tagsHM.put(tagDS.getKey(), tagDS.getValue(int.class));
+        }
+        return tagsHM;
+    }
+
+    public ArrayList<String> placeUsersLikes(DataSnapshot mainDS, String placeId) {
+        ArrayList<String> userIdsList = new ArrayList<>();
+        for (DataSnapshot userDS : mainDS.child(mContext.getString(R.string.db_field_places_likes))
+                .child(placeId).getChildren()) {
+            userIdsList.add(userDS.getKey());
+        }
+        return userIdsList;
+    }
+
+    /**
      * @param mainDS - Main DataSnapshot.
-     * @param uid - User's id to get his favorites places.
+     * @param uid    - User's id to get his favorites places.
      * @return - user's (with uid) favorite placesIds.
      */
     public ArrayList<String> getFavoritePlacesIds(DataSnapshot mainDS, String uid) {
@@ -1286,7 +1334,6 @@ public class FirebaseMethods {
     }
 
     /**
-     *
      * @param mainDS - Main DataSnapshot.
      * @return - current user's favorite places from the DB.
      */
@@ -1294,6 +1341,14 @@ public class FirebaseMethods {
         return getFavoritePlacesIds(mainDS, Objects.requireNonNull(mAuth.getCurrentUser()).getUid());
     }
 
+    public String getUserPorofilePhoto(DataSnapshot mainDS, String userId) {
+        DataSnapshot userDS = mainDS.child(mContext.getString(R.string.db_persons))
+                .child(userId);
+        if (userDS.hasChild(mContext.getString(R.string.db_field_profile_photo)))
+            return userDS
+                    .child(mContext.getString(R.string.db_field_profile_photo)).getValue(String.class);
+        return null;
+    }
 
 
     /**
@@ -1313,7 +1368,8 @@ public class FirebaseMethods {
      * @param place_id - placeId the check.
      * @return if the place is restaurant according the DB.
      */
-    public boolean isRestaurant(DataSnapshot mainDS, String place_id, List<Integer> placeTypes) {
+    public boolean isRestaurant(DataSnapshot mainDS, String
+            place_id, List<Integer> placeTypes) {
         Log.d(TAG, "isRestaurant: check place: " + place_id);
         if (RazUtils.isRestaurant(placeTypes)) {
             Log.d(TAG, "isRestaurant: place: " + place_id + " according its types... [RazUtils.isRestaurant()]");
@@ -1399,7 +1455,7 @@ public class FirebaseMethods {
      * @param placeId
      */
     public void saveNewPlaceTagFromUser(String tag, String placeId) {
-        tag = StringManipulation.placeTagFormat(tag);
+        tag = StringManipulation.tagFormat(tag);
         mRef.child(mContext.getString(R.string.db_field_tags))
                 .child(tag).child("en").setValue(tag);
         ArrayList<String> userList = new ArrayList<>();
@@ -1607,7 +1663,8 @@ public class FirebaseMethods {
         return comments;
     }
 
-    public ArrayList<InstComment> getPlacePhotoCommentsDB(DataSnapshot mainDS, String photo_id, String place_id) {
+    public ArrayList<InstComment> getPlacePhotoCommentsDB(DataSnapshot mainDS, String
+            photo_id, String place_id) {
         ArrayList<InstComment> comments = new ArrayList<>();
         Log.d(TAG, "getPhotoCommentsPhotosDB: loading comments of photo: " + photo_id);
         for (DataSnapshot commentDS : mainDS

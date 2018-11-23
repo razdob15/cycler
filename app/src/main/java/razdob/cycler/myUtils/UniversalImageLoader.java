@@ -3,6 +3,12 @@ package razdob.cycler.myUtils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +28,8 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.utils.StorageUtils;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -106,5 +114,65 @@ public class UniversalImageLoader {
             }
         });
     }
+
+    public static void setImagePicasso(String url, ImageView imageView, int placeHolderRes, int errorRes, final ProgressBar progressBar) {
+        Picasso.get().load(url)
+                .placeholder(placeHolderRes)
+                .error(errorRes)
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "onSuccess: YES !");
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "onError: error: " + e.getMessage());
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+    public static void setImagePicasso(String url, ImageView imageView, final ProgressBar progressBar) {
+        Picasso.get().load(url)
+                .into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "onSuccess: YES !");
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "onError: error: " + e.getMessage());
+                        if (progressBar != null) progressBar.setVisibility(View.GONE);
+                    }
+                });
+    }
+
+
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final float roundPx = 16;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
+
 
 }

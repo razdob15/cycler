@@ -222,7 +222,7 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Permissions.ACCESS_FINE_LOCATION[0])) {
             new AlertDialog.Builder(this)
                     .setTitle("Location Permission needed")
-                    .setMessage("This permission is required to show you the best restaurants in your area")
+                    .setMessage("This permission is required to createFragment you the best restaurants in your area")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -267,7 +267,7 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
                     // Likelihood places buffer
                     final PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
 
-                    // TODO(!): Use currentSubjects to know what to show to the user.
+                    // TODO(!): Use currentSubjects to know what to createFragment to the user.
 
                     for (PlaceLikelihood placeLikelihood : likelyPlaces) {  // All likelihood places
                         final Place place = placeLikelihood.getPlace().freeze();
@@ -339,7 +339,7 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
   /*          pd = new ProgressDialog(mContext);
             pd.setMessage("Please wait");
             pd.setCancelable(false);
-            pd.show();*/
+            pd.createFragment();*/
         }
 
         protected String doInBackground(String... params) {
@@ -432,7 +432,7 @@ public class DataActivity extends AppCompatActivity implements GoogleApiClient.O
                 }
 
                 if (mPlacesIds.size() == 0) {
-                    Toast.makeText(mContext, "couldn't find exactly what you want in your area, so I'll show you all the restaurants in your area", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "couldn't find exactly what you want in your area, so I'll createFragment you all the restaurants in your area", Toast.LENGTH_SHORT).show();
                     mPlacesIds = allNearbyPlaces;
                 }
 

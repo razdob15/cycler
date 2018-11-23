@@ -31,7 +31,7 @@ public class SubjectAdapter extends ArrayAdapter<HashMap<Integer, String>> {
     private HashMap<Integer, String> subjects;
     private Context context;
     private FirebaseUser mFireUser;
-    private HashMap<String, Boolean> mHashMap;// = PersonProfileActivity.myUser.getPreferences();
+    private HashMap<String, Boolean> mHashMap;
     private boolean person;
 
 

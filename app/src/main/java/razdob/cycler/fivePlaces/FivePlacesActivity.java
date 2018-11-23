@@ -47,7 +47,7 @@ import java.util.Objects;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.adapters.PlaceListAdapter;
-import razdob.cycler.dialogs.NotRestaurantDialog;
+import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.models.PlaceDetails;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
@@ -157,9 +157,9 @@ public class FivePlacesActivity extends AppCompatActivity implements RecyclerPla
     }
 
     private void showNotRestaurantDialog(final String placeId) {
-        final NotRestaurantDialog dialog = new NotRestaurantDialog(FivePlacesActivity.this);
+        final CustomDialog dialog = CustomDialog.createNotRestaurantDialog(mContext);
 
-        dialog.setYesClick(new View.OnClickListener() {
+        dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Yes Click !");
@@ -168,7 +168,7 @@ public class FivePlacesActivity extends AppCompatActivity implements RecyclerPla
                 mFireMethods.markPlaceAsRestaurantDB(placeId);
             }
         });
-        dialog.setNoClick(new View.OnClickListener() {
+        dialog.setClick2(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Not Click !");

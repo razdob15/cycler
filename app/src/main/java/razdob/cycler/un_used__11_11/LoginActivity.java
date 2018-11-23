@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                                    Log.d(TAG, "onComplete: syccess. Email in verified.");
 //
 //                                } else {
-//                                    Toast.makeText(LoginActivity.this, "Email is not verifies.\nPlease check your inbox.", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(LoginActivity.this, "Email is not verifies.\nPlease check your inbox.", Toast.LENGTH_SHORT).createFragment();
 ////                                    FireBaseUtils.sendVerificationEmail(LoginActivity.this);
 ////                                    mAuth.signOut();
 //                                }

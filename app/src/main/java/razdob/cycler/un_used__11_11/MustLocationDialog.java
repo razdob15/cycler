@@ -1,4 +1,4 @@
-package razdob.cycler.dialogs;
+package razdob.cycler.un_used__11_11;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -8,22 +8,23 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.TextView;
 
 import razdob.cycler.R;
 
 /**
  * Created by Raz on 10/07/2018, for project: PlacePicker2
  */
-public class NotRestaurantDialog extends Dialog {
-    private static final String TAG = "NotRestaurantDialog";
+
+// TODO: Can Delete this class.
+public class MustLocationDialog extends Dialog {
+    private static final String TAG = "MustLocationDialog";
 
     private Context mContext;
     private Button yesBtn, noBtn;
     private View.OnClickListener yesClick, noClick;
 
-    // TODO(!): Get the place name and out it in the dialog's text.
-
-    public NotRestaurantDialog(@NonNull Context context) {
+    public MustLocationDialog(@NonNull Context context) {
         super(context);
         this.mContext = context;
         this.yesClick = new View.OnClickListener() {
@@ -46,10 +47,21 @@ public class NotRestaurantDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.layout_alert_dialog_not_restaurant);
+        setContentView(R.layout.layout_custom_dialog_two_buttons);
         setCancelable(false);
+
         yesBtn = findViewById(R.id.yes_btn);
         noBtn = findViewById(R.id.no_btn);
+
+        // Texts
+        TextView titleTV = findViewById(R.id.dialog_title);
+        TextView textTV = findViewById(R.id.dialog_text);
+        titleTV.setText(mContext.getString(R.string.must_location_dialog_title));
+        textTV.setText(mContext.getString(R.string.must_location_dialog_text));
+
+        yesBtn.setText("Choose Now");
+        noBtn.setText("OK");
+
         yesBtn.setOnClickListener(yesClick);
         noBtn.setOnClickListener(noClick);
     }

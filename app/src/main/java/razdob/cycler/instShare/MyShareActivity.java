@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import razdob.cycler.R;
 import razdob.cycler.dialogs.CustomDialog;
+import razdob.cycler.models.PlaceDetails;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.MyFonts;
@@ -40,9 +41,10 @@ public class MyShareActivity extends AppCompatActivity {
     private final int CAMERA_PERMISSION_CODE = 8;
 
     // Intent Extras Names
-    private final static String INTENT_PLACE_ID = "place_id";
-    private final static String INTENT_PLACE_NAME = "place_name";
-    private final static String INTENT_PLACE_ADDRESS = "place_address";
+    private final static String PLACE_ID_EXTRA = "place_id";
+    private final static String PLACE_NAME_EXTRA = "place_name";
+    private final static String PLACE_ADDRESS_EXTRA = "place_address";
+    private static final String INTENT_BUNDLE = "bundle";
 
 
     // Widgets
@@ -71,6 +73,7 @@ public class MyShareActivity extends AppCompatActivity {
     private FirebaseMethods mFireMethods;
 
     // Place Vars
+    private static PlaceDetails placeDetails;
     private String placeId;
     private String placeName;
     private String placeAddress;
@@ -94,24 +97,38 @@ public class MyShareActivity extends AppCompatActivity {
     /**
      * Set up the placeName & placeId vars, from the income-intent.
      */
-    private void getPlaceInfoFromIntent(){
-        Intent intent = getIntent();
-        if (intent.hasExtra(INTENT_PLACE_ID)) {
-            placeId = intent.getStringExtra(INTENT_PLACE_ID);
-        }
-        if (intent.hasExtra(INTENT_PLACE_NAME)) {
-            placeName = intent.getStringExtra(INTENT_PLACE_NAME);
-        }
-        if (intent.hasExtra(INTENT_PLACE_ADDRESS)) {
-            placeAddress = intent.getStringExtra(INTENT_PLACE_ADDRESS);
-        }
+    private void getPlaceInfoFromIntent() {
+//        Intent intent = getIntent();
+        placeId = placeDetails.getId();
+        placeName = placeDetails.getName();
+        placeAddress = placeDetails.getAddress();
+//        if (intent.hasExtra(PLACE_ID_EXTRA)) {
+//            placeId = intent.getStringExtra(PLACE_ID_EXTRA);
+//        }
+//        if (intent.hasExtra(PLACE_NAME_EXTRA)) {
+//            placeName = intent.getStringExtra(PLACE_NAME_EXTRA);
+//        }
+//        if (intent.hasExtra(PLACE_ADDRESS_EXTRA)) {
+//            placeAddress = intent.getStringExtra(PLACE_ADDRESS_EXTRA);
+//        }
+//        if (intent.hasExtra(INTENT_BUNDLE)) {
+//            Bundle bundle = intent.getBundleExtra(INTENT_BUNDLE);
+//            placeId = bundle.getString(PLACE_ID_EXTRA);
+//            placeName = bundle.getString(PLACE_NAME_EXTRA);
+//            placeAddress = bundle.getString(PLACE_ADDRESS_EXTRA);
+//        }
     }
 
     public static void start(Context context, String placeId, String placeName, String placeAddress) {
+        placeDetails = new PlaceDetails(placeId);
+        placeDetails.setName(placeName);
+        placeDetails.setAddress(placeAddress);
+
+//        if (placeId != null) intent.putExtra(PLACE_ID_EXTRA, placeId);
+//        if (placeName != null) intent.putExtra(PLACE_NAME_EXTRA, placeName);
+//        if (placeAddress != null) intent.putExtra(PLACE_ADDRESS_EXTRA, placeAddress);
+
         Intent intent = new Intent(context, MyShareActivity.class);
-        if (placeId != null) intent.putExtra(INTENT_PLACE_ID, placeId);
-        if (placeName != null) intent.putExtra(INTENT_PLACE_NAME, placeName);
-        if (placeAddress != null) intent.putExtra(INTENT_PLACE_ADDRESS, placeAddress);
         context.startActivity(intent);
     }
 
@@ -176,6 +193,7 @@ public class MyShareActivity extends AppCompatActivity {
 
     /**
      * work for CAMERA_PERMISSION_CODE. Show dialog if needed.
+     *
      * @param requestCode
      * @param permissions
      * @param grantResults
@@ -186,11 +204,11 @@ public class MyShareActivity extends AppCompatActivity {
 
         if (requestCode == CAMERA_PERMISSION_CODE) {
             Log.d(TAG, "onRequestPermissionsResult: sizes: " + (permissions.length == grantResults.length) + permissions.length);
-            for (int i=0; i<permissions.length; i++) {
+            for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == PackageManager.PERMISSION_DENIED) {
 
-                    final CustomDialog dialog = new CustomDialog(mContext, "This permission is required to share a photo",
-                            2, "OK", "Cancel");
+                    final CustomDialog dialog = CustomDialog.createTwoButtonsDialog(mContext, null, "This permission is required to share a photo",
+                            "OK", "Cancel");
                     dialog.setClick1(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -208,7 +226,7 @@ public class MyShareActivity extends AppCompatActivity {
                     });
                     dialog.show();
                     dialog.setCancelable(false);
-                return;
+                    return;
                 }
             }
             openCamera();
@@ -250,6 +268,7 @@ public class MyShareActivity extends AppCompatActivity {
 
     /**
      * Navigates to ShareNextActivity with the Bitmap extra
+     *
      * @param bitmap - sends to the nextActivity in the intent [extra].
      */
     private void navigateToNextShare(Bitmap bitmap) {
@@ -266,6 +285,7 @@ public class MyShareActivity extends AppCompatActivity {
 
     /**
      * Navigates to ShareNextActivity with the Photo's Uri extra.
+     *
      * @param selectedPhotoUri - sends to the nextActivity in the intent [extra].
      */
     private void navigateToNextShare(Uri selectedPhotoUri) {

@@ -40,15 +40,14 @@ import java.util.Objects;
 
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
-import razdob.cycler.dialogs.NotRestaurantDialog;
-import razdob.cycler.fivePlaces.FivePlacesActivity;
+import razdob.cycler.adapters.UsersListAdapter;
+import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.fivePlaces.ViewOnePlaceActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.models.User;
 import razdob.cycler.myUtils.BottomNavigationViewHelper;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.StringManipulation;
-import razdob.cycler.adapters.UsersListAdapter;
 
 /**
  * Created by Raz on 18/06/2018, for project: PlacePicker2
@@ -158,9 +157,9 @@ public class SearchUserActivity extends AppCompatActivity {
     }
 
     private void showNotRestaurantDialog(final String placeId) {
-        final NotRestaurantDialog dialog = new NotRestaurantDialog(SearchUserActivity.this);
+        final CustomDialog dialog = CustomDialog.createNotRestaurantDialog(mContext);
 
-        dialog.setYesClick(new View.OnClickListener() {
+        dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Yes Click !");
@@ -169,7 +168,7 @@ public class SearchUserActivity extends AppCompatActivity {
                 mFireMethods.markPlaceAsRestaurantDB(placeId);
             }
         });
-        dialog.setNoClick(new View.OnClickListener() {
+        dialog.setClick2(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Not Click !");
@@ -183,7 +182,7 @@ public class SearchUserActivity extends AppCompatActivity {
     /**
      * open the place view.
      *
-     * @param placeId - place's id to show
+     * @param placeId - place's id to createFragment
      */
     private void openPlaceView(String placeId) {
         Log.d(TAG, "openPlaceView: navigating to ViewOnePlaceActivity with place: " + placeId);

@@ -16,5 +16,9 @@
     <dimen name="custom_place_margin_start_end">20dp</dimen>
     <dimen name="custom_place_margin_top">15dp</dimen>
 
+    <dimen name="def_font">16sp</dimen>
+    <dimen name="toolbar_size">50dp</dimen>
+    <dimen name="small_margin">5dp</dimen>
+
 
 </resources>

@@ -361,7 +361,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
 
             if (mUser.getProfile_photo() != null) {
-                UniversalImageLoader.setImage(mContext, mUser.getProfile_photo(), mProfileIV, profileImagePB, "");
+//                UniversalImageLoader.setImage(mContext, mUser.getProfile_photo(), mProfileIV, profileImagePB, "");
+                UniversalImageLoader.setImagePicasso(mUser.getProfile_photo(), mProfileIV, profileImagePB);
                 mProfileIV.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -2,7 +2,6 @@ package razdob.cycler.myUtils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.util.Log;
@@ -13,7 +12,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import razdob.cycler.R;
 import razdob.cycler.feed.HomeActivity;
-import razdob.cycler.giliPlaces.GiliActivity;
+import razdob.cycler.giliPlaces.GiliFavoritesActivity;
 import razdob.cycler.instProfile.InstProfileActivity;
 import razdob.cycler.instSearch.SearchUserActivity;
 import razdob.cycler.instShare.MyShareActivity;
@@ -56,9 +55,8 @@ public class BottomNavigationViewHelper {
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_likes:         // ITEM_ID = 3
-                        Intent intent = new Intent(context, GiliActivity.class);
+                        GiliFavoritesActivity.startForFavorites(context);
 //                        Intent intent = new Intent(context, FivePlacesActivity.class);
-                        context.startActivity(intent);
                         callingActivity.overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         break;
                     case R.id.ic_profile:     // ITEM_ID = 4

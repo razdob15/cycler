@@ -2,6 +2,8 @@ package razdob.cycler.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -257,6 +259,14 @@ public class TagsAdapter extends RecyclerView.Adapter<TagsAdapter.ViewHolder> {
                 .child(tagText)
                 .setValue(null);
 
+    }
+
+    public static void createGridTagsAdapter(Context context, RecyclerView recyclerView, List<String> tagsList, String placeId, ArrayList<String> chosenTags) {
+        TagsAdapter adapter = new TagsAdapter(context, tagsList, placeId, chosenTags);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
     }
 
 }

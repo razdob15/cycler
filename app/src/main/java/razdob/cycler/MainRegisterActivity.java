@@ -144,7 +144,7 @@ public class MainRegisterActivity extends AppCompatActivity {
 //                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
 //                    @Override
 //                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//                        Toast.makeText(MainRegisterActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainRegisterActivity.this, "something went wrong", Toast.LENGTH_SHORT).createFragment();
 //                    }
 //                })
 //                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -154,7 +154,7 @@ public class MainRegisterActivity extends AppCompatActivity {
 //                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
 //                    @Override
 //                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//                        Toast.makeText(MainRegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MainRegisterActivity.this, "Something went wrong", Toast.LENGTH_SHORT).createFragment();
 //                    }
 //                })
 //                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)

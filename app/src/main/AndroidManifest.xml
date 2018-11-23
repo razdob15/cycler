@@ -74,6 +74,7 @@
         </activity>
         <activity android:name=".tests.MaterialSubjectsActivity" />
         <activity android:name=".un_used__11_11.MapsActivity" />
+        <activity android:name=".un_used__11_11.TestGoogleMaps"/>
         <activity
             android:name=".feed.DataActivity"
             android:theme="@style/noTheme" />
@@ -135,7 +136,7 @@
         <activity
             android:name=".instShare.MyShareActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".giliPlaces.GiliActivity" />
+        <activity android:name=".giliPlaces.GiliFavoritesActivity" />
 
 
         <meta-data

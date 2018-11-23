@@ -266,7 +266,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
         View.OnClickListener commentClick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: show comments for photo: " + photo.getPhoto_id());
+                Log.d(TAG, "onClick: createFragment comments for photo: " + photo.getPhoto_id());
                 ViewInstCommentsFragment fragment = new ViewInstCommentsFragment();
                 Bundle args = new Bundle();
                 args.putParcelable(mContext.getString(R.string.bundle_photo), photo);

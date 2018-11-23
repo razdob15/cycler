@@ -60,7 +60,7 @@ public class TestNavigationDrawer extends AppCompatActivity implements Navigatio
         int id = item.getItemId();
 
 //        if (id == R.id.places){
-//            Toast.makeText(this, "DashBoard Click", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(this, "DashBoard Click", Toast.LENGTH_SHORT).createFragment();
 //        }
         if (id == R.id.settings){
             Toast.makeText(this, "DashBoard Click", Toast.LENGTH_SHORT).show();

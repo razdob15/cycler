@@ -3,6 +3,9 @@ package razdob.cycler.giliPlaces;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBufferResponse;
 import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
 import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
@@ -28,6 +33,7 @@ import razdob.cycler.R;
 import razdob.cycler.models.PlaceDetails;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.RazUtils;
+import razdob.cycler.myUtils.UniversalImageLoader;
 
 /**
  * Created by Raz on 09/11/2018, for project: Cycler
@@ -42,15 +48,24 @@ public class GilPlacesAdapter extends RecyclerView.Adapter<GilPlacesAdapter.MyVi
     private FirebaseMethods mFireMethods;
     /* ---------------------- FIREBASE ----------------------- */
 
-    private GeoDataClient mGeoDataClient;
+    private static GeoDataClient mGeoDataClient;
+
+    // Static Vars
+    private static ArrayList<PlaceDetails> placeDetails;
+    private String activityName;
 
     // Adapter Vars
-    private ArrayList<PlaceDetails> placeDetails;
     private Context mContext;
+    private FragmentActivity mActivity;
+    private LayoutInflater mLayoutInflater;
 
-    public GilPlacesAdapter(Context mContext, ArrayList<PlaceDetails> placesIds) {
-        this.placeDetails = placesIds;
-        this.mContext = mContext;
+    private GilPlacesAdapter(Context context, FragmentActivity activity, ArrayList<PlaceDetails> items, String activityName) {
+        placeDetails = items;
+        this.mContext = context;
+        this.mActivity = activity;
+        this.activityName = activityName;
+        mLayoutInflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         initFirebase();
     }
 
@@ -66,19 +81,19 @@ public class GilPlacesAdapter extends RecyclerView.Adapter<GilPlacesAdapter.MyVi
     @Override
     public GilPlacesAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder: called.");
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.custom_gili_place, parent, false);
+        View view = mLayoutInflater.inflate(R.layout.custom_gili_place, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GilPlacesAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
         Log.d(TAG, "onBindViewHolder: called." + position + ": " + placeDetails.get(position));
-        holder.placeNameTV.setVisibility(View.VISIBLE);
-        holder.placeIV.setVisibility(View.VISIBLE);
+        final PlaceDetails pd = placeDetails.get(position);
+        holder.onBindViewHolder(pd);
 
-        initPlacePhoto(placeDetails.get(position).getId(), holder);
-        holder.placeNameTV.setText(placeDetails.get(position).getName());
+        if (holder.placeBitmap == null) initPlacePhoto(pd.getId(), holder, position);
     }
+
 
     @Override
     public int getItemCount() {
@@ -86,41 +101,127 @@ public class GilPlacesAdapter extends RecyclerView.Adapter<GilPlacesAdapter.MyVi
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public ImageView placeIV;
-        public TextView placeNameTV;
+        public final ImageView placeIV;
+        public final TextView placeNameTV;
+        Bitmap placeBitmap;
 
 
-        public MyViewHolder(View itemView) {
+        MyViewHolder(View itemView) {
             super(itemView);
             placeIV = itemView.findViewById(R.id.place_image);
             placeNameTV = itemView.findViewById(R.id.place_name_tv);
         }
+
+        void onBindViewHolder(final PlaceDetails placeDetails) {
+            Bitmap bitmap = placeDetails.getImg();
+            if (bitmap != null) {
+                placeBitmap = bitmap;
+                placeIV.setImageBitmap(placeBitmap);
+            }
+            if (placeDetails.getName() != null) placeNameTV.setText(placeDetails.getName());
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    GiliOnePlaceFragment.showOnePlace(mActivity, placeDetails);
+                }
+            });
+
+        }
+
     }
 
 
-    private void initPlacePhoto(String placeId, final GilPlacesAdapter.MyViewHolder holder) {
-        mGeoDataClient = Places.getGeoDataClient(mContext);
-        mGeoDataClient.getPlacePhotos(placeId).addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
-            @Override
-            public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> placePhotoMetadataResponseTask) {
+    private void initPlacePhoto(String placeId, final GilPlacesAdapter.MyViewHolder holder, final int pos) {
+        Bitmap img = holder.placeBitmap;
+        if (img == null) {
+            if (mGeoDataClient == null) mGeoDataClient = Places.getGeoDataClient(mContext);
+            mGeoDataClient.getPlacePhotos(placeId).addOnCompleteListener(new OnCompleteListener<PlacePhotoMetadataResponse>() {
+                @Override
+                public void onComplete(@NonNull Task<PlacePhotoMetadataResponse> placePhotoMetadataResponseTask) {
+                    Task<PlacePhotoResponse> photoTask = RazUtils.getPlaceOnePhotoTask(mGeoDataClient, placePhotoMetadataResponseTask, true);
+                    if (photoTask != null) {
+                        photoTask.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                            @Override
+                            public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                                PlacePhotoResponse photo = task.getResult();
+                                if (photo != null) {
+                                    Bitmap bitmap = photo.getBitmap();
+                                    bitmap = UniversalImageLoader.getRoundedCornerBitmap(bitmap);
 
-                Task<PlacePhotoResponse> photoTask = RazUtils.getPlaceOnePhotoTask(mGeoDataClient, placePhotoMetadataResponseTask, true);
-                if (photoTask != null) {
-                    photoTask.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                        @Override
-                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                            PlacePhotoResponse photo = task.getResult();
-                            if (photo != null) {
-                                Bitmap bitmap = photo.getBitmap();
-                                holder.placeIV.setImageBitmap(bitmap);
+                                    holder.placeIV.setImageBitmap(bitmap);
+                                    holder.placeBitmap = bitmap;
+
+                                    placeDetails.get(pos).setImg(bitmap);
+                                    if (placeDetails.size() - 1 == pos) {
+                                        finishLoad();
+                                    }
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
+            });
+        } else {
+            placeDetails.get(pos).setImg(img);
+        }
+    }
 
+    private void finishLoad() {
+        Log.d(TAG, "finishLoad: called.");
+        if (activityName.equals(mContext.getString(R.string.gili_favorites_activity)))
+            GiliFavoritesActivity.setPlaceDetailsList(placeDetails);
+    }
 
+    /**
+     * Create an adapter for recyclerView.
+     * uses Vertical LinearLayoutManager & DefaultItemAnimator.
+     *
+     * @param context       App Context.
+     * @param recyclerView  - RecyclerView Object to contain the adapter.
+     placesDetails - List od places details for the adapter.
+     */
+//    public static void createPlacesAdapter(Context context, FragmentActivity activity, RecyclerView recyclerView, ArrayList<PlaceDetails> placesDetails, String activityName) {
+//        GilPlacesAdapter adapter = new GilPlacesAdapter(context, activity, placesDetails, activityName);
+//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
+//        recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setAdapter(adapter);
+//    }
+
+    public static void createPlacesAdapter(final Context context, final FragmentActivity activity, final RecyclerView recyclerView, final ArrayList<?> placesList, final String activityName) {
+        if (placesList == null || placesList.size() == 0) return;
+        if (placesList.get(0).getClass().equals(String.class)) {
+            if (mGeoDataClient == null) mGeoDataClient = Places.getGeoDataClient(context);
+            final ArrayList<PlaceDetails> placeDetailsList = new ArrayList<>();
+            for (Object pid : placesList) {
+                mGeoDataClient.getPlaceById((String) pid).addOnCompleteListener(new OnCompleteListener<PlaceBufferResponse>() {
+                    @Override
+                    public void onComplete(@NonNull Task<PlaceBufferResponse> task) {
+                        if (task.isSuccessful()) {
+                            PlaceBufferResponse places = task.getResult();
+                            Place place = null;
+                            if (places != null) {
+                                place = places.get(0);
+                                PlaceDetails pd = new PlaceDetails(place);
+                                placeDetailsList.add(pd);
+                                if (placeDetailsList.size() == placesList.size()) {
+                                    Log.d(TAG, "onComplete: Last place in list");
+                                    createPlacesAdapter(context, activity, recyclerView, placeDetailsList, activityName);
+                                }
+                            }
+
+                        }
+                    }
+                });
             }
-        });
+        } else if (placesList.get(0).getClass().equals(PlaceDetails.class)) {
+            GilPlacesAdapter adapter = new GilPlacesAdapter(context, activity, (ArrayList<PlaceDetails>) placesList, activityName);
+            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(context, 3);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(adapter);
+        }
     }
 
 

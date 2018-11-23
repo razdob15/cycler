@@ -100,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //                                    0, 0, 0, user.getUid()
 //                            ));
 //
-//                            Toast.makeText(RegisterActivity.this, "Signed up successful! Sending verification email...", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(RegisterActivity.this, "Signed up successful! Sending verification email...", Toast.LENGTH_SHORT).createFragment();
 //                            mAuth.signOut();
 //                        }
 //
@@ -139,7 +139,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     // Registers The mFireUser OR shows an error toast
-    // After register starts the PersonProfileActivity
     private void registerUser() {
         // Email and twice password Strings
         String email = mEmailET.getText().toString();

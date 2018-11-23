@@ -143,10 +143,6 @@ public class InstProfileActivity extends AppCompatActivity implements
         profileBitmap = intent.getParcelableExtra(NEW_PROFILE_EXTRA);
     }
 
-    @Override
-    public void onBackPressed() {
-        // TODO
-    }
 
     public static void start(Context context, String callingActivity, User user, int activityNum, Bitmap newProfileBitmap) {
         Log.d(TAG, "start: callingActivity: " + callingActivity + "; User: " + user);

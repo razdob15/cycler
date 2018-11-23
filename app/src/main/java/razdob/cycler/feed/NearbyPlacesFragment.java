@@ -1,21 +1,17 @@
 package razdob.cycler.feed;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,6 +56,7 @@ import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
 import razdob.cycler.adapters.PlaceListAdapter;
 import razdob.cycler.algorithms.MyAlgorithm;
+import razdob.cycler.giliPlaces.GilPlacesAdapter;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.Permissions;
 import razdob.cycler.myUtils.RazUtils;
@@ -70,13 +67,18 @@ import razdob.cycler.myUtils.RazUtils;
     public class NearbyPlacesFragment extends Fragment implements GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks {
     private static final String TAG = "NearbyPlacesFragment";
-    private static String CURRENT_SUBJECT_BUNDLE = "chosen_current_subjects";
     private Context mContext;
+    private FragmentActivity mActivity;
 
     // Constants
     private static final String WEB_API_KEY = "AIzaSyD1C5oAtbT4zVzwQlhdV9yq3SXPxlgxoEU";
     private static final String[] RADIUS_ARR = {"500", "1000", "2000"};
     private final int LOCATION_PERMISSION_CODE = 8;
+
+    // Bundle Extras
+    private static String CURRENT_SUBJECT_BUNDLE = "chosen_current_subjects";
+    private static String FRAGMENT_ACTIVITY_BUNDLE = "fragment_activity";
+
 
     private class JsonTask extends AsyncTask<String, String, String> {
 
@@ -172,7 +174,7 @@ import razdob.cycler.myUtils.RazUtils;
                 }
 
                 if (mPlacesIds.size() == 0) {
-                    Log.d(TAG, "onPostExecute: no matching places - show all...");
+                    Log.d(TAG, "onPostExecute: no matching places - createFragment all...");
                     mPlacesIds = allNearbyPlaces;
                     opens = all_opens;
                     if (currentSubjects != null && currentSubjects.size() > 0)
@@ -232,10 +234,13 @@ import razdob.cycler.myUtils.RazUtils;
     private FirebaseAuth.AuthStateListener mAuthListener;
     /* ---------------------- FIREBASE ----------------------- */
 
+    // Static Vars
+    private static ArrayList<String> mPlacesIds;
+    private static ArrayList<String> mFavoritePlacesIds;
+    private static DataSnapshot mMainDS;
+
     // Vars
-    private ArrayList<String> mPlacesIds;
     private ArrayList<String> currentSubjects;
-    private ArrayList<String> mFavoritePlacesIds;
     private ArrayList<String> mPlacesInSubjects;
     private ArrayList<Boolean> opens;
     private Location mLoc;
@@ -246,12 +251,21 @@ import razdob.cycler.myUtils.RazUtils;
     private boolean needWaitToSubjects = true;
 
     // Widgets
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
     private CoordinatorLayout rootLayout;
     private ProgressBar mProgressBar;
     private ImageView chooseCurrentSubjectsIV;
     private TextView noPlacesTV;
 
+    public NearbyPlacesFragment() {
+        this.mActivity = getActivity();
+    }
+
+    public NearbyPlacesFragment(FragmentActivity activity) {
+        this.mActivity = activity;
+        if (mActivity == null)
+            new NearbyPlacesFragment();
+    }
 
     @Nullable
     @Override
@@ -261,6 +275,21 @@ import razdob.cycler.myUtils.RazUtils;
         mFireMethods = new FirebaseMethods(mContext);
 
         setupWidgets(view);
+        setupFirebaseStaff();
+
+        Log.d(TAG, "onCreateView: places: " + mPlacesIds);
+        Log.d(TAG, "onCreateView: favorites : "+ mFavoritePlacesIds);
+
+
+        // TODO(!): This is not a good condition to skip the load... :-O
+//        if (mPlacesIds != null && mFavoritePlacesIds != null && mMainDS != null) {
+//            if (mAlgorithm == null) {
+//                mAlgorithm = new MyAlgorithm(mContext, mMainDS, Objects.requireNonNull(FirebaseAuth.getInstance(mFireApp).getCurrentUser()).getUid());
+//            }
+//            setupPlacesAdapter();
+//        }
+
+        setupGeoClient();
 
         mPlacesIds = new ArrayList<>();
         mPlacesInSubjects = new ArrayList<>();
@@ -268,24 +297,20 @@ import razdob.cycler.myUtils.RazUtils;
 
         getCurrentSubjectsFromBundle();
 
-        // Setups
-        setupFirebaseStaff();
-        setupGeoClient();
-
         return view;
     }
 
     private void getCurrentSubjectsFromBundle() {
         Bundle args = getArguments();
         if (args != null) {
-            currentSubjects = getArguments().getStringArrayList(mContext.getString(R.string.intent_current_subjects));
+            currentSubjects = args.getStringArrayList(CURRENT_SUBJECT_BUNDLE);
             Log.d(TAG, "getCurrentSubjectsFromBundle: current_subjects:  " + currentSubjects);
             needWaitToSubjects = (currentSubjects != null && currentSubjects.size() > 0);
         }
     }
 
-    public static NearbyPlacesFragment show(ArrayList<String> currentSubjects) {
-        NearbyPlacesFragment fragment = new NearbyPlacesFragment();
+    public static NearbyPlacesFragment createFragment(FragmentActivity activity, ArrayList<String> currentSubjects) {
+        NearbyPlacesFragment fragment = new NearbyPlacesFragment(activity);
         Bundle bundle = new Bundle();
         bundle.putStringArrayList(CURRENT_SUBJECT_BUNDLE, currentSubjects);
         fragment.setArguments(bundle);
@@ -301,7 +326,7 @@ import razdob.cycler.myUtils.RazUtils;
      * @param view - The current main view
      */
     private void setupWidgets(View view) {
-        recyclerView = view.findViewById(R.id.recycler_view);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
         rootLayout = view.findViewById(R.id.root_layout);
         mProgressBar = view.findViewById(R.id.progress_bar);
         chooseCurrentSubjectsIV = view.findViewById(R.id.choose_subjects_iv);
@@ -324,7 +349,7 @@ import razdob.cycler.myUtils.RazUtils;
      */
     private void setupGeoClient() {
 //        mPlaceDetectionClient = Places.getPlaceDetectionClient(Objects.requireNonNull(getActivity()), null);
-        mGeoDataClient = Places.getGeoDataClient(getActivity(), null);
+        mGeoDataClient = Places.getGeoDataClient(mContext, null);
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(getContext())
@@ -358,45 +383,51 @@ import razdob.cycler.myUtils.RazUtils;
         return url;
     }
 
+
     private void setupPlacesAdapter() {
         Log.d(TAG, "setupPlacesAdapter: called.");
         if (mAlgorithm == null) {
             mRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        mMainDS = dataSnapshot;
                     if (mAlgorithm == null)
                         mAlgorithm = new MyAlgorithm(mContext, dataSnapshot, FirebaseAuth.getInstance(mFireApp).getCurrentUser().getUid());
                     if (currentSubjects != null) {
                         Log.d(TAG, "getCurrentSubjectsFromBundle: filtered places: " + RazUtils.filterPlaces(mAlgorithm, mPlacesIds, currentSubjects).toString());
                     }
 
-                    mPlacesIds = (ArrayList<String>) mAlgorithm.sortPlaceIdsByGraphScore(mPlacesIds, mContext);
-
-                    mAdapter = new PlaceListAdapter(mContext, mPlacesIds, mFavoritePlacesIds, mContext.getString(R.string.data_activity), opens);
-                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
-                    recyclerView.setAdapter(mAdapter);
+                    GilPlacesAdapter.createPlacesAdapter(mContext, mActivity, mRecyclerView, mPlacesIds, mContext.getString(R.string.home_activity));
+//
+//                    mPlacesIds = (ArrayList<String>) mAlgorithm.sortPlaceIdsByGraphScore(mPlacesIds, mContext);
+//
+//                    mAdapter = new PlaceListAdapter(mContext, mPlacesIds, mFavoritePlacesIds, mContext.getString(R.string.data_activity), opens);
+//                    RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
+//                    mRecyclerView.setLayoutManager(layoutManager);
+//                    mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//                    mRecyclerView.setAdapter(mAdapter);
                     mProgressBar.setVisibility(View.GONE);
 
                     Log.d(TAG, "setupPlacesAdapter: end...");
                 }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
+                public void onCancelled(@NonNull DatabaseError databaseError) {
                     Log.e(TAG, "onCancelled: DBError: " + databaseError.getMessage());
                 }
             });
 
 
         } else {
-            mPlacesIds = (ArrayList<String>) mAlgorithm.sortPlaceIdsByGraphScore(mPlacesIds, mContext);
 
-            mAdapter = new PlaceListAdapter(mContext, mPlacesIds, mFavoritePlacesIds, mContext.getString(R.string.data_activity), opens);
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(mAdapter);
+            GilPlacesAdapter.createPlacesAdapter(mContext, mActivity, mRecyclerView, mPlacesIds, mContext.getString(R.string.home_activity));
+//            mPlacesIds = (ArrayList<String>) mAlgorithm.sortPlaceIdsByGraphScore(mPlacesIds, mContext);
+//
+//            mAdapter = new PlaceListAdapter(mContext, mPlacesIds, mFavoritePlacesIds, mContext.getString(R.string.data_activity), opens);
+//            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(mContext);
+//            mRecyclerView.setLayoutManager(layoutManager);
+//            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//            mRecyclerView.setAdapter(mAdapter);
             mProgressBar.setVisibility(View.GONE);
 
             Log.d(TAG, "setupPlacesAdapter: end...");
@@ -468,7 +499,9 @@ import razdob.cycler.myUtils.RazUtils;
         };
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mMainDS = dataSnapshot;
+
                 // Favorites places
                 mFavoritePlacesIds = mFireMethods.getFavoritePlacesIds(dataSnapshot);
                 if (mFavoritePlacesIds == null) mFavoritePlacesIds = new ArrayList<>();
@@ -485,7 +518,7 @@ import razdob.cycler.myUtils.RazUtils;
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e(TAG, "onCancelled: firebaseDatabaseError: " + databaseError.getMessage());
             }
         });

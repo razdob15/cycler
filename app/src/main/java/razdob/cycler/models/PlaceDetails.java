@@ -1,8 +1,13 @@
 package razdob.cycler.models;
 
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.android.gms.location.places.Place;
+
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by Raz on 08/07/2018, for project: PlacePicker2
@@ -14,6 +19,7 @@ public class PlaceDetails {
     private String phone;
     private String website;
     private Bitmap img;
+    private ArrayList<String> tags;
     private boolean favorite;
 
     public PlaceDetails(String id) {
@@ -21,14 +27,21 @@ public class PlaceDetails {
         favorite = false;
     }
 
-    public PlaceDetails(String id, String name, String address, String phone, String website, Bitmap img, boolean favorite) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.phone = phone;
-        this.website = website;
-        this.img = img;
-        this.favorite = favorite;
+    public PlaceDetails(Place place) {
+        this.id = place.getId();
+        this.name = place.getName().toString();
+        if (place.getAddress() != null) this.address = place.getAddress().toString();
+        if (place.getPhoneNumber() != null) this.phone = place.getPhoneNumber().toString();
+        if (place.getWebsiteUri() != null) this.website = place.getWebsiteUri().toString();
+        this.favorite = false;
+    }
+
+    public ArrayList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(ArrayList<String> tags) {
+        this.tags = tags;
     }
 
     public String getId() {
@@ -97,4 +110,5 @@ public class PlaceDetails {
                 ", img=" + img +
                 '}';
     }
+
 }

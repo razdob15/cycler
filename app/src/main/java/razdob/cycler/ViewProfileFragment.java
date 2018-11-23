@@ -553,7 +553,8 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
         final User user = userSettings.getUser();
         UserAccountSettings settings = userSettings.getSettings();
 
-        UniversalImageLoader.setImage(mContext, user.getProfile_photo(), mProfileIV, profileImagePB, "");
+        UniversalImageLoader.setImagePicasso(user.getProfile_photo(), mProfileIV, profileImagePB);
+//        UniversalImageLoader.setImage(mContext, user.getProfile_photo(), mProfileIV, profileImagePB, "");
         mProfileIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -642,7 +643,7 @@ public class ViewProfileFragment extends Fragment implements View.OnClickListene
     }
 
     public static void show(FragmentActivity activity, User user) {
-        Log.d(TAG, "show: user: " + user.toString());
+        Log.d(TAG, "createFragment: user: " + user.toString());
         ViewProfileFragment fragment = new ViewProfileFragment();
         Bundle args = new Bundle();
         args.putParcelable(USER_EXTRA, user);

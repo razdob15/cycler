@@ -1,12 +1,11 @@
 package razdob.cycler;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,11 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-
-import android.support.v4.app.Fragment;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.Objects;
 
@@ -75,7 +69,8 @@ public class  BigPhotoFragment extends Fragment {
                 photoPB.setVisibility(View.GONE);
 
             } else if (photoUrl != null) {  // String (url)
-                UniversalImageLoader.setImage(getContext(), photoUrl, imageView, photoPB, "");
+                UniversalImageLoader.setImagePicasso(photoUrl, imageView, photoPB);
+//                UniversalImageLoader.setImage(getContext(), photoUrl, imageView, photoPB, "");
 
             } else {
                 Log.w(TAG, "onCreateView: no bundle-arguments: " + bundle.toString());

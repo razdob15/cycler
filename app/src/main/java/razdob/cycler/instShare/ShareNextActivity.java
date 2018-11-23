@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -43,8 +42,7 @@ import razdob.cycler.BigPhotoFragment;
 import razdob.cycler.ChoosePlaceTagsActivity;
 import razdob.cycler.MainRegisterActivity;
 import razdob.cycler.R;
-import razdob.cycler.dialogs.MustLocationDialog;
-import razdob.cycler.dialogs.NotRestaurantDialog;
+import razdob.cycler.dialogs.CustomDialog;
 import razdob.cycler.myUtils.FirebaseMethods;
 import razdob.cycler.myUtils.MyFonts;
 import razdob.cycler.myUtils.StringManipulation;
@@ -177,16 +175,16 @@ public class ShareNextActivity extends AppCompatActivity implements View.OnClick
 
     private void openDialogChoosePlace() {
         Log.d(TAG, "openDialogChoosePlace: open ChooseRestDialog");
-        final MustLocationDialog dialog = new MustLocationDialog(mContext);
+        final CustomDialog dialog = CustomDialog.createMustLocationDialog(mContext);
         dialog.setCancelable(false);
-        dialog.setYesClick(new View.OnClickListener() {
+        dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openMap();
                 dialog.dismiss();
             }
         });
-        dialog.setNoClick(new View.OnClickListener() {
+        dialog.setClick2(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
@@ -301,7 +299,7 @@ public class ShareNextActivity extends AppCompatActivity implements View.OnClick
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (!mFireMethods.isRestaurant(dataSnapshot, place.getId(), place.getPlaceTypes())) {
-                                Log.d(TAG, "onDataChange: place is not a restaurant! show dialog!");
+                                Log.d(TAG, "onDataChange: place is not a restaurant! createFragment dialog!");
                                 showNotRestaurantDialog(place);
                             } else {
                                 // Place is OK, add to favorites
@@ -340,9 +338,9 @@ public class ShareNextActivity extends AppCompatActivity implements View.OnClick
      * Shows a NotRestaurantDialog for the chosen place.
      */
     private void showNotRestaurantDialog(final Place place) {
-        final NotRestaurantDialog dialog = new NotRestaurantDialog(mContext);
+        final CustomDialog dialog = CustomDialog.createNotRestaurantDialog(mContext);
 
-        dialog.setYesClick(new View.OnClickListener() {
+        dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Yes Click !");
@@ -352,7 +350,7 @@ public class ShareNextActivity extends AppCompatActivity implements View.OnClick
                 mFireMethods.markPlaceAsRestaurantDB(placeId);
             }
         });
-        dialog.setNoClick(new View.OnClickListener() {
+        dialog.setClick2(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Not Click !");

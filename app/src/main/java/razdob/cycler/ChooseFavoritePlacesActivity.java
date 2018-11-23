@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import razdob.cycler.dialogs.CustomDialog;
-import razdob.cycler.dialogs.NotRestaurantDialog;
 import razdob.cycler.feed.HomeActivity;
 import razdob.cycler.instProfile.AccountSettingsActivity;
 import razdob.cycler.myUtils.FirebaseMethods;
@@ -70,9 +69,12 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
             return;
         }
 
-        final CustomDialog dialog = new CustomDialog(mContext, "Please, Choose "
+        final CustomDialog dialog = CustomDialog.createOneButtonDialog(mContext,
+                null, "Please, Choose "
                 + (RemoteConfigConsts.MIN_FAVORITES_COUNT - favoritePlacesIds.size()) + " more restaurants you like. \nThis part is important to get the best restaurants for you :-)",
-                1, "OK", null);
+                "OK");
+
+
         dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,9 +132,9 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
                 Toast.makeText(mContext, "" + favoritePlacesIds.size() + " places was chosen", Toast.LENGTH_SHORT).show();
                 reopenMap();
             } else {
-                final CustomDialog favExplanationDialog = new CustomDialog(mContext,
-                        "Excellent! Now, these restaurants will be in your favorites :)",
-                        1, "OK", null);
+                final CustomDialog favExplanationDialog = CustomDialog.createOneButtonDialog(mContext,
+                        null, "Excellent! Now, these restaurants will be in your favorites :)",
+                        "OK");
                 favExplanationDialog.setClick1(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -157,9 +159,9 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
 
 
     private void showNotRestaurantDialog(final String placeId) {
-        final NotRestaurantDialog dialog = new NotRestaurantDialog(mContext);
+        final CustomDialog dialog = CustomDialog.createNotRestaurantDialog(mContext);
 
-        dialog.setYesClick(new View.OnClickListener() {
+        dialog.setClick1(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Yes Click !");
@@ -168,7 +170,7 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
                 mFireMethods.markPlaceAsRestaurantDB(placeId);
             }
         });
-        dialog.setNoClick(new View.OnClickListener() {
+        dialog.setClick2(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: Not Click !");
@@ -203,7 +205,7 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (!mFireMethods.isRestaurant(dataSnapshot, place.getId(), place.getPlaceTypes())) {
-                                Log.d(TAG, "onDataChange: place is not a restaurant! show dialog!");
+                                Log.d(TAG, "onDataChange: place is not a restaurant! createFragment dialog!");
                                 showNotRestaurantDialog(place.getId());
                             } else {
                                 // Place is OK, add to favorites
@@ -236,7 +238,7 @@ public class ChooseFavoritePlacesActivity extends AppCompatActivity {
 //                        mFireMethods.likePlaceDB(place.getId());
 //                        if (favoritePlacesIds.size() < FAVORITES_COUNT) {
 //                            Toast.makeText(mContext, place.getName().toString() + " added to your favorites.\nYou need to choose "
-//                                    + (FAVORITES_COUNT - favoritePlacesIds.size()) + " more places", Toast.LENGTH_LONG).show();
+//                                    + (FAVORITES_COUNT - favoritePlacesIds.size()) + " more places", Toast.LENGTH_LONG).createFragment();
 //                            reopenMap();
 //                        } else {
 //                            Intent intent = new Intent(mContext, FivePlacesActivity.class);
